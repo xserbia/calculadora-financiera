@@ -1,0 +1,13 @@
+
+body {
+  font-family: sans-serif;
+  background-color: #f5f5f5;
+  margin: 20px;
+}
+.resultado-categoria {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 10px;
+}
