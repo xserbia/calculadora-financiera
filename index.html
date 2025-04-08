@@ -1,26 +1,572 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Evaluación Financiera</title>
-  <link rel="stylesheet" href="css/estilos.css" />
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    .step, .resultado-categoria {
+      display: none;
+    }
+    .active, .active-res {
+      display: block;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    #nav, #navResultados {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    #nav div, .nav-res {
+      background-color: lightgray;
+      border-radius: 5px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      width: 12%;
+      margin: 4px;
+    }
+    .completed {
+      background-color: green;
+      color: white;
+    }
+    .active {
+      background-color: yellow;
+      color: black;
+    }
+    .inactive {
+      background-color: lightgray;
+      color: gray;
+    }
+    .resultado-categoria {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: white;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    table th {
+      background-color: #eee;
+    }
+  </style>
 </head>
 <body>
-  <h1>Calculadora de Evaluación Financiera</h1>
-  <form id="calculadoraFormulario">
-    <!-- Aquí iría todo el formulario con inputs -->
-    <button type="submit">Calcular</button>
-  </form>
 
-  <div id="resultadosContainer" style="display:none;">
-    <h2>Resultados</h2>
-    <div id="resA" class="resultado-categoria">[Resultados A]</div>
-    <div id="resB" class="resultado-categoria">[Resultados B]</div>
-    <!-- Resto de las secciones -->
+<!-- Aquí estará todo el formulario -->
+<div id="formularioContainer">
+  <form id="calculadoraFormulario">
+    <div id="nav">
+      <div id="navInfoPersonal" class="inactive">Información personal</div>
+      <div id="navIngresos" class="inactive">Ingresos</div>
+      <div id="navGastos" class="inactive">Gastos</div>
+      <div id="navActivos" class="inactive">Activos</div>
+      <div id="navPasivos" class="inactive">Pasivos</div>
+      <div id="navSeguros" class="inactive">Seguros</div>
+      <div id="navPatrimonio" class="inactive">Patrimonio</div>
+    </div>
+
+    <div class="step active" id="stepPersonal">
+      <fieldset>
+        <legend><strong>1. Información personal</strong></legend>
+        <label>Edad<br><input type="number" name="edad" required></label><br><br>
+        <label>Estado civil<br><input type="text" name="estado_civil" required></label><br><br>
+        <label>¿Tiene dependientes?<br><input type="text" name="tiene_dependientes" required></label><br><br>
+        <label>¿A qué edad desea retirarse?<br><input type="number" name="edad_retiro" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="nextStep(2)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 2: Ingresos -->
+    <div class="step" id="stepIngresos">
+      <fieldset>
+        <legend><strong>2. Ingresos</strong></legend>
+        <label>Ingreso anual bruto<br><input type="number" name="ingreso_anual_bruto" required></label><br><br>
+        <label>Ingreso anual neto<br><input type="number" name="ingreso_anual_neto" required></label><br><br>
+        <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro" required></label><br><br>
+        <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(1)">Anterior</button>
+        <button type="button" onclick="nextStep(3)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 3: Gastos -->
+    <div class="step" id="stepGastos">
+      <fieldset>
+        <legend><strong>3. Gastos</strong></legend>
+        <label>Alimentos y bebidas<br><input type="number" name="alimentos_bebidas" required></label><br><br>
+        <label>Ropa<br><input type="number" name="ropa" required></label><br><br>
+        <label>Vivienda (sin incluir hipoteca o renta)<br><input type="number" name="vivienda" required></label><br><br>
+        <label>Transporte<br><input type="number" name="transporte" required></label><br><br>
+        <label>Salud y productos personales<br><input type="number" name="salud_productos_personales" required></label><br><br>
+        <label>Entretenimiento<br><input type="number" name="entretenimiento" required></label><br><br>
+        <label>Educación<br><input type="number" name="educacion" required></label><br><br>
+        <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones" required></label><br><br>
+        <label>Servicios públicos<br><input type="number" name="servicios_publicos" required></label><br><br>
+        <label>Seguros<br><input type="number" name="seguros" required></label><br><br>
+        <label>Impuestos<br><input type="number" name="impuestos" required></label><br><br>
+        <label>Otros<br><input type="number" name="otros" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(2)">Anterior</button>
+        <button type="button" onclick="nextStep(4)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 4: Activos -->
+    <div class="step" id="stepActivos">
+      <fieldset>
+        <legend><strong>4. Activos</strong></legend>
+        <label>Cuentas bancarias y de ahorro<br><input type="number" name="cuentas_bancarias" required></label><br><br>
+        <label>Inversiones (no retiro)<br><input type="number" name="cuentas_inversion" required></label><br><br>
+        <label>Cuentas de retiro<br><input type="number" name="cuentas_retiro" required></label><br><br>
+        <label>Valor de la vivienda principal<br><input type="number" name="valor_vivienda" required></label><br><br>
+        <label>Propiedades de alquiler<br><input type="number" name="valor_propiedades_alquiler" required></label><br><br>
+        <label>Otras propiedades (vacacionales, etc.)<br><input type="number" name="valor_otros_activos" required></label><br><br>
+        <label>Vehículos<br><input type="number" name="valor_vehiculos" required></label><br><br>
+        <label>Otros activos (joyas, muebles, etc.)<br><input type="number" name="valor_otros" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(3)">Anterior</button>
+        <button type="button" onclick="nextStep(5)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 5: Pasivos -->
+    <div class="step" id="stepPasivos">
+      <fieldset>
+        <legend><strong>5. Pasivos</strong></legend>
+        <label>Deuda de tarjetas de crédito<br><input type="number" name="deuda_tarjetas" required></label><br><br>
+        <label>Hipotecas o alquiler<br><input type="number" name="deuda_hipotecaria" required></label><br><br>
+        <label>Deuda comercial<br><input type="number" name="deuda_comercial" required></label><br><br>
+        <label>Préstamos para vehículos<br><input type="number" name="deuda_vehiculos" required></label><br><br>
+        <label>Deuda estudiantil<br><input type="number" name="deuda_estudios" required></label><br><br>
+        <label>Otras deudas<br><input type="number" name="deuda_otros" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(4)">Anterior</button>
+        <button type="button" onclick="nextStep(6)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 6: Seguros -->
+    <div class="step" id="stepSeguros">
+      <fieldset>
+        <legend><strong>6. Seguros</strong></legend>
+        <label>Selecciona tus seguros:<br>
+          <input type="checkbox" name="seguro_vida"> Vida<br>
+          <input type="checkbox" name="seguro_incapacidad"> Incapacidad<br>
+          <input type="checkbox" name="seguro_ltc"> LTC<br>
+          <input type="checkbox" name="seguro_hogar"> Hogar<br>
+          <input type="checkbox" name="seguro_auto"> Auto<br>
+          <input type="checkbox" name="seguro_umbrella"> Umbrella<br>
+        </label>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(5)">Anterior</button>
+        <button type="button" onclick="nextStep(7)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 7: Patrimonio -->
+    <div class="step" id="stepPatrimonio">
+      <fieldset>
+        <legend><strong>7. Patrimonio</strong></legend>
+        <label>Documentos disponibles:<br>
+          <input type="checkbox" name="trust"> Trust<br>
+          <input type="checkbox" name="will"> Testamento<br>
+          <input type="checkbox" name="advance_medical_directive"> Directiva médica anticipada<br>
+          <input type="checkbox" name="power_of_attorney"> Poder legal<br>
+          <input type="checkbox" name="beneficiary_designation"> Designación de beneficiarios<br>
+          <input type="checkbox" name="property_deeds"> Títulos de propiedad<br>
+        </label>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(6)">Anterior</button>
+        <button type="submit">Calcular</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<!-- Aquí estará la sección de resultados -->
+<div id="resultadosContainer" style="display:none;">
+  <h2>Resultados de tu evaluación financiera</h2>
+  <div id="navResultados">
+    <div class="nav-res inactive" onclick="mostrarResultado('resA')">A. Flujo</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resB')">B. Deuda</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resC')">C. Patrimonio</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resD')">D. Seguridad</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resE')">E. Riesgo</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resF')">F. Patrimonial</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resG')">G. Retiro</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resH')">H. Estrés</div>
   </div>
 
-  <script src="js/calculadora.js"></script>
+  <div id="resA" class="resultado-categoria active-res">[Resultados A]</div>
+  <div id="resB" class="resultado-categoria">[Resultados B]</div>
+  <div id="resC" class="resultado-categoria">[Resultados C]</div>
+  <div id="resD" class="resultado-categoria">[Resultados D]</div>
+  <div id="resE" class="resultado-categoria">[Resultados E]</div>
+  <div id="resF" class="resultado-categoria">[Resultados F]</div>
+  <div id="resG" class="resultado-categoria">[Resultados G]</div>
+  <div id="resH" class="resultado-categoria">[Resultados H]</div>
+</div>
+
+<!-- Aquí irá el script con todas las funciones de cálculo -->
+<script>
+  function nextStep(step) {
+    document.querySelectorAll('.step').forEach((stepDiv, index) => {
+      stepDiv.classList.toggle('active', index === step - 1);
+    });
+    updateNav(step);
+  }
+
+  function prevStep(step) {
+    nextStep(step);
+  }
+
+  function updateNav(step) {
+    const navItems = document.querySelectorAll('#nav div');
+    navItems.forEach((item, index) => {
+      item.classList.remove('completed', 'active', 'inactive');
+      if (index < step - 1) item.classList.add('completed');
+      else if (index === step - 1) item.classList.add('active');
+      else item.classList.add('inactive');
+    });
+  }
+
+  function mostrarResultado(id) {
+    document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
+    document.getElementById(id).classList.add('active-res');
+    document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
+    const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
+    if (current) current.classList.add('active');
+  }
+
+  document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
+    e.preventDefault();
+const data = {};
+Array.from(this.elements).forEach(el => {
+  if (el.name) {
+    if (el.type === "checkbox") {
+      data[el.name] = el.checked;
+    } else {
+      data[el.name] = el.value;
+    }
+  }
+});    for (let key in data) {
+      if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
+    }
+    calcularResultados(data);
+    document.getElementById("resultadosContainer").style.display = "block";
+    mostrarResultado("resA");
+  });
+
+  function calcularResultados(data) {
+    calcularCategoriaA(data);
+    calcularCategoriaB(data);
+    calcularCategoriaC(data);
+    calcularCategoriaD(data);
+    calcularCategoriaE(data);
+    calcularCategoriaF(data);
+    calcularCategoriaG(data);
+    calcularCategoriaH(data);
+  }
+
+  function calcularCategoriaA(data) {
+  let ingresoMensual = data.ingreso_anual_neto / 12;
+  let gastoMensual = (
+    data.alimentos_bebidas + data.transporte + data.telecomunicaciones +
+    data.servicios_publicos + data.seguros + data.educacion + data.impuestos +
+    data.deuda_hipotecaria + data.deuda_tarjetas + data.deuda_comercial +
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros
+  ) / 12;
+
+  let ahorroMensual = ingresoMensual - gastoMensual;
+  let tasaAhorro = (ahorroMensual / ingresoMensual) * 100;
+
+  let reserva = data.cuentas_bancarias;
+  let mesesReserva = reserva / gastoMensual;
+
+  let activosLiquidos = data.cuentas_bancarias + data.cuentas_inversion;
+  let pasivosCortoPlazo = data.deuda_tarjetas;
+  let razonCorriente = activosLiquidos / pasivosCortoPlazo;
+
+  let efectivoSobreActivos = (data.cuentas_bancarias / (
+    data.cuentas_bancarias + data.cuentas_inversion + data.cuentas_retiro +
+    data.valor_vivienda + data.valor_propiedades_alquiler + data.valor_otros_activos +
+    data.valor_vehiculos + data.valor_otros)) * 100;
+
+  document.getElementById("resA").innerHTML = `
+    <h3>A. Flujo de efectivo y liquidez</h3>
+    <p><strong>Tasa de ahorro:</strong> ${tasaAhorro.toFixed(1)}%</p>
+    <p><strong>Meses de reserva de emergencia:</strong> ${mesesReserva.toFixed(1)} meses</p>
+    <p><strong>Razón corriente:</strong> ${razonCorriente.toFixed(2)}</p>
+    <p><strong>Efectivo sobre activos totales:</strong> ${efectivoSobreActivos.toFixed(1)}%</p>
+  `;
+}
+
+function calcularCategoriaB(data) {
+  let ingresoMensualBruto = data.ingreso_anual_bruto / 12;
+  let ingresoMensualNeto = data.ingreso_anual_neto / 12;
+
+  let gastoViviendaMensual = data.deuda_hipotecaria / 12 + data.vivienda / 12 + data.seguros / 12 + data.impuestos / 12;
+  let porcentajeViviendaBruto = (gastoViviendaMensual / ingresoMensualBruto) * 100;
+  let porcentajeViviendaNeto = (gastoViviendaMensual / ingresoMensualNeto) * 100;
+
+  let totalDeudasMensual = (
+    data.deuda_tarjetas + data.deuda_hipotecaria + data.deuda_comercial +
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros
+  ) / 12;
+
+  let dtiBruto = (totalDeudasMensual / ingresoMensualBruto) * 100;
+  let dtiNeto = (totalDeudasMensual / ingresoMensualNeto) * 100;
+
+  let totalActivos = (
+    data.cuentas_bancarias + data.cuentas_inversion + data.cuentas_retiro +
+    data.valor_vivienda + data.valor_propiedades_alquiler + data.valor_otros_activos +
+    data.valor_vehiculos + data.valor_otros);
+
+  let pasivosTotales = (
+    data.deuda_tarjetas + data.deuda_hipotecaria + data.deuda_comercial +
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros);
+
+  let relacionPasivosActivos = (pasivosTotales / totalActivos) * 100;
+  let relacionDeudaActivos = (pasivosTotales / totalActivos) * 100;
+
+  let patrimonioNeto = totalActivos - pasivosTotales;
+  let relacionDeudaPatrimonio = (pasivosTotales / patrimonioNeto) * 100;
+
+  document.getElementById("resB").innerHTML = `
+    <h3>B. Endeudamiento</h3>
+    <p><strong>% Ingreso destinado a vivienda (neto):</strong> ${porcentajeViviendaNeto.toFixed(1)}%</p>
+    <p><strong>% Ingreso destinado a vivienda (bruto):</strong> ${porcentajeViviendaBruto.toFixed(1)}%</p>
+    <p><strong>DTI (neto):</strong> ${dtiNeto.toFixed(1)}%</p>
+    <p><strong>DTI (bruto):</strong> ${dtiBruto.toFixed(1)}%</p>
+    <p><strong>Relación pasivos / activos:</strong> ${relacionPasivosActivos.toFixed(1)}%</p>
+    <p><strong>Relación deuda / activos:</strong> ${relacionDeudaActivos.toFixed(1)}%</p>
+    <p><strong>Relación deuda / patrimonio neto:</strong> ${relacionDeudaPatrimonio.toFixed(1)}%</p>
+  `;
+}
+
+function calcularCategoriaC(data) {
+  let totalActivos = (
+    data.cuentas_bancarias + data.cuentas_inversion + data.cuentas_retiro +
+    data.valor_vivienda + data.valor_propiedades_alquiler + data.valor_otros_activos +
+    data.valor_vehiculos + data.valor_otros);
+
+  let totalPasivos = (
+    data.deuda_tarjetas + data.deuda_hipotecaria + data.deuda_comercial +
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros);
+
+  let patrimonioNeto = totalActivos - totalPasivos;
+  let ratioPatrimonioActivos = (patrimonioNeto / totalActivos) * 100;
+  let ratioPatrimonioPasivos = (patrimonioNeto / totalPasivos) * 100;
+
+  document.getElementById("resC").innerHTML = `
+    <h3>C. Patrimonio neto</h3>
+    <p><strong>Patrimonio neto absoluto:</strong> $${patrimonioNeto.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+    <p><strong>Relación patrimonio / activos:</strong> ${ratioPatrimonioActivos.toFixed(1)}%</p>
+    <p><strong>Relación patrimonio / pasivos:</strong> ${ratioPatrimonioPasivos.toFixed(1)}%</p>
+  `;
+}
+
+function calcularCategoriaD(data) {
+  let ingresoBruto = data.ingreso_anual_bruto;
+  let ahorroAnual = data.aporte_personal_retiro + data.aporte_empleador_retiro;
+  let tasaAhorro = (ahorroAnual / data.ingreso_anual_neto) * 100;
+
+  let activosInversion = data.cuentas_inversion + data.cuentas_retiro + data.valor_propiedades_alquiler;
+  let totalActivos = (
+    data.cuentas_bancarias + data.cuentas_inversion + data.cuentas_retiro +
+    data.valor_vivienda + data.valor_propiedades_alquiler + data.valor_otros_activos +
+    data.valor_vehiculos + data.valor_otros);
+
+  let ratioInversionActivos = (activosInversion / totalActivos) * 100;
+  let ratioInversionIngreso = activosInversion / ingresoBruto;
+
+  let gastosEsencialesMensuales = (
+    data.alimentos_bebidas + data.transporte + data.telecomunicaciones +
+    data.servicios_publicos + data.seguros + data.educacion +
+    data.deuda_hipotecaria + data.deuda_tarjetas + data.deuda_comercial +
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros + data.impuestos
+  ) / 12;
+
+  let mesesCubiertos = activosInversion / gastosEsencialesMensuales;
+
+  let patrimonioNeto = totalActivos - (
+    data.deuda_tarjetas + data.deuda_hipotecaria + data.deuda_comercial +
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros);
+
+  let ratioPatrimonioIngreso = patrimonioNeto / ingresoBruto;
+
+  document.getElementById("resD").innerHTML = `
+    <h3>D. Seguridad financiera</h3>
+    <p><strong>Tasa de ahorro (retirement):</strong> ${tasaAhorro.toFixed(1)}%</p>
+    <p><strong>Activos de inversión / activos totales:</strong> ${ratioInversionActivos.toFixed(1)}%</p>
+    <p><strong>Activos de inversión / ingreso bruto:</strong> ${ratioInversionIngreso.toFixed(2)}x</p>
+    <p><strong>Activos de inversión / gastos esenciales:</strong> ${mesesCubiertos.toFixed(0)} meses</p>
+    <p><strong>Patrimonio neto / ingreso bruto:</strong> ${ratioPatrimonioIngreso.toFixed(2)}x</p>
+  `;
+}
+
+function calcularCategoriaE(data) {
+  const gastosEsencialesMensuales = (
+    data.alimentos_bebidas + data.transporte + data.telecomunicaciones +
+    data.servicios_publicos + data.seguros + data.educacion +
+    data.deuda_hipotecaria + data.deuda_tarjetas + data.deuda_comercial +
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros + data.impuestos
+  ) / 12;
+
+  const totalContingencia = (
+    data.cuentas_bancarias + data.cuentas_inversion +
+    0.8 * (data.valor_vivienda + data.valor_propiedades_alquiler + data.valor_otros_activos) +
+    0.5 * (data.valor_vehiculos + data.valor_otros)
+  );
+
+  const mesesContingencia = totalContingencia / gastosEsencialesMensuales;
+
+  document.getElementById("resE").innerHTML = `
+    <h3>E. Manejo de riesgo</h3>
+    <p><strong>Fondos de contingencia disponibles:</strong> ${mesesContingencia.toFixed(1)} meses de gastos esenciales (excluye retiro)</p>
+    <p>Nota: Este cálculo incluye cuentas líquidas, activos reales parcialmente valorados y excluye cuentas de retiro.</p>
+  `;
+}
+
+function calcularCategoriaF(data) {
+  let documentos = [];
+  if (data.trust) documentos.push("Trust");
+  if (data.will) documentos.push("Testamento");
+  if (data.advance_medical_directive) documentos.push("Directiva médica anticipada");
+  if (data.power_of_attorney) documentos.push("Poder legal");
+  if (data.beneficiary_designation) documentos.push("Designación de beneficiarios");
+  if (data.property_deeds) documentos.push("Títulos de propiedad");
+
+  document.getElementById("resF").innerHTML = `
+    <h3>F. Planificación patrimonial</h3>
+    <p><strong>Documentos registrados:</strong></p>
+    <ul>
+      ${documentos.length > 0 ? documentos.map(doc => `<li>${doc}</li>`).join('') : '<li>No se registraron documentos.</li>'}
+    </ul>
+  `;
+}
+
+function calcularCategoriaG(data) {
+  const edadActual = data.edad;
+  const edadRetiro = data.edad_retiro;
+  const añosAcumulacion = edadRetiro - edadActual;
+  const añosDistribucion = 100 - edadRetiro;
+
+  const ingresoDeseadoAnual = data.ingreso_anual_bruto * 0.7; // 70% tasa de reemplazo
+
+  const tasaAcumulacion = 0.07;
+  const tasaDistribucion = 0.04;
+  const inflacion = 0.03;
+
+  const necesidadFondo = ingresoDeseadoAnual * ((1 - Math.pow(1 + tasaDistribucion, -añosDistribucion)) / tasaDistribucion);
+
+  const fondoAcumulado = data.cuentas_retiro;
+  const aportesAnuales = data.aporte_personal_retiro + data.aporte_empleador_retiro;
+
+  const factorFuturo = (Math.pow(1 + tasaAcumulacion, añosAcumulacion) - 1) / tasaAcumulacion;
+  const montoEsperado = fondoAcumulado * Math.pow(1 + tasaAcumulacion, añosAcumulacion) + aportesAnuales * factorFuturo;
+
+  const montoFaltante = necesidadFondo - montoEsperado;
+  const ahorroRequeridoAnual = montoFaltante > 0 ? montoFaltante / factorFuturo : 0;
+
+  document.getElementById("resG").innerHTML = `
+    <h3>G. Futuro financiero</h3>
+    <p><strong>Monto necesario al momento del retiro:</strong> $${necesidadFondo.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+    <p><strong>Monto proyectado con ahorro actual:</strong> $${montoEsperado.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+    <p><strong>Ahorro adicional anual requerido:</strong> $${ahorroRequeridoAnual.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+    <p><strong>Ahorro adicional mensual requerido:</strong> $${(ahorroRequeridoAnual / 12).toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+    <p><strong>Resultado preliminar:</strong> ${montoFaltante <= 0 ? '✅ Superávit' : '⚠️ Déficit'}</p>
+    <p style="font-size: 0.9em; color: gray;">
+      Supuestos: inflación 3%, tasa de reemplazo 70%, rendimiento acumulación 7%, distribución 4%, expectativa de vida 100 años.<br>
+      Este resultado es una estimación. Para un análisis más detallado, consulta nuestra <a href="#" target="_blank">calculadora avanzada de retiro</a>.
+    </p>
+  `;
+}
+
+function calcularCategoriaH(data) {
+  const escenarios = [
+    { nombre: "Leve", ajuste: 0.90 },
+    { nombre: "Moderado", ajuste: 0.70 },
+    { nombre: "Severo", ajuste: 0.50 }
+  ];
+
+  const ingresoOriginal = data.ingreso_anual_neto;
+  const activosTotales = (
+    data.cuentas_inversion + data.cuentas_retiro + data.valor_vivienda +
+    data.valor_propiedades_alquiler + data.valor_otros_activos +
+    data.valor_vehiculos + data.valor_otros
+  );
+
+  const gastosAnuales = (
+    data.alimentos_bebidas + data.transporte + data.telecomunicaciones +
+    data.servicios_publicos + data.seguros + data.educacion + data.impuestos
+  );
+
+  const deudasAnuales = (
+    data.deuda_tarjetas + data.deuda_hipotecaria + data.deuda_comercial +
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros
+  );
+
+  let tabla = `<h3>H. Pruebas de estrés</h3>
+  <table><thead><tr>
+    <th>Escenario</th>
+    <th>¿Cubre gastos?</th>
+    <th>¿Cubre deudas?</th>
+    <th>¿Sigue ahorrando?</th>
+  </tr></thead><tbody>`;
+
+  escenarios.forEach(esc => {
+    const ingresoAjustado = ingresoOriginal * esc.ajuste;
+    const activosAjustados = activosTotales * esc.ajuste;
+
+    const puedeCubrirGastos = ingresoAjustado >= gastosAnuales;
+    const puedeCubrirDeudas = ingresoAjustado >= (gastosAnuales + deudasAnuales);
+    const puedeAhorrar = ingresoAjustado > (gastosAnuales + deudasAnuales);
+
+    tabla += `<tr><td>${esc.nombre}</td>
+      <td>${puedeCubrirGastos ? '✅' : '🚨'}</td>
+      <td>${puedeCubrirDeudas ? '✅' : '🚨'}</td>
+      <td>${puedeAhorrar ? '✅' : (puedeCubrirDeudas ? '⚠️' : '🚨')}</td>
+    </tr>`;
+  });
+
+  tabla += `</tbody></table>
+    <p style='font-size:0.9em;'>Simulación basada en caídas del 10%, 30% y 50% en ingresos y activos no líquidos. Efectivo y equivalentes no se afectan.</p>`;
+
+  document.getElementById("resH").innerHTML = tabla;
+}
+</script>
+
 </body>
 </html>
+
