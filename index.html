@@ -266,15 +266,28 @@
     nextStep(step);
   }
 
-  function updateNav(step) {
-    const navItems = document.querySelectorAll('#nav div');
-    navItems.forEach((item, index) => {
-      item.classList.remove('completed', 'active', 'inactive');
-      if (index < step - 1) item.classList.add('completed');
-      else if (index === step - 1) item.classList.add('active');
-      else item.classList.add('inactive');
-    });
-  }
+function updateNav(step) {
+  const navItems = document.querySelectorAll('#nav div');
+  navItems.forEach((item, index) => {
+    item.classList.remove('completed', 'active', 'inactive');
+    if (index < step - 1) item.classList.add('completed');
+    else if (index === step - 1) item.classList.add('active');
+    else item.classList.add('inactive');
+  });
+}
+// Permitir navegación directa desde el menú
+document.querySelectorAll('#nav div').forEach((navItem, index) => {
+  navItem.addEventListener('click', function () {
+    // Oculta todas las secciones
+    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+
+    // Muestra la sección correspondiente al índice
+    document.querySelectorAll('.step')[index].classList.add('active');
+
+    // Actualiza visualmente el menú
+    updateNav(index + 1);
+  });
+});
 
   function mostrarResultado(id) {
     document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
