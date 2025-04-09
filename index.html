@@ -284,24 +284,51 @@
     if (current) current.classList.add('active');
   }
 
-  document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
+document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
+  // ✅ Validación para la sección de seguros
+  const seguros = document.querySelectorAll('#stepSeguros input[type="checkbox"]:not(#ningunSeguroActivo)');
+  const sinSeguro = Array.from(seguros).every(cb => !cb.checked);
+  const marcoSinSeguro = document.getElementById('ningunSeguroActivo').checked;
+
+  if (sinSeguro && !marcoSinSeguro) {
     e.preventDefault();
-const data = {};
-Array.from(this.elements).forEach(el => {
-  if (el.name) {
-    if (el.type === "checkbox") {
-      data[el.name] = el.checked;
-    } else {
-      data[el.name] = el.value;
-    }
+    alert("Por favor selecciona al menos un seguro o marca que no tienes ninguno.");
+    return;
   }
-});    for (let key in data) {
-      if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
+
+  // ✅ Validación para la sección de patrimonio
+  const patrimonios = document.querySelectorAll('#stepPatrimonio input[type="checkbox"]:not(#ningunPatrimonioActivo)');
+  const sinPatrimonio = Array.from(patrimonios).every(cb => !cb.checked);
+  const marcoSinPatrimonio = document.getElementById('ningunPatrimonioActivo').checked;
+
+  if (sinPatrimonio && !marcoSinPatrimonio) {
+    e.preventDefault();
+    alert("Por favor selecciona al menos un documento patrimonial o marca que no tienes ninguno.");
+    return;
+  }
+
+  // ✅ Procesamiento normal del formulario
+  e.preventDefault();
+  const data = {};
+  Array.from(this.elements).forEach(el => {
+    if (el.name) {
+      if (el.type === "checkbox") {
+        data[el.name] = el.checked;
+      } else {
+        data[el.name] = el.value;
+      }
     }
-    calcularResultados(data);
-    document.getElementById("resultadosContainer").style.display = "block";
-    mostrarResultado("resA");
   });
+
+  for (let key in data) {
+    if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
+  }
+
+  calcularResultados(data);
+  document.getElementById("resultadosContainer").style.display = "block";
+  mostrarResultado("resA");
+});
+
 
   function calcularResultados(data) {
     calcularCategoriaA(data);
