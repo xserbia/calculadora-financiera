@@ -180,43 +180,51 @@
       </div>
     </div>
 
-    <!-- Sección 6: Seguros -->
-    <div class="step" id="stepSeguros">
-      <fieldset>
-        <legend><strong>6. Seguros</strong></legend>
-        <label>Selecciona tus seguros:<br>
-          <input type="checkbox" name="seguro_vida"> Vida<br>
-          <input type="checkbox" name="seguro_incapacidad"> Incapacidad<br>
-          <input type="checkbox" name="seguro_ltc"> LTC<br>
-          <input type="checkbox" name="seguro_hogar"> Hogar<br>
-          <input type="checkbox" name="seguro_auto"> Auto<br>
-          <input type="checkbox" name="seguro_umbrella"> Umbrella<br>
-        </label>
-      </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(5)">Anterior</button>
-        <button type="button" onclick="nextStep(7)">Siguiente</button>
-      </div>
-    </div>
+<!-- Sección 6: Seguros -->
+<div class="step" id="stepSeguros">
+  <fieldset>
+    <legend><strong>6. Seguros</strong></legend>
+    <label>Selecciona tus seguros:<br>
+      <input type="checkbox" name="seguro_vida"> Vida<br>
+      <input type="checkbox" name="seguro_incapacidad"> Incapacidad<br>
+      <input type="checkbox" name="seguro_ltc"> LTC<br>
+      <input type="checkbox" name="seguro_hogar"> Hogar<br>
+      <input type="checkbox" name="seguro_auto"> Auto<br>
+      <input type="checkbox" name="seguro_umbrella"> Umbrella<br>
+    </label><br>
+    <label>
+      <input type="checkbox" id="ningunSeguroActivo" name="ningunSeguroActivo">
+      No tengo seguros actualmente
+    </label>
+  </fieldset>
+  <div class="nav-buttons">
+    <button type="button" onclick="prevStep(5)">Anterior</button>
+    <button type="button" id="btnSigSeguros">Siguiente</button>
+  </div>
+</div>
 
-    <!-- Sección 7: Patrimonio -->
-    <div class="step" id="stepPatrimonio">
-      <fieldset>
-        <legend><strong>7. Patrimonio</strong></legend>
-        <label>Documentos disponibles:<br>
-          <input type="checkbox" name="trust"> Trust<br>
-          <input type="checkbox" name="will"> Testamento<br>
-          <input type="checkbox" name="advance_medical_directive"> Directiva médica anticipada<br>
-          <input type="checkbox" name="power_of_attorney"> Poder legal<br>
-          <input type="checkbox" name="beneficiary_designation"> Designación de beneficiarios<br>
-          <input type="checkbox" name="property_deeds"> Títulos de propiedad<br>
-        </label>
-      </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(6)">Anterior</button>
-        <button type="submit">Calcular</button>
-      </div>
-    </div>
+<!-- Sección 7: Patrimonio -->
+<div class="step" id="stepPatrimonio">
+  <fieldset>
+    <legend><strong>7. Patrimonio</strong></legend>
+    <label>Documentos disponibles:<br>
+      <input type="checkbox" name="trust"> Trust<br>
+      <input type="checkbox" name="will"> Testamento<br>
+      <input type="checkbox" name="advance_medical_directive"> Directiva médica anticipada<br>
+      <input type="checkbox" name="power_of_attorney"> Poder legal<br>
+      <input type="checkbox" name="beneficiary_designation"> Designación de beneficiarios<br>
+      <input type="checkbox" name="property_deeds"> Títulos de propiedad<br>
+    </label><br>
+    <label>
+      <input type="checkbox" id="ningunPatrimonioActivo" name="ningunPatrimonioActivo">
+      No tengo documentos patrimoniales actualmente
+    </label>
+  </fieldset>
+  <div class="nav-buttons">
+    <button type="button" onclick="prevStep(6)">Anterior</button>
+    <button type="submit">Calcular</button>
+  </div>
+</div>
 
   </form>
 </div>
