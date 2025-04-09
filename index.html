@@ -355,36 +355,58 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
   }
 
 function calcularCategoriaA(data) {
+  // 1. Ingreso mensual neto
   let ingresoMensual = data.ingreso_anual_neto / 12;
+
+  // 2. Gasto mensual estimado (gastos esenciales + servicio de deuda)
   let gastoMensual = (
-    data.alimentos_bebidas + data.transporte + data.telecomunicaciones +
-    data.servicios_publicos + data.seguros + data.educacion +
-    data.impuestos + data.servicio_deuda // ✅ Servicio de deuda en vez de saldos
+    data.alimentos_bebidas +
+    data.transporte +
+    data.telecomunicaciones +
+    data.servicios_publicos +
+    data.seguros +
+    data.educacion +
+    data.impuestos +
+    data.servicio_deuda // ✅ servicio de deuda mensual
   );
 
+  // 3. Ahorro mensual y tasa de ahorro
   let ahorroMensual = ingresoMensual - gastoMensual;
   let tasaAhorro = (ahorroMensual / ingresoMensual) * 100;
 
+  // 4. Meses de reserva de emergencia
   let reserva = data.cuentas_bancarias;
   let mesesReserva = reserva / gastoMensual;
 
+  // 5. Razón corriente (activos líquidos / deuda tarjetas)
   let activosLiquidos = data.cuentas_bancarias + data.cuentas_inversion;
   let pasivosCortoPlazo = data.deuda_tarjetas;
   let razonCorriente = activosLiquidos / pasivosCortoPlazo;
 
-  let efectivoSobreActivos = (data.cuentas_bancarias / (
-    data.cuentas_bancarias + data.cuentas_inversion + data.cuentas_retiro +
-    data.valor_vivienda + data.valor_propiedades_alquiler + data.valor_otros_activos +
-    data.valor_vehiculos + data.valor_otros)) * 100;
+  // 6. Efectivo sobre activos totales
+  let activosTotales = (
+    data.cuentas_bancarias +
+    data.cuentas_inversion +
+    data.valor_vivienda +
+    data.valor_propiedades_alquiler +
+    data.valor_vehiculos +
+    data.valor_otros_activos +
+    data.valor_otros
+  );
+  let efectivoSobreActivos = (data.cuentas_bancarias / activosTotales) * 100;
 
+  // 🟦 Mostrar resultado final con el layout preferido
   document.getElementById("resA").innerHTML = `
-    <h3>A. Flujo de efectivo y liquidez</h3>
+    <h3>🅰️ A. Flujo de efectivo y liquidez</h3>
+    <p><strong>Ingreso mensual neto:</strong> $${ingresoMensual.toFixed(2)}</p>
+    <p><strong>Gasto mensual estimado:</strong> $${gastoMensual.toFixed(0)}</p>
     <p><strong>Tasa de ahorro:</strong> ${tasaAhorro.toFixed(1)}%</p>
     <p><strong>Meses de reserva de emergencia:</strong> ${mesesReserva.toFixed(1)} meses</p>
     <p><strong>Razón corriente:</strong> ${razonCorriente.toFixed(2)}</p>
     <p><strong>Efectivo sobre activos totales:</strong> ${efectivoSobreActivos.toFixed(1)}%</p>
   `;
 }
+
 
 function calcularCategoriaB(data) {
   let ingresoMensualBruto = data.ingreso_anual_bruto / 12;
