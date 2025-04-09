@@ -407,47 +407,76 @@ function calcularCategoriaA(data) {
 
 
 function calcularCategoriaB(data) {
-  let ingresoMensualBruto = data.ingreso_anual_bruto / 12;
-  let ingresoMensualNeto = data.ingreso_anual_neto / 12;
+  const ingresoMensualBruto = data.ingreso_anual_bruto / 12;
+  const ingresoMensualNeto = data.ingreso_anual_neto / 12;
 
-  let gastoViviendaMensual = data.deuda_hipotecaria / 12 + data.vivienda / 12 + data.seguros / 12 + data.impuestos / 12;
-  let porcentajeViviendaBruto = (gastoViviendaMensual / ingresoMensualBruto) * 100;
-  let porcentajeViviendaNeto = (gastoViviendaMensual / ingresoMensualNeto) * 100;
+  const gastoViviendaMensual = data.vivienda + data.seguros + data.impuestos;
 
-  let totalDeudasMensual = (
-    data.deuda_tarjetas + data.deuda_hipotecaria + data.deuda_comercial +
-    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros
-  ) / 12;
+  const porcentajeViviendaBruto = (gastoViviendaMensual / ingresoMensualBruto) * 100;
+  const porcentajeViviendaNeto = (gastoViviendaMensual / ingresoMensualNeto) * 100;
 
-  let dtiBruto = (totalDeudasMensual / ingresoMensualBruto) * 100;
-  let dtiNeto = (totalDeudasMensual / ingresoMensualNeto) * 100;
+  const dtiBruto = (data.servicio_deuda / ingresoMensualBruto) * 100;
+  const dtiNeto = (data.servicio_deuda / ingresoMensualNeto) * 100;
 
-  let totalActivos = (
+  const activosTotales = (
     data.cuentas_bancarias + data.cuentas_inversion + data.cuentas_retiro +
     data.valor_vivienda + data.valor_propiedades_alquiler + data.valor_otros_activos +
-    data.valor_vehiculos + data.valor_otros);
+    data.valor_vehiculos + data.valor_otros
+  );
 
-  let pasivosTotales = (
+  const pasivosTotales = (
     data.deuda_tarjetas + data.deuda_hipotecaria + data.deuda_comercial +
-    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros);
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros
+  );
 
-  let relacionPasivosActivos = (pasivosTotales / totalActivos) * 100;
-  let relacionDeudaActivos = (pasivosTotales / totalActivos) * 100;
+  const pasivosCorrientes = data.deuda_tarjetas + data.deuda_comercial + data.deuda_vehiculos + data.deuda_otros;
 
-  let patrimonioNeto = totalActivos - pasivosTotales;
-  let relacionDeudaPatrimonio = (pasivosTotales / patrimonioNeto) * 100;
+  const patrimonioNeto = activosTotales - pasivosTotales;
 
+  const relacionPasivosCorrientes = (pasivosCorrientes / activosTotales) * 100;
+  const relacionDeudaActivos = (pasivosTotales / activosTotales) * 100;
+  const relacionDeudaPatrimonio = (pasivosTotales / patrimonioNeto) * 100;
+
+  // Benchmarks
+  const emojiViviendaNeto = porcentajeViviendaNeto <= 28 ? '✅' : '🚨';
+  const emojiViviendaBruto = porcentajeViviendaBruto <= 24 ? '✅' : '🚨';
+
+  const emojiDTINeto = dtiNeto <= 36 ? '✅' : '🚨';
+  const emojiDTIBruto = dtiBruto <= 30 ? '✅' : '🚨';
+
+  const emojiPasivosCorrientes = relacionPasivosCorrientes <= 20 ? '✅' : '⚠️';
+  const emojiDeudaActivos = relacionDeudaActivos <= 50 ? '✅' : '⚠️';
+
+  const emojiDeudaPatrimonio = 
+    relacionDeudaPatrimonio <= 50 ? '✅' :
+    relacionDeudaPatrimonio <= 100 ? '⚠️' : '🚨';
+
+  // Resultado final con tabla de benchmarks
   document.getElementById("resB").innerHTML = `
-    <h3>B. Endeudamiento</h3>
-    <p><strong>% Ingreso destinado a vivienda (neto):</strong> ${porcentajeViviendaNeto.toFixed(1)}%</p>
-    <p><strong>% Ingreso destinado a vivienda (bruto):</strong> ${porcentajeViviendaBruto.toFixed(1)}%</p>
-    <p><strong>DTI (neto):</strong> ${dtiNeto.toFixed(1)}%</p>
-    <p><strong>DTI (bruto):</strong> ${dtiBruto.toFixed(1)}%</p>
-    <p><strong>Relación pasivos / activos:</strong> ${relacionPasivosActivos.toFixed(1)}%</p>
-    <p><strong>Relación deuda / activos:</strong> ${relacionDeudaActivos.toFixed(1)}%</p>
-    <p><strong>Relación deuda / patrimonio neto:</strong> ${relacionDeudaPatrimonio.toFixed(1)}%</p>
+    <h3>🅱️ B. Endeudamiento</h3>
+    <p><strong>% Ingreso destinado a vivienda (neto):</strong> ${porcentajeViviendaNeto.toFixed(1)}% ${emojiViviendaNeto}</p>
+    <p><strong>% Ingreso destinado a vivienda (bruto):</strong> ${porcentajeViviendaBruto.toFixed(1)}% ${emojiViviendaBruto}</p>
+    <p><strong>DTI (neto):</strong> ${dtiNeto.toFixed(1)}% ${emojiDTINeto}</p>
+    <p><strong>DTI (bruto):</strong> ${dtiBruto.toFixed(1)}% ${emojiDTIBruto}</p>
+    <p><strong>Pasivos corrientes / activos totales:</strong> ${relacionPasivosCorrientes.toFixed(1)}% ${emojiPasivosCorrientes}</p>
+    <p><strong>Deuda total / activos totales:</strong> ${relacionDeudaActivos.toFixed(1)}% ${emojiDeudaActivos}</p>
+    <p><strong>Deuda total / patrimonio neto:</strong> ${relacionDeudaPatrimonio.toFixed(1)}% ${emojiDeudaPatrimonio}</p>
+
+    <h4 style="margin-top: 20px;">📊 Benchmarks utilizados</h4>
+    <ul style="font-size: 0.9em;">
+      <li><strong>Vivienda / ingreso neto:</strong> ≤ 28% ✅</li>
+      <li><strong>Vivienda / ingreso bruto:</strong> ≤ 24% ✅</li>
+      <li><strong>DTI neto:</strong> ≤ 36% ✅</li>
+      <li><strong>DTI bruto:</strong> ≤ 30% ✅</li>
+      <li><strong>Pasivos corrientes / activos:</strong> ≤ 20% ✅</li>
+      <li><strong>Deuda / activos:</strong> ≤ 50% ✅</li>
+      <li><strong>Deuda / patrimonio neto:</strong>
+        ≤ 50% ✅ · 51–100% ⚠️ · > 100% 🚨
+      </li>
+    </ul>
   `;
 }
+
 
 function calcularCategoriaC(data) {
   let totalActivos = (
