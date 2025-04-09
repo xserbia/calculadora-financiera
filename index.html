@@ -417,12 +417,12 @@ function calcularCategoriaD(data) {
   let ratioInversionActivos = (activosInversion / totalActivos) * 100;
   let ratioInversionIngreso = activosInversion / ingresoBruto;
 
+  // ✅ Usamos servicio_deuda en gastos esenciales
   let gastosEsencialesMensuales = (
     data.alimentos_bebidas + data.transporte + data.telecomunicaciones +
     data.servicios_publicos + data.seguros + data.educacion +
-    data.deuda_hipotecaria + data.deuda_tarjetas + data.deuda_comercial +
-    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros + data.impuestos
-  ) / 12;
+    data.servicio_deuda + data.impuestos
+  );
 
   let mesesCubiertos = activosInversion / gastosEsencialesMensuales;
 
@@ -446,9 +446,8 @@ function calcularCategoriaE(data) {
   const gastosEsencialesMensuales = (
     data.alimentos_bebidas + data.transporte + data.telecomunicaciones +
     data.servicios_publicos + data.seguros + data.educacion +
-    data.deuda_hipotecaria + data.deuda_tarjetas + data.deuda_comercial +
-    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros + data.impuestos
-  ) / 12;
+    data.servicio_deuda + data.impuestos // ✅ Servicio de deuda
+  );
 
   const totalContingencia = (
     data.cuentas_bancarias + data.cuentas_inversion +
