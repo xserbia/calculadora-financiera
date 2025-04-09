@@ -113,28 +113,36 @@
       </div>
     </div>
 
-    <!-- Sección 3: Gastos -->
-    <div class="step" id="stepGastos">
-      <fieldset>
-        <legend><strong>3. Gastos</strong></legend>
-        <label>Alimentos y bebidas<br><input type="number" name="alimentos_bebidas" required></label><br><br>
-        <label>Ropa<br><input type="number" name="ropa" required></label><br><br>
-        <label>Vivienda (sin incluir hipoteca o renta)<br><input type="number" name="vivienda" required></label><br><br>
-        <label>Transporte<br><input type="number" name="transporte" required></label><br><br>
-        <label>Salud y productos personales<br><input type="number" name="salud_productos_personales" required></label><br><br>
-        <label>Entretenimiento<br><input type="number" name="entretenimiento" required></label><br><br>
-        <label>Educación<br><input type="number" name="educacion" required></label><br><br>
-        <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones" required></label><br><br>
-        <label>Servicios públicos<br><input type="number" name="servicios_publicos" required></label><br><br>
-        <label>Seguros<br><input type="number" name="seguros" required></label><br><br>
-        <label>Impuestos<br><input type="number" name="impuestos" required></label><br><br>
-        <label>Otros<br><input type="number" name="otros" required></label><br><br>
-      </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(2)">Anterior</button>
-        <button type="button" onclick="nextStep(4)">Siguiente</button>
-      </div>
-    </div>
+<!-- Sección 3: Gastos -->
+<div class="step" id="stepGastos">
+  <fieldset>
+    <legend><strong>3. Gastos</strong></legend>
+
+    <label>Alimentos y bebidas<br><input type="number" name="alimentos_bebidas" required></label><br><br>
+    <label>Ropa<br><input type="number" name="ropa" required></label><br><br>
+    <label>Vivienda (sin incluir hipoteca o renta)<br><input type="number" name="vivienda" required></label><br><br>
+    <label>Transporte<br><input type="number" name="transporte" required></label><br><br>
+    <label>Salud y productos personales<br><input type="number" name="salud_productos_personales" required></label><br><br>
+    <label>Entretenimiento<br><input type="number" name="entretenimiento" required></label><br><br>
+    <label>Educación<br><input type="number" name="educacion" required></label><br><br>
+    <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones" required></label><br><br>
+    <label>Servicios públicos<br><input type="number" name="servicios_publicos" required></label><br><br>
+    <label>Seguros<br><input type="number" name="seguros" required></label><br><br>
+    <label>Impuestos<br><input type="number" name="impuestos" required></label><br><br>
+
+    <!-- ✅ Nuevo campo: Servicio de deuda -->
+    <label>Pago mensual total de deudas (capital + intereses)<br>
+      <input type="number" name="servicio_deuda" required>
+    </label><br><br>
+
+    <label>Otros<br><input type="number" name="otros" required></label><br><br>
+  </fieldset>
+
+  <div class="nav-buttons">
+    <button type="button" onclick="prevStep(2)">Anterior</button>
+    <button type="button" onclick="nextStep(4)">Siguiente</button>
+  </div>
+</div>
 
     <!-- Sección 4: Activos -->
     <div class="step" id="stepActivos">
