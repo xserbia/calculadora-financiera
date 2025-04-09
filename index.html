@@ -536,7 +536,13 @@ function calcularCategoriaD(data) {
 
   const activosDeInversionSobreTotales = (activosDeInversion / activosTotales) * 100;
   const activosDeInversionSobreIngreso = activosDeInversion / data.ingreso_anual_bruto;
-  const activosDeInversionSobreGastos = activosDeInversion / (data.alimentos_bebidas + data.transporte + data.telecomunicaciones + data.servicios_publicos + data.seguros + data.educacion + data.impuestos + data.deuda_hipotecaria + data.deuda_tarjetas + data.deuda_comercial + data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros);
+  const gastosEsencialesMensuales = (
+    data.alimentos_bebidas + data.transporte + data.telecomunicaciones + 
+    data.servicios_publicos + data.seguros + data.educacion + data.impuestos +
+    data.deuda_hipotecaria + data.deuda_tarjetas + data.deuda_comercial +
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros
+  );
+  const activosDeInversionSobreGastos = activosDeInversion / gastosEsencialesMensuales;
 
   const patrimonioNeto = activosTotales - (data.deuda_tarjetas + data.deuda_hipotecaria + data.deuda_comercial + data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros);
   const patrimonioSobreIngreso = patrimonioNeto / data.ingreso_anual_bruto;
@@ -548,6 +554,19 @@ function calcularCategoriaD(data) {
   const emojiActivosSobreGastos = activosDeInversionSobreGastos >= 120 ? '✅' : (activosDeInversionSobreGastos >= 60 ? '⚠️' : '🚨');
   const emojiPatrimonioSobreIngreso = patrimonioSobreIngreso >= 3.5 ? '✅' : (patrimonioSobreIngreso >= 3 ? '⚠️' : '🚨');
 
+  // Benchmark de Patrimonio neto / ingreso bruto según edad
+  const edad = data.edad; // Asegúrate de tener esta variable de edad
+  let benchmarkPatrimonioIngreso;
+  if (edad <= 30) benchmarkPatrimonioIngreso = 3;
+  else if (edad <= 35) benchmarkPatrimonioIngreso = 3.5;
+  else if (edad <= 40) benchmarkPatrimonioIngreso = 4;
+  else if (edad <= 45) benchmarkPatrimonioIngreso = 4.5;
+  else if (edad <= 50) benchmarkPatrimonioIngreso = 5;
+  else if (edad <= 55) benchmarkPatrimonioIngreso = 5.5;
+  else benchmarkPatrimonioIngreso = 6;
+
+  const emojiPatrimonioIngreso = patrimonioSobreIngreso >= benchmarkPatrimonioIngreso ? '✅' : '⚠️';
+
   // Mostrar resultados
   document.getElementById("resD").innerHTML = `
     <h3>🅳 D. Seguridad financiera</h3>
@@ -555,7 +574,7 @@ function calcularCategoriaD(data) {
     <p><strong>Activos de inversión / activos totales:</strong> ${activosDeInversionSobreTotales.toFixed(1)}% ${emojiActivosInversion}</p>
     <p><strong>Activos de inversión / ingreso bruto anual:</strong> ${activosDeInversionSobreIngreso.toFixed(2)}x ${emojiActivosSobreIngreso}</p>
     <p><strong>Activos de inversión / gastos mensuales no discrecionales:</strong> ${activosDeInversionSobreGastos.toFixed(0)} meses ${emojiActivosSobreGastos}</p>
-    <p><strong>Patrimonio neto / ingreso bruto anual:</strong> ${patrimonioSobreIngreso.toFixed(2)}x ${emojiPatrimonioSobreIngreso}</p>
+    <p><strong>Patrimonio neto / ingreso bruto anual:</strong> ${patrimonioSobreIngreso.toFixed(2)}x ${emojiPatrimonioIngreso}</p>
 
     <h4 style="margin-top: 20px;">📊 Benchmarks utilizados</h4>
     <ul style="font-size: 0.9em;">
@@ -563,48 +582,86 @@ function calcularCategoriaD(data) {
       <li><strong>Activos de inversión / activos totales:</strong> ≥ 50% ✅ · 30%–49% ⚠️ · < 30% 🚨</li>
       <li><strong>Activos de inversión / ingreso bruto anual:</strong> ≥ 1.6x ✅ · 0.6x–1.6x ⚠️ · < 0.6x 🚨</li>
       <li><strong>Activos de inversión / gastos mensuales no discrecionales:</strong> ≥ 120 meses ✅ · 60–119 meses ⚠️ · < 60 meses 🚨</li>
-      <li><strong>Patrimonio neto / ingreso bruto anual:</strong> ≥ 3.5x ✅ · 3x–3.5x ⚠️ · < 3x 🚨</li>
+      <li><strong>Patrimonio neto / ingreso bruto anual:</strong> Evaluado según edad: ${benchmarkPatrimonioIngreso}x ✅</li>
     </ul>
   `;
 }
 
-
 function calcularCategoriaE(data) {
+  // Activos líquidos (100% valor)
+  const cuentasLiquidas = data.cuentas_bancarias + data.cuentas_inversion; // 100% valor
+  const activosReales = (data.valor_vivienda + data.valor_propiedades_alquiler + data.valor_otros_activos) * 0.8; // 80% valor
+  const activosMenosLiquidos = (data.valor_vehiculos + data.valor_otros) * 0.5; // 50% valor
+  const cuentasRetiro = data.cuentas_retiro; // 100% valor (última línea)
+
+  // Gastos mensuales esenciales
   const gastosEsencialesMensuales = (
-    data.alimentos_bebidas + data.transporte + data.telecomunicaciones +
-    data.servicios_publicos + data.seguros + data.educacion +
-    data.servicio_deuda + data.impuestos // ✅ Servicio de deuda
+    data.alimentos_bebidas + data.transporte + data.telecomunicaciones + 
+    data.servicios_publicos + data.seguros + data.educacion + data.impuestos +
+    data.deuda_hipotecaria + data.deuda_tarjetas + data.deuda_comercial +
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros
   );
 
-  const totalContingencia = (
-    data.cuentas_bancarias + data.cuentas_inversion +
-    0.8 * (data.valor_vivienda + data.valor_propiedades_alquiler + data.valor_otros_activos) +
-    0.5 * (data.valor_vehiculos + data.valor_otros)
-  );
+  // Cálculo de meses de cobertura por activo
+  const mesesCuentasLiquidas = cuentasLiquidas / gastosEsencialesMensuales;
+  const mesesActivosReales = activosReales / gastosEsencialesMensuales;
+  const mesesActivosMenosLiquidos = activosMenosLiquidos / gastosEsencialesMensuales;
+  const mesesCuentasRetiro = cuentasRetiro / gastosEsencialesMensuales;
 
-  const mesesContingencia = totalContingencia / gastosEsencialesMensuales;
+  // Total de meses de contingencia
+  const totalMeses = mesesCuentasLiquidas + mesesActivosReales + mesesActivosMenosLiquidos + mesesCuentasRetiro;
 
+  // Mostrar los resultados en barras
   document.getElementById("resE").innerHTML = `
-    <h3>E. Manejo de riesgo</h3>
-    <p><strong>Fondos de contingencia disponibles:</strong> ${mesesContingencia.toFixed(1)} meses de gastos esenciales (excluye retiro)</p>
+    <h3>🅴 E. Manejo de riesgo</h3>
+    <p><strong>Fondos de contingencia disponibles:</strong> ${totalMeses.toFixed(1)} meses de gastos esenciales (excluye retiro)</p>
     <p>Nota: Este cálculo incluye cuentas líquidas, activos reales parcialmente valorados y excluye cuentas de retiro.</p>
+
+    <h4>Barras de cobertura por activos</h4>
+    <div style="background-color: #007bff; height: 30px; width: ${mesesCuentasLiquidas / totalMeses * 100}%;"></div><p>Cuentas líquidas (100% valor): ${mesesCuentasLiquidas.toFixed(1)} meses</p>
+    <div style="background-color: #00bfae; height: 30px; width: ${mesesActivosReales / totalMeses * 100}%;"></div><p>Activos reales (80% valor): ${mesesActivosReales.toFixed(1)} meses</p>
+    <div style="background-color: #ffdd57; height: 30px; width: ${mesesActivosMenosLiquidos / totalMeses * 100}%;"></div><p>Activos menos líquidos (50% valor): ${mesesActivosMenosLiquidos.toFixed(1)} meses</p>
+    <div style="background-color: #6c757d; height: 30px; width: ${mesesCuentasRetiro / totalMeses * 100}%;"></div><p>Cuentas de retiro (última línea): ${mesesCuentasRetiro.toFixed(1)} meses</p>
+
+    <h4 style="margin-top: 20px;">📋 Checklist de cobertura de seguros y diversificación de ingresos</h4>
+    <ul style="font-size: 0.9em;">
+      <li><strong>Seguro médico activo:</strong> ${data.seguro_medico ? "✅ Sí" : "❌ No"}</li>
+      <li><strong>Seguro de vida vigente:</strong> ${data.seguro_vida ? "✅ Sí" : "❌ No"}</li>
+      <li><strong>Otros seguros clave (discapacidad, hogar, auto, umbrella):</strong> ${data.seguro_incapacidad ? "✅ Sí" : "❌ No"}</li>
+      <li><strong>Acceso a fondos de contingencia alternativos:</strong> ${data.fondos_contingencia_alternativos ? "✅ Sí" : "❌ No"}</li>
+      <li><strong>Diversificación de ingresos (evita dependencia única):</strong> ${data.diversificacion_ingresos ? "✅ Sí" : "❌ No"}</li>
+      <li><strong>Provisión para eventos inesperados:</strong> ${data.provision_eventos ? "✅ Sí" : "❌ No"}</li>
+    </ul>
   `;
 }
 
 function calcularCategoriaF(data) {
-  let documentos = [];
-  if (data.trust) documentos.push("Trust");
-  if (data.will) documentos.push("Testamento");
-  if (data.advance_medical_directive) documentos.push("Directiva médica anticipada");
-  if (data.power_of_attorney) documentos.push("Poder legal");
-  if (data.beneficiary_designation) documentos.push("Designación de beneficiarios");
-  if (data.property_deeds) documentos.push("Títulos de propiedad");
+  // Lista de documentos
+  const documentos = [
+    { nombre: "Trust", tiene: data.trust },
+    { nombre: "Testamento", tiene: data.will },
+    { nombre: "Directiva médica anticipada", tiene: data.advance_medical_directive },
+    { nombre: "Poder legal", tiene: data.power_of_attorney },
+    { nombre: "Designación de beneficiarios", tiene: data.beneficiary_designation },
+    { nombre: "Títulos de propiedad", tiene: data.property_deeds }
+  ];
 
+  // Separar documentos en los que tiene y los que faltan
+  const tiene = documentos.filter(doc => doc.tiene).map(doc => doc.nombre);
+  const faltan = documentos.filter(doc => !doc.tiene).map(doc => doc.nombre);
+
+  // Mostrar los resultados
   document.getElementById("resF").innerHTML = `
-    <h3>F. Planificación patrimonial</h3>
-    <p><strong>Documentos registrados:</strong></p>
-    <ul>
-      ${documentos.length > 0 ? documentos.map(doc => `<li>${doc}</li>`).join('') : '<li>No se registraron documentos.</li>'}
+    <h3>🅵 F. Planificación patrimonial</h3>
+
+    <h4>✅ Documentos que tiene</h4>
+    <ul style="font-size: 0.9em;">
+      ${tiene.length > 0 ? tiene.map(doc => `<li>${doc}</li>`).join('') : '<li>No tiene documentos registrados.</li>'}
+    </ul>
+
+    <h4>❌ Documentos que faltan</h4>
+    <ul style="font-size: 0.9em;">
+      ${faltan.length > 0 ? faltan.map(doc => `<li>${doc}</li>`).join('') : '<li>Todos los documentos están completos.</li>'}
     </ul>
   `;
 }
@@ -612,32 +669,33 @@ function calcularCategoriaF(data) {
 function calcularCategoriaG(data) {
   const edadActual = data.edad;
   const edadRetiro = data.edad_retiro;
-  const añosAcumulacion = edadRetiro - edadActual;
-  const añosDistribucion = 100 - edadRetiro;
+  const anosAcumulacion = edadRetiro - edadActual;
+  const anosDistribucion = 100 - edadRetiro;
 
   const ingresoDeseadoAnual = data.ingreso_anual_bruto * 0.7; // 70% tasa de reemplazo
 
   const tasaAcumulacion = 0.07;
   const tasaDistribucion = 0.04;
-  const inflacion = 0.03;
 
-  const necesidadFondo = ingresoDeseadoAnual * ((1 - Math.pow(1 + tasaDistribucion, -añosDistribucion)) / tasaDistribucion);
+  const necesidadFondo = ingresoDeseadoAnual * ((1 - Math.pow(1 + tasaDistribucion, -anosDistribucion)) / tasaDistribucion);
 
   const fondoAcumulado = data.cuentas_retiro;
   const aportesAnuales = data.aporte_personal_retiro + data.aporte_empleador_retiro;
 
-  const factorFuturo = (Math.pow(1 + tasaAcumulacion, añosAcumulacion) - 1) / tasaAcumulacion;
-  const montoEsperado = fondoAcumulado * Math.pow(1 + tasaAcumulacion, añosAcumulacion) + aportesAnuales * factorFuturo;
+  const factorFuturo = (Math.pow(1 + tasaAcumulacion, anosAcumulacion) - 1) / tasaAcumulacion;
+  const montoEsperado = fondoAcumulado * Math.pow(1 + tasaAcumulacion, anosAcumulacion) + aportesAnuales * factorFuturo;
 
   const montoFaltante = necesidadFondo - montoEsperado;
   const ahorroRequeridoAnual = montoFaltante > 0 ? montoFaltante / factorFuturo : 0;
+  const ahorroRequeridoMensual = ahorroRequeridoAnual / 12;
 
+  // Mostrar resultados
   document.getElementById("resG").innerHTML = `
-    <h3>G. Futuro financiero</h3>
+    <h3>🅶 G. Futuro financiero</h3>
     <p><strong>Monto necesario al momento del retiro:</strong> $${necesidadFondo.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
     <p><strong>Monto proyectado con ahorro actual:</strong> $${montoEsperado.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
     <p><strong>Ahorro adicional anual requerido:</strong> $${ahorroRequeridoAnual.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
-    <p><strong>Ahorro adicional mensual requerido:</strong> $${(ahorroRequeridoAnual / 12).toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+    <p><strong>Ahorro adicional mensual requerido:</strong> $${ahorroRequeridoMensual.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
     <p><strong>Resultado preliminar:</strong> ${montoFaltante <= 0 ? '✅ Superávit' : '⚠️ Déficit'}</p>
     <p style="font-size: 0.9em; color: gray;">
       Supuestos: inflación 3%, tasa de reemplazo 70%, rendimiento acumulación 7%, distribución 4%, expectativa de vida 100 años.<br>
@@ -647,41 +705,40 @@ function calcularCategoriaG(data) {
 }
 
 function calcularCategoriaH(data) {
-  const escenarios = [
-    { nombre: "Leve", ajuste: 0.90 },
-    { nombre: "Moderado", ajuste: 0.70 },
-    { nombre: "Severo", ajuste: 0.50 }
-  ];
-
-  const ingresoOriginal = data.ingreso_anual_neto;
-  const activosTotales = (
-    data.cuentas_inversion + data.cuentas_retiro + data.valor_vivienda +
-    data.valor_propiedades_alquiler + data.valor_otros_activos +
-    data.valor_vehiculos + data.valor_otros
-  );
-
+  // Datos base
+  const ingresoAnual = data.ingreso_anual_neto;
   const gastosAnuales = (
-    data.alimentos_bebidas + data.transporte + data.telecomunicaciones +
-    data.servicios_publicos + data.seguros + data.educacion + data.impuestos
-  );
-
+    data.alimentos_bebidas + data.transporte + data.telecomunicaciones + 
+    data.servicios_publicos + data.seguros + data.educacion + data.impuestos +
+    data.deuda_hipotecaria + data.deuda_tarjetas + data.deuda_comercial +
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros
+  ) * 12; // Gasto anual
   const deudasAnuales = (
-    data.deuda_tarjetas + data.deuda_hipotecaria + data.deuda_comercial +
+    data.deuda_tarjetas + data.deuda_hipotecaria + data.deuda_comercial + 
     data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros
   );
 
-  let tabla = `<h3>H. Pruebas de estrés</h3>
-  <table><thead><tr>
+  // Activos no líquidos
+  const activosNoLiquidos = data.valor_vivienda + data.valor_propiedades_alquiler + data.valor_otros_activos;
+  
+  // Escenarios de caída (Leve, Moderado, Severo)
+  const escenarios = [
+    { nombre: "Leve", ajusteIngreso: 0.9, ajusteActivo: 0.9 },
+    { nombre: "Moderado", ajusteIngreso: 0.7, ajusteActivo: 0.7 },
+    { nombre: "Severo", ajusteIngreso: 0.5, ajusteActivo: 0.5 }
+  ];
+
+  let tabla = `<h3>H. Pruebas de estrés</h3><table><thead><tr>
     <th>Escenario</th>
     <th>¿Cubre gastos?</th>
     <th>¿Cubre deudas?</th>
     <th>¿Sigue ahorrando?</th>
   </tr></thead><tbody>`;
 
+  // Simulación de cada escenario
   escenarios.forEach(esc => {
-    const ingresoAjustado = ingresoOriginal * esc.ajuste;
-    const activosAjustados = activosTotales * esc.ajuste;
-
+    const ingresoAjustado = ingresoAnual * esc.ajusteIngreso;
+    const activosAjustados = activosNoLiquidos * esc.ajusteActivo;
     const puedeCubrirGastos = ingresoAjustado >= gastosAnuales;
     const puedeCubrirDeudas = ingresoAjustado >= (gastosAnuales + deudasAnuales);
     const puedeAhorrar = ingresoAjustado > (gastosAnuales + deudasAnuales);
