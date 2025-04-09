@@ -477,28 +477,51 @@ function calcularCategoriaB(data) {
   `;
 }
 
-
 function calcularCategoriaC(data) {
-  let totalActivos = (
+  const totalActivos = (
     data.cuentas_bancarias + data.cuentas_inversion + data.cuentas_retiro +
     data.valor_vivienda + data.valor_propiedades_alquiler + data.valor_otros_activos +
-    data.valor_vehiculos + data.valor_otros);
+    data.valor_vehiculos + data.valor_otros
+  );
 
-  let totalPasivos = (
+  const totalPasivos = (
     data.deuda_tarjetas + data.deuda_hipotecaria + data.deuda_comercial +
-    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros);
+    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros
+  );
 
-  let patrimonioNeto = totalActivos - totalPasivos;
-  let ratioPatrimonioActivos = (patrimonioNeto / totalActivos) * 100;
-  let ratioPatrimonioPasivos = (patrimonioNeto / totalPasivos) * 100;
+  const patrimonioNeto = totalActivos - totalPasivos;
+  const ratioPatrimonioActivos = (patrimonioNeto / totalActivos) * 100;
+  const ratioPatrimonioPasivos = (patrimonioNeto / totalPasivos) * 100;
 
+  // Benchmarks
+  const emojiActivos = ratioPatrimonioActivos >= 70 ? '✅' :
+                       ratioPatrimonioActivos >= 50 ? '⚠️' : '🚨';
+
+  const emojiPasivos = ratioPatrimonioPasivos >= 200 ? '✅' :
+                       ratioPatrimonioPasivos >= 100 ? '⚠️' : '🚨';
+
+  // Mostrar resultados
   document.getElementById("resC").innerHTML = `
-    <h3>C. Patrimonio neto</h3>
-    <p><strong>Patrimonio neto absoluto:</strong> $${patrimonioNeto.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
-    <p><strong>Relación patrimonio / activos:</strong> ${ratioPatrimonioActivos.toFixed(1)}%</p>
-    <p><strong>Relación patrimonio / pasivos:</strong> ${ratioPatrimonioPasivos.toFixed(1)}%</p>
+    <h3>🅲 C. Patrimonio neto</h3>
+    <p><strong>Activos totales:</strong> $${totalActivos.toLocaleString()}</p>
+    <p><strong>Pasivos totales:</strong> $${totalPasivos.toLocaleString()}</p>
+    <p><strong>Patrimonio neto:</strong> $${patrimonioNeto.toLocaleString()}</p>
+    <p><strong>Relación patrimonio / activos:</strong> ${ratioPatrimonioActivos.toFixed(1)}% ${emojiActivos}</p>
+    <p><strong>Relación patrimonio / pasivos:</strong> ${ratioPatrimonioPasivos.toFixed(1)}% ${emojiPasivos}</p>
+
+    <h4 style="margin-top: 20px;">📊 Benchmarks utilizados</h4>
+    <ul style="font-size: 0.9em;">
+      <li><strong>Relación patrimonio / activos:</strong>
+        ≥ 70% ✅ · 50–69% ⚠️ · &lt; 50% 🚨
+      </li>
+      <li><strong>Relación patrimonio / pasivos:</strong>
+        ≥ 200% ✅ · 100–199% ⚠️ · &lt; 100% 🚨
+      </li>
+      <li><strong>Patrimonio neto absoluto:</strong> Evaluado en función de edad, ingresos y metas.</li>
+    </ul>
   `;
 }
+
 
 function calcularCategoriaD(data) {
   let ingresoBruto = data.ingreso_anual_bruto;
