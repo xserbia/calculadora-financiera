@@ -75,16 +75,17 @@
 <!-- Aquí estará todo el formulario -->
 <div id="formularioContainer">
   <form id="calculadoraFormulario">
-<div id="nav">
-  <div id="navInfoPersonal" class="inactive" data-target="stepInfoPersonal">Información personal</div>
-  <div id="navIngresos" class="inactive" data-target="stepIngresos">Ingresos</div>
-  <div id="navGastos" class="inactive" data-target="stepGastos">Gastos</div>
-  <div id="navActivos" class="inactive" data-target="stepActivos">Activos</div>
-  <div id="navPasivos" class="inactive" data-target="stepPasivos">Pasivos</div>
-  <div id="navSeguros" class="inactive" data-target="stepSeguros">Seguros</div>
-  <div id="navPatrimonio" class="inactive" data-target="stepPatrimonio">Patrimonio</div>
-</div>
+    <div id="nav">
+      <div id="navInfoPersonal" class="inactive" data-target="stepInfoPersonal">Información personal</div>
+      <div id="navIngresos" class="inactive" data-target="stepIngresos">Ingresos</div>
+      <div id="navGastos" class="inactive" data-target="stepGastos">Gastos</div>
+      <div id="navActivos" class="inactive" data-target="stepActivos">Activos</div>
+      <div id="navPasivos" class="inactive" data-target="stepPasivos">Pasivos</div>
+      <div id="navSeguros" class="inactive" data-target="stepSeguros">Seguros</div>
+      <div id="navPatrimonio" class="inactive" data-target="stepPatrimonio">Patrimonio</div>
+    </div>
 
+    <!-- Sección 1: Información personal -->
     <div class="step active" id="stepPersonal">
       <fieldset>
         <legend><strong>1. Información personal</strong></legend>
@@ -113,36 +114,32 @@
       </div>
     </div>
 
-<!-- Sección 3: Gastos -->
-<div class="step" id="stepGastos">
-  <fieldset>
-    <legend><strong>3. Gastos</strong></legend>
-
-    <label>Alimentos y bebidas<br><input type="number" name="alimentos_bebidas" required></label><br><br>
-    <label>Ropa<br><input type="number" name="ropa" required></label><br><br>
-    <label>Vivienda (sin incluir hipoteca o renta)<br><input type="number" name="vivienda" required></label><br><br>
-    <label>Transporte<br><input type="number" name="transporte" required></label><br><br>
-    <label>Salud y productos personales<br><input type="number" name="salud_productos_personales" required></label><br><br>
-    <label>Entretenimiento<br><input type="number" name="entretenimiento" required></label><br><br>
-    <label>Educación<br><input type="number" name="educacion" required></label><br><br>
-    <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones" required></label><br><br>
-    <label>Servicios públicos<br><input type="number" name="servicios_publicos" required></label><br><br>
-    <label>Seguros<br><input type="number" name="seguros" required></label><br><br>
-    <label>Impuestos<br><input type="number" name="impuestos" required></label><br><br>
-
-    <!-- ✅ Nuevo campo: Servicio de deuda -->
-    <label>Pago mensual total de deudas (capital + intereses)<br>
-      <input type="number" name="servicio_deuda" required>
-    </label><br><br>
-
-    <label>Otros<br><input type="number" name="otros" required></label><br><br>
-  </fieldset>
-
-  <div class="nav-buttons">
-    <button type="button" onclick="prevStep(2)">Anterior</button>
-    <button type="button" onclick="nextStep(4)">Siguiente</button>
-  </div>
-</div>
+    <!-- Sección 3: Gastos -->
+    <div class="step" id="stepGastos">
+      <fieldset>
+        <legend><strong>3. Gastos</strong></legend>
+        <label>Alimentos y bebidas<br><input type="number" name="alimentos_bebidas" required></label><br><br>
+        <label>Ropa<br><input type="number" name="ropa" required></label><br><br>
+        <label>Vivienda (sin incluir hipoteca o renta)<br><input type="number" name="vivienda" required></label><br><br>
+        <label>Transporte<br><input type="number" name="transporte" required></label><br><br>
+        <label>Salud y productos personales<br><input type="number" name="salud_productos_personales" required></label><br><br>
+        <label>Entretenimiento<br><input type="number" name="entretenimiento" required></label><br><br>
+        <label>Educación<br><input type="number" name="educacion" required></label><br><br>
+        <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones" required></label><br><br>
+        <label>Servicios públicos<br><input type="number" name="servicios_publicos" required></label><br><br>
+        <label>Seguros<br><input type="number" name="seguros" required></label><br><br>
+        <label>Impuestos<br><input type="number" name="impuestos" required></label><br><br>
+        <!-- ✅ Nuevo campo: Servicio de deuda -->
+        <label>Pago mensual total de deudas (capital + intereses)<br>
+          <input type="number" name="servicio_deuda" required>
+        </label><br><br>
+        <label>Otros<br><input type="number" name="otros" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(2)">Anterior</button>
+        <button type="button" onclick="nextStep(4)">Siguiente</button>
+      </div>
+    </div>
 
     <!-- Sección 4: Activos -->
     <div class="step" id="stepActivos">
@@ -180,51 +177,51 @@
       </div>
     </div>
 
-<!-- Sección 6: Seguros -->
-<div class="step" id="stepSeguros">
-  <fieldset>
-    <legend><strong>6. Seguros</strong></legend>
-    <label>Selecciona tus seguros:<br>
-      <input type="checkbox" name="seguro_vida"> Vida<br>
-      <input type="checkbox" name="seguro_incapacidad"> Incapacidad<br>
-      <input type="checkbox" name="seguro_ltc"> LTC<br>
-      <input type="checkbox" name="seguro_hogar"> Hogar<br>
-      <input type="checkbox" name="seguro_auto"> Auto<br>
-      <input type="checkbox" name="seguro_umbrella"> Umbrella<br>
-    </label><br>
-    <label>
-      <input type="checkbox" id="ningunSeguroActivo" name="ningunSeguroActivo">
-      No tengo seguros actualmente
-    </label>
-  </fieldset>
-  <div class="nav-buttons">
-    <button type="button" onclick="prevStep(5)">Anterior</button>
-    <button type="button" id="btnSigSeguros">Siguiente</button>
-  </div>
-</div>
+    <!-- Sección 6: Seguros -->
+    <div class="step" id="stepSeguros">
+      <fieldset>
+        <legend><strong>6. Seguros</strong></legend>
+        <label>Selecciona tus seguros:<br>
+          <input type="checkbox" name="seguro_vida"> Vida<br>
+          <input type="checkbox" name="seguro_incapacidad"> Incapacidad<br>
+          <input type="checkbox" name="seguro_ltc"> LTC<br>
+          <input type="checkbox" name="seguro_hogar"> Hogar<br>
+          <input type="checkbox" name="seguro_auto"> Auto<br>
+          <input type="checkbox" name="seguro_umbrella"> Umbrella<br>
+        </label><br>
+        <label>
+          <input type="checkbox" id="ningunSeguroActivo" name="ningunSeguroActivo">
+          No tengo seguros actualmente
+        </label>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(5)">Anterior</button>
+        <button type="button" id="btnSigSeguros">Siguiente</button>
+      </div>
+    </div>
 
-<!-- Sección 7: Patrimonio -->
-<div class="step" id="stepPatrimonio">
-  <fieldset>
-    <legend><strong>7. Patrimonio</strong></legend>
-    <label>Documentos disponibles:<br>
-      <input type="checkbox" name="trust"> Trust<br>
-      <input type="checkbox" name="will"> Testamento<br>
-      <input type="checkbox" name="advance_medical_directive"> Directiva médica anticipada<br>
-      <input type="checkbox" name="power_of_attorney"> Poder legal<br>
-      <input type="checkbox" name="beneficiary_designation"> Designación de beneficiarios<br>
-      <input type="checkbox" name="property_deeds"> Títulos de propiedad<br>
-    </label><br>
-    <label>
-      <input type="checkbox" id="ningunPatrimonioActivo" name="ningunPatrimonioActivo">
-      No tengo documentos patrimoniales actualmente
-    </label>
-  </fieldset>
-  <div class="nav-buttons">
-    <button type="button" onclick="prevStep(6)">Anterior</button>
-    <button type="submit">Calcular</button>
-  </div>
-</div>
+    <!-- Sección 7: Patrimonio -->
+    <div class="step" id="stepPatrimonio">
+      <fieldset>
+        <legend><strong>7. Patrimonio</strong></legend>
+        <label>Documentos disponibles:<br>
+          <input type="checkbox" name="trust"> Trust<br>
+          <input type="checkbox" name="will"> Testamento<br>
+          <input type="checkbox" name="advance_medical_directive"> Directiva médica anticipada<br>
+          <input type="checkbox" name="power_of_attorney"> Poder legal<br>
+          <input type="checkbox" name="beneficiary_designation"> Designación de beneficiarios<br>
+          <input type="checkbox" name="property_deeds"> Títulos de propiedad<br>
+        </label><br>
+        <label>
+          <input type="checkbox" id="ningunPatrimonioActivo" name="ningunPatrimonioActivo">
+          No tengo documentos patrimoniales actualmente
+        </label>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(6)">Anterior</button>
+        <button type="submit">Calcular</button>
+      </div>
+    </div>
 
   </form>
 </div>
@@ -254,6 +251,7 @@
 </div>
 
 <!-- Aquí irá el script con todas las funciones de cálculo -->
+
 <script>
   function nextStep(step) {
     document.querySelectorAll('.step').forEach((stepDiv, index) => {
@@ -756,7 +754,5 @@ function calcularCategoriaH(data) {
   document.getElementById("resH").innerHTML = tabla;
 }
 </script>
-
 </body>
 </html>
-
