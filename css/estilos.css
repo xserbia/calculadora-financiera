@@ -1,9 +1,9 @@
-
 body {
   font-family: sans-serif;
   background-color: #f5f5f5;
   margin: 20px;
 }
+
 fieldset {
   border: none;
   padding: 0;
@@ -54,3 +54,59 @@ input:focus {
   background-color: #0056b3;
 }
 
+/* --- NUEVO: Estilos para navegación de pasos --- */
+#nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+#nav div {
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 6px;
+  background-color: #e9ecef;
+  color: #333;
+  transition: all 0.2s ease;
+  border: 1px solid #ccc;
+  min-width: 120px;
+  text-align: center;
+}
+
+#nav div.active {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border-color: #007bff;
+}
+
+#nav div.completed {
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  border-color: #28a745;
+}
+
+#nav div.inactive {
+  background-color: #f8f9fa;
+  color: #aaa;
+  border-color: #ddd;
+}
+
+/* --- NUEVO: Ocultar pasos excepto el activo --- */
+.step {
+  display: none;
+}
+
+.step.active {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* --- NUEVO: Animación suave al mostrar sección --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
