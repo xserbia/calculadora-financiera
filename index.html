@@ -306,14 +306,13 @@ Array.from(this.elements).forEach(el => {
     calcularCategoriaH(data);
   }
 
-  function calcularCategoriaA(data) {
+function calcularCategoriaA(data) {
   let ingresoMensual = data.ingreso_anual_neto / 12;
   let gastoMensual = (
     data.alimentos_bebidas + data.transporte + data.telecomunicaciones +
-    data.servicios_publicos + data.seguros + data.educacion + data.impuestos +
-    data.deuda_hipotecaria + data.deuda_tarjetas + data.deuda_comercial +
-    data.deuda_vehiculos + data.deuda_estudios + data.deuda_otros
-  ) / 12;
+    data.servicios_publicos + data.seguros + data.educacion +
+    data.impuestos + data.servicio_deuda // ✅ Servicio de deuda en vez de saldos
+  );
 
   let ahorroMensual = ingresoMensual - gastoMensual;
   let tasaAhorro = (ahorroMensual / ingresoMensual) * 100;
