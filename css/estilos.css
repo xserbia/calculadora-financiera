@@ -105,25 +105,25 @@ input:focus {
   animation: fadeIn 0.3s ease-in-out;
 }
 
-/* --- NUEVO: Animación suave al mostrar sección --- */
+/* --- Animación suave al mostrar sección --- */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .details {
-  visibility: hidden; /* Por defecto las categorías estarán ocultas */
-  opacity: 0; /* Inicia invisible */
-  transition: visibility 0s 0.3s, opacity 0.3s ease; /* La transición es suave */
+  visibility: hidden; /* Las categorías estarán ocultas por defecto */
+  opacity: 0; /* Comienza invisible */
+  transition: visibility 0s 0.3s, opacity 0.3s ease; /* Transición suave */
   padding-left: 20px;
   margin-top: 10px;
 }
 
 .details.show {
-  visibility: visible; /* Hace que la sección sea visible */
-  opacity: 1; /* Hace que la sección sea completamente opaca */
-  transition: visibility 0s, opacity 0.3s ease; /* Desactiva el retraso de visibilidad */
-  animation: fadeIn 0.3s ease forwards; /* Aplica la animación fadeIn */
+  visibility: visible; /* Hace la sección visible */
+  opacity: 1; /* Hace la sección completamente opaca */
+  transition: visibility 0s, opacity 0.3s ease; /* Sin retraso de visibilidad */
+  animation: fadeIn 0.3s ease forwards; /* Aplica animación fadeIn */
 }
 
 .toggle-btn {
@@ -137,4 +137,5 @@ input:focus {
 .toggle-btn:hover {
   background-color: #0056b3;
 }
+
 
