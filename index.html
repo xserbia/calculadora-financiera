@@ -297,15 +297,15 @@
 
 <script>
   function nextStep(step) {
-    document.querySelectorAll('.step').forEach((stepDiv, index) => {
-      stepDiv.classList.toggle('active', index === step - 1);
-    });
-    updateNav(step);
-  }
+  document.querySelectorAll('.step').forEach((stepDiv, index) => {
+    stepDiv.classList.toggle('active', index === step - 1);
+  });
+  updateNav(step);
+}
 
-  function prevStep(step) {
-    nextStep(step);
-  }
+function prevStep(step) {
+  nextStep(step);
+}
 
 function updateNav(step) {
   const navItems = document.querySelectorAll('#nav div');
@@ -316,6 +316,7 @@ function updateNav(step) {
     else item.classList.add('inactive');
   });
 }
+
 // Permitir navegación directa desde el menú
 document.querySelectorAll('#nav div').forEach((navItem, index) => {
   navItem.addEventListener('click', function () {
@@ -329,6 +330,7 @@ document.querySelectorAll('#nav div').forEach((navItem, index) => {
     updateNav(index + 1);
   });
 });
+
 // Función para mostrar/ocultar los detalles de la deuda
 function toggleDeudaDetails() {
   var deudaDetails = document.getElementById("deudaDetails");
@@ -353,13 +355,15 @@ function toggleImpuestosDetails() {
   impuestosDetails.style.display = impuestosDetails.style.display === "none" ? "block" : "none";
 }
 
-  function mostrarResultado(id) {
-    document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
-    document.getElementById(id).classList.add('active-res');
-    document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
-    const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
-    if (current) current.classList.add('active');
-  }
+// Función para mostrar los resultados
+function mostrarResultado(id) {
+  document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
+  document.getElementById(id).classList.add('active-res');
+  document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
+  const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
+  if (current) current.classList.add('active');
+}
+
 
 document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
   // ✅ Validación para la sección de seguros
