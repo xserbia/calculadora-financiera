@@ -1,33 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Evaluación Financiera</title>
   <style>
+    /* Estilos básicos para el formulario y resultados */
     body {
       font-family: sans-serif;
       margin: 20px;
       padding: 0;
       background-color: #f9f9f9;
     }
+
     .step, .resultado-categoria {
       display: none;
     }
     .active, .active-res {
       display: block;
     }
+
     .nav-buttons {
       display: flex;
       justify-content: space-between;
       margin-top: 20px;
     }
+
     #nav, #navResultados {
       display: flex;
       justify-content: space-around;
       flex-wrap: wrap;
       margin-bottom: 20px;
     }
+
     #nav div, .nav-res {
       background-color: lightgray;
       border-radius: 5px;
@@ -37,36 +43,54 @@
       width: 12%;
       margin: 4px;
     }
+
     .completed {
       background-color: green;
       color: white;
     }
+
     .active {
       background-color: yellow;
       color: black;
     }
+
     .inactive {
       background-color: lightgray;
       color: gray;
     }
+
     .resultado-categoria {
       border: 1px solid #ccc;
       border-radius: 10px;
       background: white;
       padding: 20px;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
+
+    /* Detalles ocultos inicialmente */
+    .details {
+      visibility: hidden; /* Las categorías estarán ocultas por defecto */
+      opacity: 0; /* Comienza invisible */
+      transition: visibility 0s 0.3s, opacity 0.3s ease; /* Transición suave */
+      padding-left: 20px;
+      margin-top: 10px;
     }
-    table th, table td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
+
+    .details.show {
+      visibility: visible; /* Hace la sección visible */
+      opacity: 1; /* Hace la sección completamente opaca */
+      transition: visibility 0s, opacity 0.3s ease; /* Desactiva el retraso de visibilidad */
     }
-    table th {
-      background-color: #eee;
+
+    .toggle-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .toggle-btn:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
@@ -318,18 +342,20 @@
 
 <!-- Aquí irá el script con todas las funciones de cálculo -->
 
-<script>
-  function nextStep(step) {
+// Función para pasar al siguiente paso
+function nextStep(step) {
   document.querySelectorAll('.step').forEach((stepDiv, index) => {
     stepDiv.classList.toggle('active', index === step - 1);
   });
   updateNav(step);
 }
 
+// Función para regresar al paso anterior
 function prevStep(step) {
   nextStep(step);
 }
 
+// Función para actualizar la barra de navegación
 function updateNav(step) {
   const navItems = document.querySelectorAll('#nav div');
   navItems.forEach((item, index) => {
@@ -343,13 +369,13 @@ function updateNav(step) {
 // Permitir navegación directa desde el menú
 document.querySelectorAll('#nav div').forEach((navItem, index) => {
   navItem.addEventListener('click', function () {
-    // Oculta todas las secciones
+    // Ocultar todas las secciones
     document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
 
-    // Muestra la sección correspondiente al índice
+    // Mostrar la sección correspondiente al índice
     document.querySelectorAll('.step')[index].classList.add('active');
 
-    // Actualiza visualmente el menú
+    // Actualizar visualmente el menú
     updateNav(index + 1);
   });
 });
@@ -378,7 +404,48 @@ function toggleImpuestosDetails() {
   impuestosDetails.style.display = impuestosDetails.style.display === "none" ? "block" : "none";
 }
 
-// Función para mostrar los resultados
+// Función para mostrar el gráfico de Dona para la distribución de gastos
+function mostrarGraficoGastos(data) {
+  const gastosData = {
+    labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos'],
+    datasets: [{
+      label: 'Distribución de gastos',
+      data: [
+        data.pago_deuda || 0,  
+        data.gastos_diarios || 0,  
+        data.seguros || 0,  
+        data.impuestos || 0  
+      ],
+      backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1'],
+      hoverOffset: 4
+    }]
+  };
+
+  const config = {
+    type: 'doughnut',
+    data: gastosData,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem) {
+              return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
+            }
+          }
+        }
+      }
+    }
+  };
+
+  const ctx = document.getElementById('graficoGastos').getContext('2d');
+  new Chart(ctx, config);
+}
+
+// Función para mostrar los resultados de la evaluación
 function mostrarResultado(id) {
   document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
   document.getElementById(id).classList.add('active-res');
@@ -387,32 +454,10 @@ function mostrarResultado(id) {
   if (current) current.classList.add('active');
 }
 
-
+// Evento al hacer submit del formulario
 document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
-  // ✅ Validación para la sección de seguros
-  const seguros = document.querySelectorAll('#stepSeguros input[type="checkbox"]:not(#ningunSeguroActivo)');
-  const sinSeguro = Array.from(seguros).every(cb => !cb.checked);
-  const marcoSinSeguro = document.getElementById('ningunSeguroActivo').checked;
+  e.preventDefault(); // Evitar que el formulario se envíe por defecto
 
-  if (sinSeguro && !marcoSinSeguro) {
-    e.preventDefault();
-    alert("Por favor selecciona al menos un seguro o marca que no tienes ninguno.");
-    return;
-  }
-
-  // ✅ Validación para la sección de patrimonio
-  const patrimonios = document.querySelectorAll('#stepPatrimonio input[type="checkbox"]:not(#ningunPatrimonioActivo)');
-  const sinPatrimonio = Array.from(patrimonios).every(cb => !cb.checked);
-  const marcoSinPatrimonio = document.getElementById('ningunPatrimonioActivo').checked;
-
-  if (sinPatrimonio && !marcoSinPatrimonio) {
-    e.preventDefault();
-    alert("Por favor selecciona al menos un documento patrimonial o marca que no tienes ninguno.");
-    return;
-  }
-
-  // ✅ Procesamiento normal del formulario
-  e.preventDefault();
   const data = {};
   Array.from(this.elements).forEach(el => {
     if (el.name) {
@@ -424,16 +469,22 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
     }
   });
 
+  // Convertir los datos numéricos a valores flotantes donde sea necesario
   for (let key in data) {
     if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
   }
 
+  // Llamada a la función para mostrar el gráfico de dona con los gastos
+  mostrarGraficoGastos(data);
+
+  // Llamar a la función de cálculo
   calcularResultados(data);
+
+  // Mostrar los resultados
   document.getElementById("resultadosContainer").style.display = "block";
   mostrarResultado("resA");
 });
-
-
+      
   function calcularResultados(data) {
     calcularCategoriaA(data);
     calcularCategoriaB(data);
@@ -445,8 +496,8 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
     calcularCategoriaH(data);
   }
 
+// Función de cálculos para cada categoría
 function calcularCategoriaA(data) {
-  // Ingresos (sumamos las diferentes fuentes de ingreso y ahorros)
   const ingresoMensual = (
     (data.salario || 0) +
     (data.ingreso_negocio || 0) +
@@ -463,7 +514,6 @@ function calcularCategoriaA(data) {
     (data.otros_ahorros || 0)
   ) / 12; // Total mensual
 
-  // Gastos mensuales
   const gastoMensual = (
     (data.alimentos_bebidas || 0) +
     (data.transporte || 0) +
@@ -513,8 +563,6 @@ function calcularCategoriaA(data) {
     </p>
   `;
 }
-
-
 
 function calcularCategoriaB(data) {
   const ingresoMensualBruto = data.ingreso_anual_bruto / 12;
