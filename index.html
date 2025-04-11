@@ -100,7 +100,6 @@
     </div>
 
     <!-- Sección 2: Ingresos -->
-<!-- Sección 2: Ingresos -->
 <!-- Sección 2: Ingresos y Ahorros (Anual) -->
 <div class="step" id="stepIngresos">
   <fieldset>
@@ -123,31 +122,65 @@
   </div>
 </div>
     <!-- Sección 3: Gastos -->
-    <div class="step" id="stepGastos">
-      <fieldset>
-        <legend><strong>3. Gastos</strong></legend>
-        <label>Alimentos y bebidas<br><input type="number" name="alimentos_bebidas" required></label><br><br>
-        <label>Ropa<br><input type="number" name="ropa" required></label><br><br>
-        <label>Vivienda (sin incluir hipoteca o renta)<br><input type="number" name="vivienda" required></label><br><br>
-        <label>Transporte<br><input type="number" name="transporte" required></label><br><br>
-        <label>Salud y productos personales<br><input type="number" name="salud_productos_personales" required></label><br><br>
-        <label>Entretenimiento<br><input type="number" name="entretenimiento" required></label><br><br>
-        <label>Educación<br><input type="number" name="educacion" required></label><br><br>
-        <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones" required></label><br><br>
-        <label>Servicios públicos<br><input type="number" name="servicios_publicos" required></label><br><br>
-        <label>Seguros<br><input type="number" name="seguros" required></label><br><br>
-        <label>Impuestos<br><input type="number" name="impuestos" required></label><br><br>
-        <!-- ✅ Nuevo campo: Servicio de deuda -->
-        <label>Pago mensual total de deudas (capital + intereses)<br>
-          <input type="number" name="servicio_deuda" required>
-        </label><br><br>
-        <label>Otros<br><input type="number" name="otros" required></label><br><br>
-      </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(2)">Anterior</button>
-        <button type="button" onclick="nextStep(4)">Siguiente</button>
+<div class="step" id="stepGastos">
+  <fieldset>
+    <legend><strong>3. Gastos</strong></legend>
+
+    <!-- Pago de deuda -->
+    <label>Pago de deuda (Hipoteca, Préstamos, etc.)<br>
+      <input type="checkbox" name="pago_deuda" onclick="toggleDeudaDetails()"> Detalles<br>
+      <div id="deudaDetails" style="display:none;">
+        <label>Hipoteca (o renta)<br><input type="number" name="hipoteca" required></label><br>
+        <label>Préstamo de auto<br><input type="number" name="prestamo_auto" required></label><br>
+        <label>Préstamo educativo<br><input type="number" name="prestamo_educativo" required></label><br>
+        <label>Préstamo personal<br><input type="number" name="prestamo_personal" required></label><br>
+        <label>Línea de crédito<br><input type="number" name="linea_credito" required></label><br>
+        <label>Otros<br><input type="number" name="otros_pagos_deuda" required></label><br>
       </div>
+    </label><br><br>
+
+    <!-- Gastos diarios -->
+    <label>Gastos diarios<br>
+      <input type="checkbox" name="gastos_diarios" onclick="toggleGastosDetails()"> Detalles<br>
+      <div id="gastosDetails" style="display:none;">
+        <label>Servicio público<br><input type="number" name="servicio_publico" required></label><br>
+        <label>Cuidado de hijos<br><input type="number" name="cuidado_hijos" required></label><br>
+        <label>Supermercado<br><input type="number" name="supermercado" required></label><br>
+        <label>Comidas afuera<br><input type="number" name="comidas_fuera" required></label><br>
+        <label>Ropa<br><input type="number" name="ropa" required></label><br>
+        <!-- Add more expenses as needed -->
+      </div>
+    </label><br><br>
+
+    <!-- Seguros -->
+    <label>Seguros<br>
+      <input type="checkbox" name="seguros" onclick="toggleSegurosDetails()"> Detalles<br>
+      <div id="segurosDetails" style="display:none;">
+        <label>Vida<br><input type="number" name="seguro_vida" required></label><br>
+        <label>Medico<br><input type="number" name="seguro_medico" required></label><br>
+        <label>Propiedad<br><input type="number" name="seguro_propiedad" required></label><br>
+        <label>Renta<br><input type="number" name="seguro_renta" required></label><br>
+        <label>Umbrella<br><input type="number" name="seguro_umbrella" required></label><br>
+        <!-- Add more insurance types as needed -->
+      </div>
+    </label><br><br>
+
+    <!-- Impuestos -->
+    <label>Impuestos<br>
+      <input type="checkbox" name="impuestos" onclick="toggleImpuestosDetails()"> Detalles<br>
+      <div id="impuestosDetails" style="display:none;">
+        <label>Federal<br><input type="number" name="impuesto_federal" required></label><br>
+        <label>Seguro Social<br><input type="number" name="seguro_social" required></label><br>
+        <!-- Add more tax types as needed -->
+      </div>
+    </label><br><br>
+
+    <div class="nav-buttons">
+      <button type="button" onclick="prevStep(2)">Anterior</button>
+      <button type="button" onclick="nextStep(4)">Siguiente</button>
     </div>
+  </fieldset>
+</div>
 
     <!-- Sección 4: Activos -->
     <div class="step" id="stepActivos">
