@@ -355,6 +355,23 @@ document.querySelectorAll('#nav div').forEach((navItem, index) => {
     details.style.display = "none";  // Oculta el contenido
   }
 }
+  function toggleDetails(id) {
+  // Obtén el contenedor de detalles de la categoría
+  const details = document.getElementById(id);
+
+  // Alterna la clase 'show' para mostrar u ocultar la sección
+  if (details.classList.contains('show')) {
+    details.classList.remove('show'); // Oculta el contenido con animación
+  } else {
+    // Primero, ocultamos todos los detalles
+    const allDetails = document.querySelectorAll('.details');
+    allDetails.forEach(detail => detail.classList.remove('show'));
+
+    // Luego, mostramos el detalle actual
+    details.classList.add('show'); // Muestra el contenido con animación
+  }
+}
+
 
 document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
   // ✅ Validación para la sección de seguros
