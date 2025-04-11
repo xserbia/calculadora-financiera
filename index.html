@@ -347,6 +347,14 @@ document.querySelectorAll('#nav div').forEach((navItem, index) => {
     const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
     if (current) current.classList.add('active');
   }
+  function toggleDetails(id) {
+  const details = document.getElementById(id);
+  if (details.style.display === "none" || details.style.display === "") {
+    details.style.display = "block";  // Muestra el contenido
+  } else {
+    details.style.display = "none";  // Oculta el contenido
+  }
+}
 
 document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
   // ✅ Validación para la sección de seguros
