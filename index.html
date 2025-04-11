@@ -446,7 +446,7 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
   }
 
 function calcularCategoriaA(data) {
-  // Ingresos
+  // Ingresos (sumamos las diferentes fuentes de ingreso y ahorros)
   const ingresoMensual = (
     (data.salario || 0) +
     (data.ingreso_negocio || 0) +
@@ -463,25 +463,18 @@ function calcularCategoriaA(data) {
     (data.otros_ahorros || 0)
   ) / 12; // Total mensual
 
-const gastoMensualDeuda = (
-    data.hipoteca + data.prestamo_auto + data.prestamo_educativo + 
-    data.prestamo_personal + data.linea_credito + data.otros_pagos_deuda
+  // Gastos mensuales
+  const gastoMensual = (
+    (data.alimentos_bebidas || 0) +
+    (data.transporte || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.servicios_publicos || 0) +
+    (data.seguros || 0) +
+    (data.educacion || 0) +
+    (data.impuestos || 0) +
+    (data.servicio_deuda || 0)
   );
 
-  const gastoMensualDiario = (
-    data.servicio_publico + data.supermercado + data.comidas_fuera + 
-    data.ropa + data.vacaciones + data.telecomunicaciones
-  );
-
-  const gastoMensualSeguros = (
-    data.seguro_vida + data.seguro_medico + data.seguro_propiedad +
-    data.seguro_renta + data.seguro_umbrella
-  );
-
-  const gastoMensualImpuestos = (
-    data.impuesto_federal + data.seguro_social
-  );
-  const gastoMensual = gastoMensualDeuda + gastoMensualDiario + gastoMensualSeguros + gastoMensualImpuestos;
   const tasaAhorro = (ahorroMensual / ingresoMensual) * 100;
 
   // Meses de reserva
@@ -520,7 +513,6 @@ const gastoMensualDeuda = (
     </p>
   `;
 }
-
 
 
 
