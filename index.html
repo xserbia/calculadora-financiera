@@ -343,20 +343,23 @@
 
 <!-- Aquí irá el script con todas las funciones de cálculo -->
 
-// Función para pasar al siguiente paso
+// Función para pasar a la siguiente sección
 function nextStep(step) {
-  document.querySelectorAll('.step').forEach((stepDiv, index) => {
-    stepDiv.classList.toggle('active', index === step - 1);
-  });
+  const steps = document.querySelectorAll('.step');
+  // Ocultamos todas las secciones
+  steps.forEach(stepDiv => stepDiv.classList.remove('active'));
+  // Mostramos la sección correspondiente
+  document.getElementById('step' + step).classList.add('active');
+  
   updateNav(step);
 }
 
-// Función para regresar al paso anterior
+// Función para volver a la sección anterior
 function prevStep(step) {
   nextStep(step);
 }
 
-// Función para actualizar la barra de navegación
+// Función para actualizar la navegación en la barra de progreso
 function updateNav(step) {
   const navItems = document.querySelectorAll('#nav div');
   navItems.forEach((item, index) => {
@@ -367,16 +370,16 @@ function updateNav(step) {
   });
 }
 
-// Permitir navegación directa desde el menú
+// Función para permitir la navegación directa desde el menú
 document.querySelectorAll('#nav div').forEach((navItem, index) => {
   navItem.addEventListener('click', function () {
-    // Ocultar todas las secciones
+    // Ocultamos todas las secciones
     document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
 
-    // Mostrar la sección correspondiente al índice
+    // Mostramos la sección correspondiente al índice
     document.querySelectorAll('.step')[index].classList.add('active');
 
-    // Actualizar visualmente el menú
+    // Actualizamos visualmente el menú
     updateNav(index + 1);
   });
 });
