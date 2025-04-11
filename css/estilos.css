@@ -110,10 +110,20 @@ input:focus {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
 .details {
-  display: none; /* Por defecto las categorías estarán ocultas */
+  visibility: hidden; /* Por defecto las categorías estarán ocultas */
+  opacity: 0; /* Inicia invisible */
+  transition: visibility 0s 0.3s, opacity 0.3s ease; /* La transición es suave */
   padding-left: 20px;
   margin-top: 10px;
+}
+
+.details.show {
+  visibility: visible; /* Hace que la sección sea visible */
+  opacity: 1; /* Hace que la sección sea completamente opaca */
+  transition: visibility 0s, opacity 0.3s ease; /* Desactiva el retraso de visibilidad */
+  animation: fadeIn 0.3s ease forwards; /* Aplica la animación fadeIn */
 }
 
 .toggle-btn {
