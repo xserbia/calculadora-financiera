@@ -123,37 +123,37 @@
       </div>
     </div>
 
-<!-- Sección 2: Ingresos y Ahorros (Anual) -->
-<div class="step" id="stepIngresos">
-  <fieldset>
-    <legend><strong>2. Ingresos y ahorros (Anual)</strong></legend>
-    <label>Salario<br><input type="number" name="salario" required></label><br><br>
-    <label>Ingreso por negocio<br><input type="number" name="ingreso_negocio" required></label><br><br>
-    <label>Bonos<br><input type="number" name="bonos" required></label><br><br>
-    <label>Dividendos e intereses<br><input type="number" name="dividendos_intereses" required></label><br><br>
-    <label>Renta<br><input type="number" name="renta" required></label><br><br>
-    <label>Otros ingresos<br><input type="number" name="otros_ingresos" required></label><br><br>
-    
-    <h4>Ahorros:</h4>
-    <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro" required></label><br><br>
-    <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro" required></label><br><br>
-    <label>Otros ahorros<br><input type="number" name="otros_ahorros" required></label><br><br>
-  </fieldset>
-  <div class="nav-buttons">
-    <button type="button" onclick="prevStep(1)">Anterior</button>
-    <button type="button" onclick="nextStep(3)">Siguiente</button>
-  </div>
-</div>
+    <!-- Sección 2: Ingresos y Ahorros (Anual) -->
+    <div class="step" id="stepIngresos">
+      <fieldset>
+        <legend><strong>2. Ingresos y ahorros (Anual)</strong></legend>
+        <label>Salario<br><input type="number" name="salario" required></label><br><br>
+        <label>Ingreso por negocio<br><input type="number" name="ingreso_negocio" required></label><br><br>
+        <label>Bonos<br><input type="number" name="bonos" required></label><br><br>
+        <label>Dividendos e intereses<br><input type="number" name="dividendos_intereses" required></label><br><br>
+        <label>Renta<br><input type="number" name="renta" required></label><br><br>
+        <label>Otros ingresos<br><input type="number" name="otros_ingresos" required></label><br><br>
+        
+        <h4>Ahorros:</h4>
+        <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro" required></label><br><br>
+        <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro" required></label><br><br>
+        <label>Otros ahorros<br><input type="number" name="otros_ahorros" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(1)">Anterior</button>
+        <button type="button" onclick="nextStep(3)">Siguiente</button>
+      </div>
+    </div>
 
     <!-- Sección 3: Gastos -->
-<div class="step" id="stepGastos">
-  <fieldset>
-    <legend><strong>3. Gastos</strong></legend>
-
-<!-- Sección de Pago de Deuda -->
-<div>
-  <button onclick="toggleDeudaDetails()">Abrir/Cerrar Pago de Deuda</button>
-  <div id="deudaDetails" style="display:none; padding-left: 20px;">
+    <div class="step" id="stepGastos">
+      <fieldset>
+        <legend><strong>3. Gastos</strong></legend>
+        
+        <!-- Sección de Pago de Deuda -->
+        <div>
+          <button onclick="toggleDeudaDetails()">Abrir/Cerrar Pago de Deuda</button>
+          <div id="deudaDetails" style="display:none; padding-left: 20px;">
             <label>Hipoteca (o renta)<br><input type="number" name="hipoteca"></label><br><br>
             <label>Préstamo de auto<br><input type="number" name="prestamo_auto"></label><br><br>
             <label>Préstamo educativo<br><input type="number" name="prestamo_educativo"></label><br><br>
@@ -162,162 +162,74 @@
             <label>Manutención<br><input type="number" name="manutencion"></label><br><br>
             <label>Tarjetas de crédito<br><input type="number" name="tarjetas_credito"></label><br><br>
             <label>Otros<br><input type="number" name="otros_deuda"></label><br><br>
-  </div>
-</div>
+          </div>
+        </div>
 
-<!-- Sección de Gastos Diarios -->
-<div>
-  <button onclick="toggleGastosDetails()">Abrir/Cerrar Gastos Diarios</button>
-  <div id="gastosDetails" style="display:none; padding-left: 20px;">
-    <label>Servicio público<br><input type="number" name="servicio_publico"></label><br><br>
-    <label>Cuidado de hijos<br><input type="number" name="cuidado_hijos"></label><br><br>
-    <label>Mantenimiento auto<br><input type="number" name="mantenimiento_auto"></label><br><br>
-    <label>Cuidado personal<br><input type="number" name="cuidado_personal"></label><br><br>
-    <label>Supermercado<br><input type="number" name="supermercado"></label><br><br>
-    <label>Comidas afuera<br><input type="number" name="comidas_afuera"></label><br><br>
-    <label>Ropa<br><input type="number" name="ropa"></label><br><br>
-    <label>Vacaciones<br><input type="number" name="vacaciones"></label><br><br>
-    <label>Muebles y enseres<br><input type="number" name="muebles_enseres"></label><br><br>
-    <label>Gastos Médicos y dentista<br><input type="number" name="gastos_medicos"></label><br><br>
-    <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones"></label><br><br>
-    <label>Mantenimiento del hogar<br><input type="number" name="mantenimiento_hogar"></label><br><br>
-    <label>Entretenimiento<br><input type="number" name="entretenimiento"></label><br><br>
-    <label>Libros y membresía de contenido<br><input type="number" name="libros_membresia"></label><br><br>
-    <label>Regalos y mesada<br><input type="number" name="regalos_mesada"></label><br><br>
-    <label>Donaciones<br><input type="number" name="donaciones"></label><br><br>
-    <label>Fiestas<br><input type="number" name="fiestas"></label><br><br>
-    <label>Mejoras al hogar<br><input type="number" name="mejoras_hogar"></label><br><br>
-    <label>Dues<br><input type="number" name="dues"></label><br><br>
-    <label>Servicios profesionales<br><input type="number" name="servicios_profesionales"></label><br><br>
-    <label>Gastos de mascota<br><input type="number" name="gastos_mascota"></label><br><br>
-    <label>Otros<br><input type="number" name="otros_gastos_diarios"></label><br><br>
-  </div>
-</div>
+        <!-- Sección de Gastos Diarios -->
+        <div>
+          <button onclick="toggleGastosDetails()">Abrir/Cerrar Gastos Diarios</button>
+          <div id="gastosDetails" style="display:none; padding-left: 20px;">
+            <label>Servicio público<br><input type="number" name="servicio_publico"></label><br><br>
+            <label>Cuidado de hijos<br><input type="number" name="cuidado_hijos"></label><br><br>
+            <label>Mantenimiento auto<br><input type="number" name="mantenimiento_auto"></label><br><br>
+            <label>Cuidado personal<br><input type="number" name="cuidado_personal"></label><br><br>
+            <label>Supermercado<br><input type="number" name="supermercado"></label><br><br>
+            <label>Comidas afuera<br><input type="number" name="comidas_afuera"></label><br><br>
+            <label>Ropa<br><input type="number" name="ropa"></label><br><br>
+            <label>Vacaciones<br><input type="number" name="vacaciones"></label><br><br>
+            <label>Muebles y enseres<br><input type="number" name="muebles_enseres"></label><br><br>
+            <label>Gastos Médicos y dentista<br><input type="number" name="gastos_medicos"></label><br><br>
+            <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones"></label><br><br>
+            <label>Mantenimiento del hogar<br><input type="number" name="mantenimiento_hogar"></label><br><br>
+            <label>Entretenimiento<br><input type="number" name="entretenimiento"></label><br><br>
+            <label>Libros y membresía de contenido<br><input type="number" name="libros_membresia"></label><br><br>
+            <label>Regalos y mesada<br><input type="number" name="regalos_mesada"></label><br><br>
+            <label>Donaciones<br><input type="number" name="donaciones"></label><br><br>
+            <label>Fiestas<br><input type="number" name="fiestas"></label><br><br>
+            <label>Mejoras al hogar<br><input type="number" name="mejoras_hogar"></label><br><br>
+            <label>Dues<br><input type="number" name="dues"></label><br><br>
+            <label>Servicios profesionales<br><input type="number" name="servicios_profesionales"></label><br><br>
+            <label>Gastos de mascota<br><input type="number" name="gastos_mascota"></label><br><br>
+            <label>Otros<br><input type="number" name="otros_gastos_diarios"></label><br><br>
+          </div>
+        </div>
 
-<!-- Sección de Seguros -->
-<div>
-  <button onclick="toggleSegurosDetails()">Abrir/Cerrar Seguros</button>
-  <div id="segurosDetails" style="display:none; padding-left: 20px;">
-    <label>Vida<br><input type="number" name="seguro_vida"></label><br><br>
-    <label>Médico<br><input type="number" name="seguro_medico"></label><br><br>
-    <label>Propiedad<br><input type="number" name="seguro_propiedad"></label><br><br>
-    <label>Renta<br><input type="number" name="seguro_renta"></label><br><br>
-    <label>Umbrella<br><input type="number" name="seguro_umbrella"></label><br><br>
-    <label>Incapacidad<br><input type="number" name="seguro_incapacidad"></label><br><br>
-    <label>Auto<br><input type="number" name="seguro_auto"></label><br><br>
-    <label>Propiedad personal<br><input type="number" name="seguro_propiedad_personal"></label><br><br>
-  </div>
-</div>
+        <!-- Sección de Seguros -->
+        <div>
+          <button onclick="toggleSegurosDetails()">Abrir/Cerrar Seguros</button>
+          <div id="segurosDetails" style="display:none; padding-left: 20px;">
+            <label>Vida<br><input type="number" name="seguro_vida"></label><br><br>
+            <label>Médico<br><input type="number" name="seguro_medico"></label><br><br>
+            <label>Propiedad<br><input type="number" name="seguro_propiedad"></label><br><br>
+            <label>Renta<br><input type="number" name="seguro_renta"></label><br><br>
+            <label>Umbrella<br><input type="number" name="seguro_umbrella"></label><br><br>
+            <label>Incapacidad<br><input type="number" name="seguro_incapacidad"></label><br><br>
+            <label>Auto<br><input type="number" name="seguro_auto"></label><br><br>
+            <label>Propiedad personal<br><input type="number" name="seguro_propiedad_personal"></label><br><br>
+          </div>
+        </div>
 
-<!-- Sección de Impuestos -->
-<div>
-  <button onclick="toggleImpuestosDetails()">Abrir/Cerrar Impuestos</button>
-  <div id="impuestosDetails" style="display:none; padding-left: 20px;">
-    <label>Federal<br><input type="number" name="impuesto_federal"></label><br><br>
-    <label>Seguro Social<br><input type="number" name="seguro_social"></label><br><br>
-    <label>Medicare<br><input type="number" name="medicare"></label><br><br>
-    <label>Estatales y locales<br><input type="number" name="impuesto_estatal_local"></label><br><br>
-    <label>Propiedad<br><input type="number" name="impuesto_propiedad"></label><br><br>
-    <label>Auto<br><input type="number" name="impuesto_auto"></label><br><br>
-  </div>
-</div>
+        <!-- Sección de Impuestos -->
+        <div>
+          <button onclick="toggleImpuestosDetails()">Abrir/Cerrar Impuestos</button>
+          <div id="impuestosDetails" style="display:none; padding-left: 20px;">
+            <label>Federal<br><input type="number" name="impuesto_federal"></label><br><br>
+            <label>Seguro Social<br><input type="number" name="seguro_social"></label><br><br>
+            <label>Medicare<br><input type="number" name="medicare"></label><br><br>
+            <label>Estatales y locales<br><input type="number" name="impuesto_estatal_local"></label><br><br>
+            <label>Propiedad<br><input type="number" name="impuesto_propiedad"></label><br><br>
+            <label>Auto<br><input type="number" name="impuesto_auto"></label><br><br>
+          </div>
+        </div>
 
-
-    <div class="nav-buttons">
-      <button type="button" onclick="prevStep(2)">Anterior</button>
-      <button type="button" onclick="nextStep(4)">Siguiente</button>
-    </div>
-  </fieldset>
-</div>
-
-
-    <!-- Sección 4: Activos -->
-    <div class="step" id="stepActivos">
-      <fieldset>
-        <legend><strong>4. Activos</strong></legend>
-        <label>Cuentas bancarias y de ahorro<br><input type="number" name="cuentas_bancarias" required></label><br><br>
-        <label>Inversiones (no retiro)<br><input type="number" name="cuentas_inversion" required></label><br><br>
-        <label>Cuentas de retiro<br><input type="number" name="cuentas_retiro" required></label><br><br>
-        <label>Valor de la vivienda principal<br><input type="number" name="valor_vivienda" required></label><br><br>
-        <label>Propiedades de alquiler<br><input type="number" name="valor_propiedades_alquiler" required></label><br><br>
-        <label>Otras propiedades (vacacionales, etc.)<br><input type="number" name="valor_otros_activos" required></label><br><br>
-        <label>Vehículos<br><input type="number" name="valor_vehiculos" required></label><br><br>
-        <label>Otros activos (joyas, muebles, etc.)<br><input type="number" name="valor_otros" required></label><br><br>
+        <div class="nav-buttons">
+          <button type="button" onclick="prevStep(2)">Anterior</button>
+          <button type="button" onclick="nextStep(4)">Siguiente</button>
+        </div>
       </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(3)">Anterior</button>
-        <button type="button" onclick="nextStep(5)">Siguiente</button>
-      </div>
     </div>
-
-    <!-- Sección 5: Pasivos -->
-    <div class="step" id="stepPasivos">
-      <fieldset>
-        <legend><strong>5. Pasivos</strong></legend>
-        <label>Deuda de tarjetas de crédito<br><input type="number" name="deuda_tarjetas" required></label><br><br>
-        <label>Hipotecas o alquiler<br><input type="number" name="deuda_hipotecaria" required></label><br><br>
-        <label>Deuda comercial<br><input type="number" name="deuda_comercial" required></label><br><br>
-        <label>Préstamos para vehículos<br><input type="number" name="deuda_vehiculos" required></label><br><br>
-        <label>Deuda estudiantil<br><input type="number" name="deuda_estudios" required></label><br><br>
-        <label>Otras deudas<br><input type="number" name="deuda_otros" required></label><br><br>
-      </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(4)">Anterior</button>
-        <button type="button" onclick="nextStep(6)">Siguiente</button>
-      </div>
-    </div>
-
-    <!-- Sección 6: Seguros -->
-    <div class="step" id="stepSeguros">
-      <fieldset>
-        <legend><strong>6. Seguros</strong></legend>
-        <label>Selecciona tus seguros:<br>
-          <input type="checkbox" name="seguro_vida">Vida<br>
-          <input type="checkbox" name="seguro_salud">Salud<br>
-          <input type="checkbox" name="seguro_incapacidad"> Incapacidad<br>
-          <input type="checkbox" name="seguro_ltc"> LTC<br>
-          <input type="checkbox" name="seguro_hogar"> Hogar<br>
-          <input type="checkbox" name="seguro_auto"> Auto<br>
-          <input type="checkbox" name="seguro_umbrella"> Umbrella<br>
-        </label><br>
-        <label>
-          <input type="checkbox" id="ningunSeguroActivo" name="ningunSeguroActivo">
-          No tengo seguros actualmente
-        </label>
-      </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(5)">Anterior</button>
-        <button type="button" id="btnSigSeguros">Siguiente</button>
-      </div>
-    </div>
-
-    <!-- Sección 7: Patrimonio -->
-    <div class="step" id="stepPatrimonio">
-      <fieldset>
-        <legend><strong>7. Patrimonio</strong></legend>
-        <label>Documentos disponibles:<br>
-          <input type="checkbox" name="trust"> Trust<br>
-          <input type="checkbox" name="will"> Testamento<br>
-          <input type="checkbox" name="advance_medical_directive"> Directiva médica anticipada<br>
-          <input type="checkbox" name="power_of_attorney"> Poder legal<br>
-          <input type="checkbox" name="beneficiary_designation"> Designación de beneficiarios<br>
-          <input type="checkbox" name="property_deeds"> Títulos de propiedad<br>
-        </label><br>
-        <label>
-          <input type="checkbox" id="ningunPatrimonioActivo" name="ningunPatrimonioActivo">
-          No tengo documentos patrimoniales actualmente
-        </label>
-      </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(6)">Anterior</button>
-        <button type="submit">Calcular</button>
-      </div>
-    </div>
-
-  </form>
-</div>
+    <!-- Aquí comienza la sección de resultados y demás pasos del formulario -->
 <script>
-// Aquí estará la sección de resultados //
 <div id="resultadosContainer"> style="display:none;">
   <h2>Resultados de tu evaluación financiera</h2>
   <div id="navResultados">
