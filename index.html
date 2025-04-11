@@ -310,16 +310,20 @@
 <!-- Aquí irá el script con todas las funciones de cálculo -->
 
 <script>
-  function nextStep(step) {
-    document.querySelectorAll('.step').forEach((stepDiv, index) => {
-      stepDiv.classList.toggle('active', index === step - 1);
-    });
-    updateNav(step);
-  }
+function nextStep(step) {
+  // Ocultar todas las secciones
+  document.querySelectorAll('.step').forEach((stepDiv, index) => {
+    stepDiv.classList.remove('active');
+  });
 
-  function prevStep(step) {
-    nextStep(step);
-  }
+  // Mostrar la sección correspondiente
+  document.getElementById(`step${step}`).classList.add('active');
+  updateNav(step);
+}
+
+function prevStep(step) {
+  nextStep(step);
+}
 
 function updateNav(step) {
   const navItems = document.querySelectorAll('#nav div');
