@@ -130,12 +130,14 @@
 <div>
   <button onclick="toggleDeudaDetails()">Abrir/Cerrar Pago de Deuda</button>
   <div id="deudaDetails" style="display:none; padding-left: 20px;">
-    <label>Hipoteca (o renta)<br><input type="number" name="hipoteca" required></label><br>
-    <label>Préstamo de auto<br><input type="number" name="prestamo_auto" required></label><br>
-    <label>Préstamo educativo<br><input type="number" name="prestamo_educativo" required></label><br>
-    <label>Préstamo personal<br><input type="number" name="prestamo_personal" required></label><br>
-    <label>Línea de crédito<br><input type="number" name="linea_credito" required></label><br>
-    <label>Otros<br><input type="number" name="otros_pagos_deuda" required></label><br>
+            <label>Hipoteca (o renta)<br><input type="number" name="hipoteca"></label><br><br>
+            <label>Préstamo de auto<br><input type="number" name="prestamo_auto"></label><br><br>
+            <label>Préstamo educativo<br><input type="number" name="prestamo_educativo"></label><br><br>
+            <label>Préstamo personal<br><input type="number" name="prestamo_personal"></label><br><br>
+            <label>Línea de crédito<br><input type="number" name="linea_credito"></label><br><br>
+            <label>Manutención<br><input type="number" name="manutencion"></label><br><br>
+            <label>Tarjetas de crédito<br><input type="number" name="tarjetas_credito"></label><br><br>
+            <label>Otros<br><input type="number" name="otros_deuda"></label><br><br>
   </div>
 </div>
 
@@ -143,12 +145,28 @@
 <div>
   <button onclick="toggleGastosDetails()">Abrir/Cerrar Gastos Diarios</button>
   <div id="gastosDetails" style="display:none; padding-left: 20px;">
-    <label>Servicio público<br><input type="number" name="servicio_publico" required></label><br>
-    <label>Cuidado de hijos<br><input type="number" name="cuidado_hijos" required></label><br>
-    <label>Mantenimiento auto<br><input type="number" name="mantenimiento_auto" required></label><br>
-    <label>Cuidado personal<br><input type="number" name="cuidado_personal" required></label><br>
-    <label>Supermercado<br><input type="number" name="supermercado" required></label><br>
-    <!-- Agregar todos los otros gastos según sea necesario -->
+    <label>Servicio público<br><input type="number" name="servicio_publico"></label><br><br>
+    <label>Cuidado de hijos<br><input type="number" name="cuidado_hijos"></label><br><br>
+    <label>Mantenimiento auto<br><input type="number" name="mantenimiento_auto"></label><br><br>
+    <label>Cuidado personal<br><input type="number" name="cuidado_personal"></label><br><br>
+    <label>Supermercado<br><input type="number" name="supermercado"></label><br><br>
+    <label>Comidas afuera<br><input type="number" name="comidas_afuera"></label><br><br>
+    <label>Ropa<br><input type="number" name="ropa"></label><br><br>
+    <label>Vacaciones<br><input type="number" name="vacaciones"></label><br><br>
+    <label>Muebles y enseres<br><input type="number" name="muebles_enseres"></label><br><br>
+    <label>Gastos Médicos y dentista<br><input type="number" name="gastos_medicos"></label><br><br>
+    <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones"></label><br><br>
+    <label>Mantenimiento del hogar<br><input type="number" name="mantenimiento_hogar"></label><br><br>
+    <label>Entretenimiento<br><input type="number" name="entretenimiento"></label><br><br>
+    <label>Libros y membresía de contenido<br><input type="number" name="libros_membresia"></label><br><br>
+    <label>Regalos y mesada<br><input type="number" name="regalos_mesada"></label><br><br>
+    <label>Donaciones<br><input type="number" name="donaciones"></label><br><br>
+    <label>Fiestas<br><input type="number" name="fiestas"></label><br><br>
+    <label>Mejoras al hogar<br><input type="number" name="mejoras_hogar"></label><br><br>
+    <label>Dues<br><input type="number" name="dues"></label><br><br>
+    <label>Servicios profesionales<br><input type="number" name="servicios_profesionales"></label><br><br>
+    <label>Gastos de mascota<br><input type="number" name="gastos_mascota"></label><br><br>
+    <label>Otros<br><input type="number" name="otros_gastos_diarios"></label><br><br>
   </div>
 </div>
 
@@ -156,10 +174,14 @@
 <div>
   <button onclick="toggleSegurosDetails()">Abrir/Cerrar Seguros</button>
   <div id="segurosDetails" style="display:none; padding-left: 20px;">
-    <label>Vida<br><input type="number" name="vida" required></label><br>
-    <label>Medico<br><input type="number" name="medico" required></label><br>
-    <label>Propiedad<br><input type="number" name="propiedad" required></label><br>
-    <!-- Agregar todos los otros seguros según sea necesario -->
+    <label>Vida<br><input type="number" name="seguro_vida"></label><br><br>
+    <label>Médico<br><input type="number" name="seguro_medico"></label><br><br>
+    <label>Propiedad<br><input type="number" name="seguro_propiedad"></label><br><br>
+    <label>Renta<br><input type="number" name="seguro_renta"></label><br><br>
+    <label>Umbrella<br><input type="number" name="seguro_umbrella"></label><br><br>
+    <label>Incapacidad<br><input type="number" name="seguro_incapacidad"></label><br><br>
+    <label>Auto<br><input type="number" name="seguro_auto"></label><br><br>
+    <label>Propiedad personal<br><input type="number" name="seguro_propiedad_personal"></label><br><br>
   </div>
 </div>
 
@@ -167,11 +189,12 @@
 <div>
   <button onclick="toggleImpuestosDetails()">Abrir/Cerrar Impuestos</button>
   <div id="impuestosDetails" style="display:none; padding-left: 20px;">
-    <label>Federal<br><input type="number" name="federal" required></label><br>
-    <label>Seguro Social<br><input type="number" name="seguro_social" required></label><br>
-    <label>Medicare<br><input type="number" name="medicare" required></label><br>
-    <label>Estatales y locales<br><input type="number" name="estatales_locales" required></label><br>
-    <!-- Agregar todos los otros impuestos según sea necesario -->
+    <label>Federal<br><input type="number" name="impuesto_federal"></label><br><br>
+    <label>Seguro Social<br><input type="number" name="seguro_social"></label><br><br>
+    <label>Medicare<br><input type="number" name="medicare"></label><br><br>
+    <label>Estatales y locales<br><input type="number" name="impuesto_estatal_local"></label><br><br>
+    <label>Propiedad<br><input type="number" name="impuesto_propiedad"></label><br><br>
+    <label>Auto<br><input type="number" name="impuesto_auto"></label><br><br>
   </div>
 </div>
 
