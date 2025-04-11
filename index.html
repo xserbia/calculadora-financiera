@@ -1,582 +1,379 @@
 <!DOCTYPE html>
- <html lang="es">
- <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Calculadora de Evaluación Financiera</title>
-   <style>
-     /* Estilos básicos para el formulario y resultados */
-     body {
-       font-family: sans-serif;
-       margin: 20px;
-       padding: 0;
-       background-color: #f9f9f9;
-     }
- 
-     .step, .resultado-categoria {
-       display: none;
-     }
-     .active, .active-res {
-       display: block;
-     }
- 
-     .nav-buttons {
-       display: flex;
-       justify-content: space-between;
-       margin-top: 20px;
-     }
- 
-     #nav, #navResultados {
-       display: flex;
-       justify-content: space-around;
-       flex-wrap: wrap;
-       margin-bottom: 20px;
-     }
- 
-     #nav div, .nav-res {
-       background-color: lightgray;
-       border-radius: 5px;
- @@ -37,36 +42,54 @@
-       width: 12%;
-       margin: 4px;
-     }
- 
-     .completed {
-       background-color: green;
-       color: white;
-     }
- 
-     .active {
-       background-color: yellow;
-       color: black;
-     }
- 
-     .inactive {
-       background-color: lightgray;
-       color: gray;
-     }
- 
-     .resultado-categoria {
-       border: 1px solid #ccc;
-       border-radius: 10px;
-       background: white;
-       padding: 20px;
-     }
-     table {
-       width: 100%;
-       border-collapse: collapse;
-       margin-top: 15px;
- 
-     /* Detalles ocultos inicialmente */
-     .details {
-       visibility: hidden; /* Las categorías estarán ocultas por defecto */
-       opacity: 0; /* Comienza invisible */
-       transition: visibility 0s 0.3s, opacity 0.3s ease; /* Transición suave */
-       padding-left: 20px;
-       margin-top: 10px;
-     }
-     table th, table td {
-       border: 1px solid #ccc;
-       padding: 8px;
-       text-align: center;
- 
-     .details.show {
-       visibility: visible; /* Hace la sección visible */
-       opacity: 1; /* Hace la sección completamente opaca */
-       transition: visibility 0s, opacity 0.3s ease; /* Desactiva el retraso de visibilidad */
-     }
- 
-     .toggle-btn {
-       background-color: #007bff;
-       color: white;
-       padding: 5px 10px;
-       border: none;
-       cursor: pointer;
-     }
-     table th {
-       background-color: #eee;
- 
-     .toggle-btn:hover {
-       background-color: #0056b3;
-     }
-   </style>
- </head>
- @@ -100,410 +123,230 @@
-     </div>
- 
-     <!-- Sección 2: Ingresos -->
- <!-- Sección 2: Ingresos y Ahorros (Anual) -->
- <div class="step" id="stepIngresos">
-   <fieldset>
-     <legend><strong>2. Ingresos y ahorros (Anual)</strong></legend>
-     <label>Salario<br><input type="number" name="salario" required></label><br><br>
-     <label>Ingreso por negocio<br><input type="number" name="ingreso_negocio" required></label><br><br>
-     <label>Bonos<br><input type="number" name="bonos" required></label><br><br>
-     <label>Dividendos e intereses<br><input type="number" name="dividendos_intereses" required></label><br><br>
-     <label>Renta<br><input type="number" name="renta" required></label><br><br>
-     <label>Otros ingresos<br><input type="number" name="otros_ingresos" required></label><br><br>
-     
-     <h4>Ahorros:</h4>
-     <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro" required></label><br><br>
-     <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro" required></label><br><br>
-     <label>Otros ahorros<br><input type="number" name="otros_ahorros" required></label><br><br>
-   </fieldset>
-   <div class="nav-buttons">
-     <button type="button" onclick="prevStep(1)">Anterior</button>
-     <button type="button" onclick="nextStep(3)">Siguiente</button>
-   </div>
- </div>
-     <!-- Sección 3: Gastos -->
- <div class="step" id="stepGastos">
-   <fieldset>
-     <legend><strong>3. Gastos</strong></legend>
- <div class="gastosCategoria">
-   <button class="toggle-btn" onclick="toggleDetails('deudaDetails')">Pago de deuda</button>
-   <div class="details" id="deudaDetails">
-     <label>Hipoteca (o renta)<br><input type="number" name="hipoteca"></label><br><br>
-     <label>Préstamo de auto<br><input type="number" name="prestamo_auto"></label><br><br>
-     <label>Préstamo educativo<br><input type="number" name="prestamo_educativo"></label><br><br>
-     <label>Préstamo personal<br><input type="number" name="prestamo_personal"></label><br><br>
-     <label>Línea de crédito<br><input type="number" name="linea_credito"></label><br><br>
-     <label>Manutención<br><input type="number" name="manutencion"></label><br><br>
-     <label>Tarjetas de crédito<br><input type="number" name="tarjetas_credito"></label><br><br>
-     <label>Otros<br><input type="number" name="otros_deuda"></label><br><br>
-   </div>
- </div>
- 
- <div class="gastosCategoria">
-   <button class="toggle-btn" onclick="toggleDetails('gastosDiariosDetails')">Gastos diarios</button>
-   <div class="details" id="gastosDiariosDetails">
-     <label>Servicio público<br><input type="number" name="servicio_publico"></label><br><br>
-     <label>Cuidado de hijos<br><input type="number" name="cuidado_hijos"></label><br><br>
-     <label>Mantenimiento auto<br><input type="number" name="mantenimiento_auto"></label><br><br>
-     <label>Cuidado personal<br><input type="number" name="cuidado_personal"></label><br><br>
-     <label>Supermercado<br><input type="number" name="supermercado"></label><br><br>
-     <label>Comidas afuera<br><input type="number" name="comidas_afuera"></label><br><br>
-     <label>Ropa<br><input type="number" name="ropa"></label><br><br>
-     <label>Vacaciones<br><input type="number" name="vacaciones"></label><br><br>
-     <label>Muebles y enseres<br><input type="number" name="muebles_enseres"></label><br><br>
-     <label>Gastos Médicos y dentista<br><input type="number" name="gastos_medicos"></label><br><br>
-     <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones"></label><br><br>
-     <label>Mantenimiento del hogar<br><input type="number" name="mantenimiento_hogar"></label><br><br>
-     <label>Entretenimiento<br><input type="number" name="entretenimiento"></label><br><br>
-     <label>Libros y membresía de contenido<br><input type="number" name="libros_membresia"></label><br><br>
-     <label>Regalos y mesada<br><input type="number" name="regalos_mesada"></label><br><br>
-     <label>Donaciones<br><input type="number" name="donaciones"></label><br><br>
-     <label>Fiestas<br><input type="number" name="fiestas"></label><br><br>
-     <label>Mejoras al hogar<br><input type="number" name="mejoras_hogar"></label><br><br>
-     <label>Dues<br><input type="number" name="dues"></label><br><br>
-     <label>Servicios profesionales<br><input type="number" name="servicios_profesionales"></label><br><br>
-     <label>Gastos de mascota<br><input type="number" name="gastos_mascota"></label><br><br>
-     <label>Otros<br><input type="number" name="otros_gastos_diarios"></label><br><br>
-   </div>
- </div>
- 
- <div class="gastosCategoria">
-   <button class="toggle-btn" onclick="toggleDetails('segurosDetails')">Seguros</button>
-   <div class="details" id="segurosDetails">
-     <label>Vida<br><input type="number" name="seguro_vida"></label><br><br>
-     <label>Médico<br><input type="number" name="seguro_medico"></label><br><br>
-     <label>Propiedad<br><input type="number" name="seguro_propiedad"></label><br><br>
-     <label>Renta<br><input type="number" name="seguro_renta"></label><br><br>
-     <label>Umbrella<br><input type="number" name="seguro_umbrella"></label><br><br>
-     <label>Incapacidad<br><input type="number" name="seguro_incapacidad"></label><br><br>
-     <label>Auto<br><input type="number" name="seguro_auto"></label><br><br>
-     <label>Propiedad personal<br><input type="number" name="seguro_propiedad_personal"></label><br><br>
-   </div>
- </div>
- 
- <div class="gastosCategoria">
-   <button class="toggle-btn" onclick="toggleDetails('impuestosDetails')">Impuestos</button>
-   <div class="details" id="impuestosDetails">
-     <label>Federal<br><input type="number" name="impuesto_federal"></label><br><br>
-     <label>Seguro Social<br><input type="number" name="seguro_social"></label><br><br>
-     <label>Medicare<br><input type="number" name="medicare"></label><br><br>
-     <label>Estatales y locales<br><input type="number" name="impuesto_estatal_local"></label><br><br>
-     <label>Propiedad<br><input type="number" name="impuesto_propiedad"></label><br><br>
-     <label>Auto<br><input type="number" name="impuesto_auto"></label><br><br>
-     <label>Negocio<br><input type="number" name="impuesto_negocio"></label><br><br>
-   </div>
- </div>
-   </fieldset>
-   <div class="nav-buttons">
-     <button type="button" onclick="prevStep(1)">Anterior</button>
-     <button type="button" onclick="nextStep(3)">Siguiente</button>
-   </div>
-     <!-- Sección 4: Activos -->
-     <div class="step" id="stepActivos">
-     <div class="step" id="stepIngresos">
-       <fieldset>
-         <legend><strong>4. Activos</strong></legend>
-         <label>Cuentas bancarias y de ahorro<br><input type="number" name="cuentas_bancarias" required></label><br><br>
-         <label>Inversiones (no retiro)<br><input type="number" name="cuentas_inversion" required></label><br><br>
-         <label>Cuentas de retiro<br><input type="number" name="cuentas_retiro" required></label><br><br>
-         <label>Valor de la vivienda principal<br><input type="number" name="valor_vivienda" required></label><br><br>
-         <label>Propiedades de alquiler<br><input type="number" name="valor_propiedades_alquiler" required></label><br><br>
-         <label>Otras propiedades (vacacionales, etc.)<br><input type="number" name="valor_otros_activos" required></label><br><br>
-         <label>Vehículos<br><input type="number" name="valor_vehiculos" required></label><br><br>
-         <label>Otros activos (joyas, muebles, etc.)<br><input type="number" name="valor_otros" required></label><br><br>
-         <legend><strong>2. Ingresos y Ahorros</strong></legend>
-         <label>Salario<br><input type="number" name="salario" required></label><br><br>
-         <label>Ingreso por negocio<br><input type="number" name="ingreso_negocio" required></label><br><br>
-         <label>Bonos<br><input type="number" name="bonos" required></label><br><br>
-         <label>Dividendos e Intereses<br><input type="number" name="dividendos_intereses" required></label><br><br>
-         <label>Renta<br><input type="number" name="renta" required></label><br><br>
-         <label>Otros ingresos<br><input type="number" name="otros_ingresos" required></label><br><br>
-         <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro" required></label><br><br>
-         <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro" required></label><br><br>
-         <label>Otros ahorros<br><input type="number" name="otros_ahorros" required></label><br><br>
-       </fieldset>
-       <div class="nav-buttons">
-         <button type="button" onclick="prevStep(3)">Anterior</button>
-         <button type="button" onclick="nextStep(5)">Siguiente</button>
-         <button type="button" onclick="prevStep(1)">Anterior</button>
-         <button type="button" onclick="nextStep(3)">Siguiente</button>
-       </div>
-     </div>
- 
-     <!-- Sección 5: Pasivos -->
-     <div class="step" id="stepPasivos">
-     <!-- Sección 3: Gastos -->
-     <div class="step" id="stepGastos">
-       <fieldset>
-         <legend><strong>5. Pasivos</strong></legend>
-         <label>Deuda de tarjetas de crédito<br><input type="number" name="deuda_tarjetas" required></label><br><br>
-         <label>Hipotecas o alquiler<br><input type="number" name="deuda_hipotecaria" required></label><br><br>
-         <label>Deuda comercial<br><input type="number" name="deuda_comercial" required></label><br><br>
-         <label>Préstamos para vehículos<br><input type="number" name="deuda_vehiculos" required></label><br><br>
-         <label>Deuda estudiantil<br><input type="number" name="deuda_estudios" required></label><br><br>
-         <label>Otras deudas<br><input type="number" name="deuda_otros" required></label><br><br>
-         <legend><strong>3. Gastos</strong></legend>
-         <!-- Categorías de gastos con detalles desplegables -->
-         <div class="gastosCategoria">
-           <button class="toggle-btn" onclick="toggleDetails('deudaDetails')">Pago de deuda</button>
-           <div id="deudaDetails" class="details">
-             <label>Hipoteca (o renta)<br><input type="number" name="hipoteca"></label><br><br>
-             <label>Préstamo de auto<br><input type="number" name="prestamo_auto"></label><br><br>
-             <label>Préstamo educativo<br><input type="number" name="prestamo_educativo"></label><br><br>
-             <label>Préstamo personal<br><input type="number" name="prestamo_personal"></label><br><br>
-             <label>Línea de crédito<br><input type="number" name="linea_credito"></label><br><br>
-             <label>Manutención<br><input type="number" name="manutencion"></label><br><br>
-             <label>Tarjetas de crédito<br><input type="number" name="tarjetas_credito"></label><br><br>
-             <label>Otros<br><input type="number" name="otros_deuda"></label><br><br>
-           </div>
-         </div>
- 
-         <!-- Agrega aquí otras categorías como 'Gastos diarios', 'Seguros', 'Impuestos' -->
-         
-       </fieldset>
-       <div class="nav-buttons">
-         <button type="button" onclick="prevStep(4)">Anterior</button>
-         <button type="button" onclick="nextStep(6)">Siguiente</button>
-         <button type="button" onclick="prevStep(2)">Anterior</button>
-         <button type="button" onclick="nextStep(4)">Siguiente</button>
-       </div>
-     </div>
- 
-     <!-- Sección 6: Seguros -->
-     <div class="step" id="stepSeguros">
-       <fieldset>
-         <legend><strong>6. Seguros</strong></legend>
-         <label>Selecciona tus seguros:<br>
-           <input type="checkbox" name="seguro_vida"> Vida<br>
-           <input type="checkbox" name="seguro_incapacidad"> Incapacidad<br>
-           <input type="checkbox" name="seguro_ltc"> LTC<br>
-           <input type="checkbox" name="seguro_hogar"> Hogar<br>
-           <input type="checkbox" name="seguro_auto"> Auto<br>
-           <input type="checkbox" name="seguro_umbrella"> Umbrella<br>
-         </label><br>
-         <label>
-           <input type="checkbox" id="ningunSeguroActivo" name="ningunSeguroActivo">
-           No tengo seguros actualmente
-         </label>
-       </fieldset>
-       <div class="nav-buttons">
-         <button type="button" onclick="prevStep(5)">Anterior</button>
-         <button type="button" id="btnSigSeguros">Siguiente</button>
-     <!-- Sección 4: Resultados -->
-     <div id="resultadosContainer" style="display:none;">
-       <h2>Resultados de tu evaluación financiera</h2>
-       <div id="navResultados">
-         <div class="nav-res inactive" onclick="mostrarResultado('resA')">A. Flujo</div>
-         <div class="nav-res inactive" onclick="mostrarResultado('resB')">B. Deuda</div>
-         <div class="nav-res inactive" onclick="mostrarResultado('resC')">C. Patrimonio</div>
-         <div class="nav-res inactive" onclick="mostrarResultado('resD')">D. Seguridad</div>
-         <div class="nav-res inactive" onclick="mostrarResultado('resE')">E. Riesgo</div>
-         <div class="nav-res inactive" onclick="mostrarResultado('resF')">F. Patrimonial</div>
-         <div class="nav-res inactive" onclick="mostrarResultado('resG')">G. Retiro</div>
-         <div class="nav-res inactive" onclick="mostrarResultado('resH')">H. Estrés</div>
-       </div>
-     </div>
- 
-     <!-- Sección 7: Patrimonio -->
-     <div class="step" id="stepPatrimonio">
-       <fieldset>
-         <legend><strong>7. Patrimonio</strong></legend>
-         <label>Documentos disponibles:<br>
-           <input type="checkbox" name="trust"> Trust<br>
-           <input type="checkbox" name="will"> Testamento<br>
-           <input type="checkbox" name="advance_medical_directive"> Directiva médica anticipada<br>
-           <input type="checkbox" name="power_of_attorney"> Poder legal<br>
-           <input type="checkbox" name="beneficiary_designation"> Designación de beneficiarios<br>
-           <input type="checkbox" name="property_deeds"> Títulos de propiedad<br>
-         </label><br>
-         <label>
-           <input type="checkbox" id="ningunPatrimonioActivo" name="ningunPatrimonioActivo">
-           No tengo documentos patrimoniales actualmente
-         </label>
-       </fieldset>
-       <div class="nav-buttons">
-         <button type="button" onclick="prevStep(6)">Anterior</button>
-         <button type="submit">Calcular</button>
-       </div>
-       <div id="resA" class="resultado-categoria active-res">[Resultados A]</div>
-       <div id="resB" class="resultado-categoria">[Resultados B]</div>
-       <div id="resC" class="resultado-categoria">[Resultados C]</div>
-       <div id="resD" class="resultado-categoria">[Resultados D]</div>
-       <div id="resE" class="resultado-categoria">[Resultados E]</div>
-       <div id="resF" class="resultado-categoria">[Resultados F]</div>
-       <div id="resG" class="resultado-categoria">[Resultados G]</div>
-       <div id="resH" class="resultado-categoria">[Resultados H]</div>
-     </div>
- 
-   </form>
- </div>
- 
- <!-- Aquí estará la sección de resultados -->
- <div id="resultadosContainer" style="display:none;">
-   <h2>Resultados de tu evaluación financiera</h2>
-   <div id="navResultados">
-     <div class="nav-res inactive" onclick="mostrarResultado('resA')">A. Flujo</div>
-     <div class="nav-res inactive" onclick="mostrarResultado('resB')">B. Deuda</div>
-     <div class="nav-res inactive" onclick="mostrarResultado('resC')">C. Patrimonio</div>
-     <div class="nav-res inactive" onclick="mostrarResultado('resD')">D. Seguridad</div>
-     <div class="nav-res inactive" onclick="mostrarResultado('resE')">E. Riesgo</div>
-     <div class="nav-res inactive" onclick="mostrarResultado('resF')">F. Patrimonial</div>
-     <div class="nav-res inactive" onclick="mostrarResultado('resG')">G. Retiro</div>
-     <div class="nav-res inactive" onclick="mostrarResultado('resH')">H. Estrés</div>
-   </div>
- 
-   <div id="resA" class="resultado-categoria active-res">[Resultados A]</div>
-   <div id="resB" class="resultado-categoria">[Resultados B]</div>
-   <div id="resC" class="resultado-categoria">[Resultados C]</div>
-   <div id="resD" class="resultado-categoria">[Resultados D]</div>
-   <div id="resE" class="resultado-categoria">[Resultados E]</div>
-   <div id="resF" class="resultado-categoria">[Resultados F]</div>
-   <div id="resG" class="resultado-categoria">[Resultados G]</div>
-   <div id="resH" class="resultado-categoria">[Resultados H]</div>
- </div>
- 
- <!-- Aquí irá el script con todas las funciones de cálculo -->
- 
- <script>
- function nextStep(step) {
-   // Ocultar todas las secciones
-   document.querySelectorAll('.step').forEach((stepDiv, index) => {
-     stepDiv.classList.remove('active');
-   });
- 
-   // Mostrar la sección correspondiente
-   document.getElementById(`step${step}`).classList.add('active');
-   updateNav(step);
- }
- 
- function prevStep(step) {
-   nextStep(step);
- }
-   // Funciones para manejar el cambio de sección y mostrar detalles
-   function nextStep(step) {
-     document.querySelectorAll('.step').forEach((stepDiv) => {
-       stepDiv.classList.remove('active');
-     });
-     document.getElementById(`step${step}`).classList.add('active');
-     updateNav(step);
-   }
- 
- function updateNav(step) {
-   const navItems = document.querySelectorAll('#nav div');
-   navItems.forEach((item, index) => {
-     item.classList.remove('completed', 'active', 'inactive');
-     if (index < step - 1) item.classList.add('completed');
-     else if (index === step - 1) item.classList.add('active');
-     else item.classList.add('inactive');
-   });
- }
- // Permitir navegación directa desde el menú
- document.querySelectorAll('#nav div').forEach((navItem, index) => {
-   navItem.addEventListener('click', function () {
-     // Oculta todas las secciones
-     document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
-   function prevStep(step) {
-     nextStep(step);
-   }
- 
-     // Muestra la sección correspondiente al índice
-     document.querySelectorAll('.step')[index].classList.add('active');
-   function updateNav(step) {
-     const navItems = document.querySelectorAll('#nav div');
-     navItems.forEach((item, index) => {
-       item.classList.remove('completed', 'active', 'inactive');
-       if (index < step - 1) item.classList.add('completed');
-       else if (index === step - 1) item.classList.add('active');
-       else item.classList.add('inactive');
-     });
-   }
- 
-     // Actualiza visualmente el menú
-     updateNav(index + 1);
-   });
- });
-   // Función para mostrar u ocultar detalles de cada categoría
-   function toggleDetails(id) {
-     const details = document.getElementById(id);
-     details.classList.toggle('show');
-   }
- 
-   // Mostrar resultado de cada categoría
-   function mostrarResultado(id) {
-     document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
-     document.querySelectorAll('.resultado-categoria').forEach((div) => div.classList.remove('active-res'));
-     document.getElementById(id).classList.add('active-res');
-     document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
-     document.querySelectorAll('#navResultados .nav-res').forEach((nav) => nav.classList.remove('active'));
-     const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
-     if (current) current.classList.add('active');
-   }
-   function toggleDetails(id) {
-   // Obtén el contenedor de detalles de la categoría
-   const details = document.getElementById(id);
- 
-   // Alterna la clase 'show' para mostrar u ocultar la sección
-   if (details.classList.contains('show')) {
-     details.classList.remove('show'); // Oculta el contenido con animación
-   } else {
-     // Primero, ocultamos todos los detalles
-     const allDetails = document.querySelectorAll('.details');
-     allDetails.forEach(detail => detail.classList.remove('show'));
- 
-     // Luego, mostramos el detalle actual
-     details.classList.add('show'); // Muestra el contenido con animación
-   }
- }
- 
- 
- document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
-   // ✅ Validación para la sección de seguros
-   const seguros = document.querySelectorAll('#stepSeguros input[type="checkbox"]:not(#ningunSeguroActivo)');
-   const sinSeguro = Array.from(seguros).every(cb => !cb.checked);
-   const marcoSinSeguro = document.getElementById('ningunSeguroActivo').checked;
- 
-   if (sinSeguro && !marcoSinSeguro) {
-   // Procesar y calcular los resultados al enviar el formulario
-   document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
-     e.preventDefault();
-     alert("Por favor selecciona al menos un seguro o marca que no tienes ninguno.");
-     return;
-   }
- 
-   // ✅ Validación para la sección de patrimonio
-   const patrimonios = document.querySelectorAll('#stepPatrimonio input[type="checkbox"]:not(#ningunPatrimonioActivo)');
-   const sinPatrimonio = Array.from(patrimonios).every(cb => !cb.checked);
-   const marcoSinPatrimonio = document.getElementById('ningunPatrimonioActivo').checked;
- 
-   if (sinPatrimonio && !marcoSinPatrimonio) {
-     e.preventDefault();
-     alert("Por favor selecciona al menos un documento patrimonial o marca que no tienes ninguno.");
-     return;
-   }
- 
-   // ✅ Procesamiento normal del formulario
-   e.preventDefault();
-   const data = {};
-   Array.from(this.elements).forEach(el => {
-     if (el.name) {
-       if (el.type === "checkbox") {
-         data[el.name] = el.checked;
-       } else {
-         data[el.name] = el.value;
-     const data = {};
-     Array.from(this.elements).forEach((el) => {
-       if (el.name) {
-         if (el.type === "checkbox") {
-           data[el.name] = el.checked;
-         } else {
-           data[el.name] = el.value;
-         }
-       }
-     }
-   });
-     });
- 
-   for (let key in data) {
-     if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
-   }
- 
-   calcularResultados(data);
-   document.getElementById("resultadosContainer").style.display = "block";
-   mostrarResultado("resA");
- });
-     for (let key in data) {
-       if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
-     }
- 
-     calcularResultados(data);
-     document.getElementById("resultadosContainer").style.display = "block";
-     mostrarResultado("resA");
-   });
- 
-   // Funciones de cálculo (ejemplo para A)
-   function calcularResultados(data) {
-     // Agrega las funciones para calcular cada categoría, como calcularCategoriaA, etc.
-     calcularCategoriaA(data);
-     calcularCategoriaB(data);
-     calcularCategoriaC(data);
-     calcularCategoriaD(data);
-     calcularCategoriaE(data);
-     calcularCategoriaF(data);
-     calcularCategoriaG(data);
-     calcularCategoriaH(data);
-   }
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Evaluación Financiera</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    .step, .resultado-categoria {
+      display: none;
+    }
+    .active, .active-res {
+      display: block;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    #nav, #navResultados {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    #nav div, .nav-res {
+      background-color: lightgray;
+      border-radius: 5px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      width: 12%;
+      margin: 4px;
+    }
+    .completed {
+      background-color: green;
+      color: white;
+    }
+    .active {
+      background-color: yellow;
+      color: black;
+    }
+    .inactive {
+      background-color: lightgray;
+      color: gray;
+    }
+    .resultado-categoria {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: white;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    table th {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Aquí estará todo el formulario -->
+<div id="formularioContainer">
+  <form id="calculadoraFormulario">
+    <div id="nav">
+      <div id="navInfoPersonal" class="inactive" data-target="stepInfoPersonal">Información personal</div>
+      <div id="navIngresos" class="inactive" data-target="stepIngresos">Ingresos</div>
+      <div id="navGastos" class="inactive" data-target="stepGastos">Gastos</div>
+      <div id="navActivos" class="inactive" data-target="stepActivos">Activos</div>
+      <div id="navPasivos" class="inactive" data-target="stepPasivos">Pasivos</div>
+      <div id="navSeguros" class="inactive" data-target="stepSeguros">Seguros</div>
+      <div id="navPatrimonio" class="inactive" data-target="stepPatrimonio">Patrimonio</div>
+    </div>
+
+    <!-- Sección 1: Información personal -->
+    <div class="step active" id="stepPersonal">
+      <fieldset>
+        <legend><strong>1. Información personal</strong></legend>
+        <label>Edad<br><input type="number" name="edad" required></label><br><br>
+        <label>Estado civil<br><input type="text" name="estado_civil" required></label><br><br>
+        <label>¿Tiene dependientes?<br><input type="text" name="tiene_dependientes" required></label><br><br>
+        <label>¿A qué edad desea retirarse?<br><input type="number" name="edad_retiro" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="nextStep(2)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 2: Ingresos -->
+    <div class="step" id="stepIngresos">
+      <fieldset>
+        <legend><strong>2. Ingresos</strong></legend>
+        <label>Ingreso anual bruto<br><input type="number" name="ingreso_anual_bruto" required></label><br><br>
+        <label>Ingreso anual neto<br><input type="number" name="ingreso_anual_neto" required></label><br><br>
+        <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro" required></label><br><br>
+        <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(1)">Anterior</button>
+        <button type="button" onclick="nextStep(3)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 3: Gastos -->
+    <div class="step" id="stepGastos">
+      <fieldset>
+        <legend><strong>3. Gastos</strong></legend>
+        <label>Alimentos y bebidas<br><input type="number" name="alimentos_bebidas" required></label><br><br>
+        <label>Ropa<br><input type="number" name="ropa" required></label><br><br>
+        <label>Vivienda (sin incluir hipoteca o renta)<br><input type="number" name="vivienda" required></label><br><br>
+        <label>Transporte<br><input type="number" name="transporte" required></label><br><br>
+        <label>Salud y productos personales<br><input type="number" name="salud_productos_personales" required></label><br><br>
+        <label>Entretenimiento<br><input type="number" name="entretenimiento" required></label><br><br>
+        <label>Educación<br><input type="number" name="educacion" required></label><br><br>
+        <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones" required></label><br><br>
+        <label>Servicios públicos<br><input type="number" name="servicios_publicos" required></label><br><br>
+        <label>Seguros<br><input type="number" name="seguros" required></label><br><br>
+        <label>Impuestos<br><input type="number" name="impuestos" required></label><br><br>
+        <!-- ✅ Nuevo campo: Servicio de deuda -->
+        <label>Pago mensual total de deudas (capital + intereses)<br>
+          <input type="number" name="servicio_deuda" required>
+        </label><br><br>
+        <label>Otros<br><input type="number" name="otros" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(2)">Anterior</button>
+        <button type="button" onclick="nextStep(4)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 4: Activos -->
+    <div class="step" id="stepActivos">
+      <fieldset>
+        <legend><strong>4. Activos</strong></legend>
+        <label>Cuentas bancarias y de ahorro<br><input type="number" name="cuentas_bancarias" required></label><br><br>
+        <label>Inversiones (no retiro)<br><input type="number" name="cuentas_inversion" required></label><br><br>
+        <label>Cuentas de retiro<br><input type="number" name="cuentas_retiro" required></label><br><br>
+        <label>Valor de la vivienda principal<br><input type="number" name="valor_vivienda" required></label><br><br>
+        <label>Propiedades de alquiler<br><input type="number" name="valor_propiedades_alquiler" required></label><br><br>
+        <label>Otras propiedades (vacacionales, etc.)<br><input type="number" name="valor_otros_activos" required></label><br><br>
+        <label>Vehículos<br><input type="number" name="valor_vehiculos" required></label><br><br>
+        <label>Otros activos (joyas, muebles, etc.)<br><input type="number" name="valor_otros" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(3)">Anterior</button>
+        <button type="button" onclick="nextStep(5)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 5: Pasivos -->
+    <div class="step" id="stepPasivos">
+      <fieldset>
+        <legend><strong>5. Pasivos</strong></legend>
+        <label>Deuda de tarjetas de crédito<br><input type="number" name="deuda_tarjetas" required></label><br><br>
+        <label>Hipotecas o alquiler<br><input type="number" name="deuda_hipotecaria" required></label><br><br>
+        <label>Deuda comercial<br><input type="number" name="deuda_comercial" required></label><br><br>
+        <label>Préstamos para vehículos<br><input type="number" name="deuda_vehiculos" required></label><br><br>
+        <label>Deuda estudiantil<br><input type="number" name="deuda_estudios" required></label><br><br>
+        <label>Otras deudas<br><input type="number" name="deuda_otros" required></label><br><br>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(4)">Anterior</button>
+        <button type="button" onclick="nextStep(6)">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 6: Seguros -->
+    <div class="step" id="stepSeguros">
+      <fieldset>
+        <legend><strong>6. Seguros</strong></legend>
+        <label>Selecciona tus seguros:<br>
+          <input type="checkbox" name="seguro_vida"> Vida<br>
+          <input type="checkbox" name="seguro_incapacidad"> Incapacidad<br>
+          <input type="checkbox" name="seguro_ltc"> LTC<br>
+          <input type="checkbox" name="seguro_hogar"> Hogar<br>
+          <input type="checkbox" name="seguro_auto"> Auto<br>
+          <input type="checkbox" name="seguro_umbrella"> Umbrella<br>
+        </label><br>
+        <label>
+          <input type="checkbox" id="ningunSeguroActivo" name="ningunSeguroActivo">
+          No tengo seguros actualmente
+        </label>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(5)">Anterior</button>
+        <button type="button" id="btnSigSeguros">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Sección 7: Patrimonio -->
+    <div class="step" id="stepPatrimonio">
+      <fieldset>
+        <legend><strong>7. Patrimonio</strong></legend>
+        <label>Documentos disponibles:<br>
+          <input type="checkbox" name="trust"> Trust<br>
+          <input type="checkbox" name="will"> Testamento<br>
+          <input type="checkbox" name="advance_medical_directive"> Directiva médica anticipada<br>
+          <input type="checkbox" name="power_of_attorney"> Poder legal<br>
+          <input type="checkbox" name="beneficiary_designation"> Designación de beneficiarios<br>
+          <input type="checkbox" name="property_deeds"> Títulos de propiedad<br>
+        </label><br>
+        <label>
+          <input type="checkbox" id="ningunPatrimonioActivo" name="ningunPatrimonioActivo">
+          No tengo documentos patrimoniales actualmente
+        </label>
+      </fieldset>
+      <div class="nav-buttons">
+        <button type="button" onclick="prevStep(6)">Anterior</button>
+        <button type="submit">Calcular</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<!-- Aquí estará la sección de resultados -->
+<div id="resultadosContainer" style="display:none;">
+  <h2>Resultados de tu evaluación financiera</h2>
+  <div id="navResultados">
+    <div class="nav-res inactive" onclick="mostrarResultado('resA')">A. Flujo</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resB')">B. Deuda</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resC')">C. Patrimonio</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resD')">D. Seguridad</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resE')">E. Riesgo</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resF')">F. Patrimonial</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resG')">G. Retiro</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resH')">H. Estrés</div>
+  </div>
+
+  <div id="resA" class="resultado-categoria active-res">[Resultados A]</div>
+  <div id="resB" class="resultado-categoria">[Resultados B]</div>
+  <div id="resC" class="resultado-categoria">[Resultados C]</div>
+  <div id="resD" class="resultado-categoria">[Resultados D]</div>
+  <div id="resE" class="resultado-categoria">[Resultados E]</div>
+  <div id="resF" class="resultado-categoria">[Resultados F]</div>
+  <div id="resG" class="resultado-categoria">[Resultados G]</div>
+  <div id="resH" class="resultado-categoria">[Resultados H]</div>
+</div>
+
+<!-- Aquí irá el script con todas las funciones de cálculo -->
+
+<script>
+  function nextStep(step) {
+    document.querySelectorAll('.step').forEach((stepDiv, index) => {
+      stepDiv.classList.toggle('active', index === step - 1);
+    });
+    updateNav(step);
+  }
+
+  function prevStep(step) {
+    nextStep(step);
+  }
+
+function updateNav(step) {
+  const navItems = document.querySelectorAll('#nav div');
+  navItems.forEach((item, index) => {
+    item.classList.remove('completed', 'active', 'inactive');
+    if (index < step - 1) item.classList.add('completed');
+    else if (index === step - 1) item.classList.add('active');
+    else item.classList.add('inactive');
+  });
+}
+// Permitir navegación directa desde el menú
+document.querySelectorAll('#nav div').forEach((navItem, index) => {
+  navItem.addEventListener('click', function () {
+    // Oculta todas las secciones
+    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+
+    // Muestra la sección correspondiente al índice
+    document.querySelectorAll('.step')[index].classList.add('active');
+
+    // Actualiza visualmente el menú
+    updateNav(index + 1);
+  });
+});
+
+  function mostrarResultado(id) {
+    document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
+    document.getElementById(id).classList.add('active-res');
+    document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
+    const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
+    if (current) current.classList.add('active');
+  }
+
+document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
+  // ✅ Validación para la sección de seguros
+  const seguros = document.querySelectorAll('#stepSeguros input[type="checkbox"]:not(#ningunSeguroActivo)');
+  const sinSeguro = Array.from(seguros).every(cb => !cb.checked);
+  const marcoSinSeguro = document.getElementById('ningunSeguroActivo').checked;
+
+  if (sinSeguro && !marcoSinSeguro) {
+    e.preventDefault();
+    alert("Por favor selecciona al menos un seguro o marca que no tienes ninguno.");
+    return;
+  }
+
+  // ✅ Validación para la sección de patrimonio
+  const patrimonios = document.querySelectorAll('#stepPatrimonio input[type="checkbox"]:not(#ningunPatrimonioActivo)');
+  const sinPatrimonio = Array.from(patrimonios).every(cb => !cb.checked);
+  const marcoSinPatrimonio = document.getElementById('ningunPatrimonioActivo').checked;
+
+  if (sinPatrimonio && !marcoSinPatrimonio) {
+    e.preventDefault();
+    alert("Por favor selecciona al menos un documento patrimonial o marca que no tienes ninguno.");
+    return;
+  }
+
+  // ✅ Procesamiento normal del formulario
+  e.preventDefault();
+  const data = {};
+  Array.from(this.elements).forEach(el => {
+    if (el.name) {
+      if (el.type === "checkbox") {
+        data[el.name] = el.checked;
+      } else {
+        data[el.name] = el.value;
+      }
+    }
+  });
+
+  for (let key in data) {
+    if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
+  }
+
+  calcularResultados(data);
+  document.getElementById("resultadosContainer").style.display = "block";
+  mostrarResultado("resA");
+});
+
+
+  function calcularResultados(data) {
+    calcularCategoriaA(data);
+    calcularCategoriaB(data);
+    calcularCategoriaC(data);
+    calcularCategoriaD(data);
+    calcularCategoriaE(data);
+    calcularCategoriaF(data);
+    calcularCategoriaG(data);
+    calcularCategoriaH(data);
+  }
 
 function calcularCategoriaA(data) {
-  // Ingresos
-  const ingresoMensual = (
-    (data.salario || 0) +
-    (data.ingreso_negocio || 0) +
-    (data.bonos || 0) +
-    (data.dividendos_intereses || 0) +
-    (data.renta || 0) +
-    (data.otros_ingresos || 0)
-  ) / 12; // Total mensual
-
-  // Ahorros
-  const ahorroMensual = (
-    (data.aporte_personal_retiro || 0) +
-    (data.aporte_empleador_retiro || 0) +
-    (data.otros_ahorros || 0)
-  ) / 12; // Total mensual
+  const ingresoMensual = data.ingreso_anual_neto / 12;
 
   const gastoMensual = (
-    (data.alimentos_bebidas || 0) +
-    (data.transporte || 0) +
-    (data.telecomunicaciones || 0) +
-    (data.servicios_publicos || 0) +
-    (data.seguros || 0) +
-    (data.educacion || 0) +
-    (data.impuestos || 0) +
-    (data.servicio_deuda || 0)
+    data.alimentos_bebidas +
+    data.transporte +
+    data.telecomunicaciones +
+    data.servicios_publicos +
+    data.seguros +
+    data.educacion +
+    data.impuestos +
+    data.servicio_deuda
   );
 
+  const ahorroMensual = ingresoMensual - gastoMensual;
   const tasaAhorro = (ahorroMensual / ingresoMensual) * 100;
 
-  // Meses de reserva
   const mesesReserva = data.cuentas_bancarias / gastoMensual;
 
-  // Activos líquidos y ratio corriente
   const activosLiquidos = data.cuentas_bancarias + data.cuentas_inversion;
   const razonCorriente = activosLiquidos / data.deuda_tarjetas;
 
-  // Activos totales y efectivo sobre activos
   const activosTotales = (
     data.cuentas_bancarias + data.cuentas_inversion +
     data.valor_vivienda + data.valor_propiedades_alquiler +
@@ -593,8 +390,7 @@ function calcularCategoriaA(data) {
 
   document.getElementById("resA").innerHTML = `
     <h3>🅰️ A. Flujo de efectivo y liquidez</h3>
-    <p><strong>Ingreso mensual total:</strong> $${ingresoMensual.toFixed(2)}</p>
-    <p><strong>Ahorro mensual total:</strong> $${ahorroMensual.toFixed(2)}</p>
+    <p><strong>Ingreso mensual neto:</strong> $${ingresoMensual.toFixed(2)}</p>
     <p><strong>Gasto mensual estimado:</strong> $${gastoMensual.toFixed(0)}</p>
     <p><strong>Tasa de ahorro:</strong> ${tasaAhorro.toFixed(1)}% ${emojiAhorro}</p>
     <p><strong>Meses de reserva de emergencia:</strong> ${mesesReserva.toFixed(1)} meses ${emojiReserva}</p>
@@ -605,7 +401,6 @@ function calcularCategoriaA(data) {
     </p>
   `;
 }
-
 
 
 
