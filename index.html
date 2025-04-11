@@ -99,17 +99,18 @@
       </div>
     </div>
 
-    <!-- Sección 2: Ingresos -->
-<!-- Sección 2: Ingresos -->
+<!-- Sección 2: Ingresos y Ahorros (Anual) -->
 <div class="step" id="stepIngresos">
   <fieldset>
-    <legend><strong>2. Ingresos y Ahorros (Anual)</strong></legend>
+    <legend><strong>2. Ingresos y ahorros (Anual)</strong></legend>
     <label>Salario<br><input type="number" name="salario" required></label><br><br>
     <label>Ingreso por negocio<br><input type="number" name="ingreso_negocio" required></label><br><br>
     <label>Bonos<br><input type="number" name="bonos" required></label><br><br>
-    <label>Dividendos e Intereses<br><input type="number" name="dividendos_intereses" required></label><br><br>
+    <label>Dividendos e intereses<br><input type="number" name="dividendos_intereses" required></label><br><br>
     <label>Renta<br><input type="number" name="renta" required></label><br><br>
     <label>Otros ingresos<br><input type="number" name="otros_ingresos" required></label><br><br>
+    
+    <h4>Ahorros:</h4>
     <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro" required></label><br><br>
     <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro" required></label><br><br>
     <label>Otros ahorros<br><input type="number" name="otros_ahorros" required></label><br><br>
@@ -119,6 +120,7 @@
     <button type="button" onclick="nextStep(3)">Siguiente</button>
   </div>
 </div>
+
     <!-- Sección 3: Gastos -->
     <div class="step" id="stepGastos">
       <fieldset>
@@ -358,27 +360,44 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
   }
 
 function calcularCategoriaA(data) {
-  const ingresoMensual = data.ingreso_anual_neto / 12;
+  // Ingresos
+  const ingresoMensual = (
+    (data.salario || 0) +
+    (data.ingreso_negocio || 0) +
+    (data.bonos || 0) +
+    (data.dividendos_intereses || 0) +
+    (data.renta || 0) +
+    (data.otros_ingresos || 0)
+  ) / 12; // Total mensual
+
+  // Ahorros
+  const ahorroMensual = (
+    (data.aporte_personal_retiro || 0) +
+    (data.aporte_empleador_retiro || 0) +
+    (data.otros_ahorros || 0)
+  ) / 12; // Total mensual
 
   const gastoMensual = (
-    data.alimentos_bebidas +
-    data.transporte +
-    data.telecomunicaciones +
-    data.servicios_publicos +
-    data.seguros +
-    data.educacion +
-    data.impuestos +
-    data.servicio_deuda
+    (data.alimentos_bebidas || 0) +
+    (data.transporte || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.servicios_publicos || 0) +
+    (data.seguros || 0) +
+    (data.educacion || 0) +
+    (data.impuestos || 0) +
+    (data.servicio_deuda || 0)
   );
 
-  const ahorroMensual = ingresoMensual - gastoMensual;
   const tasaAhorro = (ahorroMensual / ingresoMensual) * 100;
 
+  // Meses de reserva
   const mesesReserva = data.cuentas_bancarias / gastoMensual;
 
+  // Activos líquidos y ratio corriente
   const activosLiquidos = data.cuentas_bancarias + data.cuentas_inversion;
   const razonCorriente = activosLiquidos / data.deuda_tarjetas;
 
+  // Activos totales y efectivo sobre activos
   const activosTotales = (
     data.cuentas_bancarias + data.cuentas_inversion +
     data.valor_vivienda + data.valor_propiedades_alquiler +
@@ -395,7 +414,8 @@ function calcularCategoriaA(data) {
 
   document.getElementById("resA").innerHTML = `
     <h3>🅰️ A. Flujo de efectivo y liquidez</h3>
-    <p><strong>Ingreso mensual neto:</strong> $${ingresoMensual.toFixed(2)}</p>
+    <p><strong>Ingreso mensual total:</strong> $${ingresoMensual.toFixed(2)}</p>
+    <p><strong>Ahorro mensual total:</strong> $${ahorroMensual.toFixed(2)}</p>
     <p><strong>Gasto mensual estimado:</strong> $${gastoMensual.toFixed(0)}</p>
     <p><strong>Tasa de ahorro:</strong> ${tasaAhorro.toFixed(1)}% ${emojiAhorro}</p>
     <p><strong>Meses de reserva de emergencia:</strong> ${mesesReserva.toFixed(1)} meses ${emojiReserva}</p>
@@ -406,6 +426,7 @@ function calcularCategoriaA(data) {
     </p>
   `;
 }
+
 
 
 
