@@ -100,20 +100,25 @@
     </div>
 
     <!-- Sección 2: Ingresos -->
-    <div class="step" id="stepIngresos">
-      <fieldset>
-        <legend><strong>2. Ingresos</strong></legend>
-        <label>Ingreso anual bruto<br><input type="number" name="ingreso_anual_bruto" required></label><br><br>
-        <label>Ingreso anual neto<br><input type="number" name="ingreso_anual_neto" required></label><br><br>
-        <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro" required></label><br><br>
-        <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro" required></label><br><br>
-      </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(1)">Anterior</button>
-        <button type="button" onclick="nextStep(3)">Siguiente</button>
-      </div>
-    </div>
-
+<!-- Sección 2: Ingresos -->
+<div class="step" id="stepIngresos">
+  <fieldset>
+    <legend><strong>2. Ingresos y Ahorros (Anual)</strong></legend>
+    <label>Salario<br><input type="number" name="salario" required></label><br><br>
+    <label>Ingreso por negocio<br><input type="number" name="ingreso_negocio" required></label><br><br>
+    <label>Bonos<br><input type="number" name="bonos" required></label><br><br>
+    <label>Dividendos e Intereses<br><input type="number" name="dividendos_intereses" required></label><br><br>
+    <label>Renta<br><input type="number" name="renta" required></label><br><br>
+    <label>Otros ingresos<br><input type="number" name="otros_ingresos" required></label><br><br>
+    <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro" required></label><br><br>
+    <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro" required></label><br><br>
+    <label>Otros ahorros<br><input type="number" name="otros_ahorros" required></label><br><br>
+  </fieldset>
+  <div class="nav-buttons">
+    <button type="button" onclick="prevStep(1)">Anterior</button>
+    <button type="button" onclick="nextStep(3)">Siguiente</button>
+  </div>
+</div>
     <!-- Sección 3: Gastos -->
     <div class="step" id="stepGastos">
       <fieldset>
