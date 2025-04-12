@@ -335,181 +335,128 @@
   <div id="resG" class="resultado-categoria">[Resultados G]</div>
   <div id="resH" class="resultado-categoria">[Resultados H]</div>
 </div>
-
-<!-- Aquí irá el script con todas las funciones de cálculo -->
-
 <script>
-<div id="resultadosContainer"> style="display:none;">
-  <h2>Resultados de tu evaluación financiera</h2>
-  <div id="navResultados">
-    <div class="nav-res inactive" onclick="mostrarResultado('resA')">A. Flujo</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resB')">B. Deuda</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resC')">C. Patrimonio</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resD')">D. Seguridad</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resE')">E. Riesgo</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resF')">F. Patrimonial</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resG')">G. Retiro</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resH')">H. Estrés</div>
-  </div>
-
-  <div id="resA" class="resultado-categoria active-res">[Resultados A]</div>
-  <div id="resB" class="resultado-categoria">[Resultados B]</div>
-  <div id="resC" class="resultado-categoria">[Resultados C]</div>
-  <div id="resD" class="resultado-categoria">[Resultados D]</div>
-  <div id="resE" class="resultado-categoria">[Resultados E]</div>
-  <div id="resF" class="resultado-categoria">[Resultados F]</div>
-  <div id="resG" class="resultado-categoria">[Resultados G]</div>
-  <div id="resH" class="resultado-categoria">[Resultados H]</div>
-</div>
-
-<!-- Aquí irá el script con todas las funciones de cálculo -->
-
-// Función para pasar a la siguiente sección
-function nextStep(step) {
-  const steps = document.querySelectorAll('.step');
-  // Ocultamos todas las secciones
-  steps.forEach(stepDiv => stepDiv.classList.remove('active'));
-  // Mostramos la sección correspondiente
-  document.getElementById('step' + step).classList.add('active');
-  
-  updateNav(step);
-}
-
-// Función para volver a la sección anterior
-function prevStep(step) {
-  nextStep(step);
-}
-
-// Función para actualizar la navegación en la barra de progreso
-function updateNav(step) {
-  const navItems = document.querySelectorAll('#nav div');
-  navItems.forEach((item, index) => {
-    item.classList.remove('completed', 'active', 'inactive');
-    if (index < step - 1) item.classList.add('completed');
-    else if (index === step - 1) item.classList.add('active');
-    else item.classList.add('inactive');
-  });
-}
-
-// Función para permitir la navegación directa desde el menú
-document.querySelectorAll('#nav div').forEach((navItem, index) => {
-  navItem.addEventListener('click', function () {
+  // Función para pasar a la siguiente sección
+  function nextStep(step) {
+    const steps = document.querySelectorAll('.step');
     // Ocultamos todas las secciones
-    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+    steps.forEach(stepDiv => stepDiv.classList.remove('active'));
+    // Mostramos la sección correspondiente
+    document.getElementById('step' + step).classList.add('active');
+    updateNav(step);
+  }
 
-    // Mostramos la sección correspondiente al índice
-    document.querySelectorAll('.step')[index].classList.add('active');
+  // Función para volver a la sección anterior
+  function prevStep(step) {
+    nextStep(step);
+  }
 
-    // Actualizamos visualmente el menú
-    updateNav(index + 1);
+  // Función para actualizar la navegación en la barra de progreso
+  function updateNav(step) {
+    const navItems = document.querySelectorAll('#nav div');
+    navItems.forEach((item, index) => {
+      item.classList.remove('completed', 'active', 'inactive');
+      if (index < step - 1) item.classList.add('completed');
+      else if (index === step - 1) item.classList.add('active');
+      else item.classList.add('inactive');
+    });
+  }
+
+  // Permitir navegación directa desde el menú
+  document.querySelectorAll('#nav div').forEach((navItem, index) => {
+    navItem.addEventListener('click', function () {
+      // Ocultamos todas las secciones
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+
+      // Mostramos la sección correspondiente al índice
+      document.querySelectorAll('.step')[index].classList.add('active');
+
+      // Actualizamos visualmente el menú
+      updateNav(index + 1);
+    });
   });
-});
 
-// Función para mostrar/ocultar los detalles de la deuda
-function toggleDeudaDetails() {
-  var deudaDetails = document.getElementById("deudaDetails");
-  deudaDetails.style.display = deudaDetails.style.display === "none" ? "block" : "none";
-}
+  // Función para mostrar los resultados
+  function mostrarResultado(id) {
+    document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
+    document.getElementById(id).classList.add('active-res');
+    document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
+    const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
+    if (current) current.classList.add('active');
+  }
 
-// Función para mostrar/ocultar los detalles de los gastos diarios
-function toggleGastosDetails() {
-  var gastosDetails = document.getElementById("gastosDetails");
-  gastosDetails.style.display = gastosDetails.style.display === "none" ? "block" : "none";
-}
+  // Evento al hacer submit del formulario
+  document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
+    e.preventDefault(); // Evitar que el formulario se envíe por defecto
 
-// Función para mostrar/ocultar los detalles de los seguros
-function toggleSegurosDetails() {
-  var segurosDetails = document.getElementById("segurosDetails");
-  segurosDetails.style.display = segurosDetails.style.display === "none" ? "block" : "none";
-}
+    const data = {};
+    Array.from(this.elements).forEach(el => {
+      if (el.name) {
+        if (el.type === "checkbox") {
+          data[el.name] = el.checked;
+        } else {
+          data[el.name] = el.value;
+        }
+      }
+    });
 
-// Función para mostrar/ocultar los detalles de los impuestos
-function toggleImpuestosDetails() {
-  var impuestosDetails = document.getElementById("impuestosDetails");
-  impuestosDetails.style.display = impuestosDetails.style.display === "none" ? "block" : "none";
-}
+    // Convertir los datos numéricos a valores flotantes donde sea necesario
+    for (let key in data) {
+      if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
+    }
 
-// Función para mostrar el gráfico de Dona para la distribución de gastos
-function mostrarGraficoGastos(data) {
-  const gastosData = {
-    labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos'],
-    datasets: [{
-      label: 'Distribución de gastos',
-      data: [
-        data.pago_deuda || 0,  
-        data.gastos_diarios || 0,  
-        data.seguros || 0,  
-        data.impuestos || 0  
-      ],
-      backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1'],
-      hoverOffset: 4
-    }]
-  };
+    // Llamada a la función para mostrar el gráfico de dona con los gastos
+    mostrarGraficoGastos(data);
 
-  const config = {
-    type: 'doughnut',
-    data: gastosData,
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        tooltip: {
-          callbacks: {
-            label: function(tooltipItem) {
-              return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
+    // Llamar a la función de cálculo
+    calcularResultados(data);
+
+    // Mostrar los resultados
+    document.getElementById("resultadosContainer").style.display = "block";
+    mostrarResultado("resA");
+  });
+
+  // Función para mostrar el gráfico de Dona para la distribución de gastos
+  function mostrarGraficoGastos(data) {
+    const gastosData = {
+      labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos'],
+      datasets: [{
+        label: 'Distribución de gastos',
+        data: [
+          data.pago_deuda || 0,  
+          data.gastos_diarios || 0,  
+          data.seguros || 0,  
+          data.impuestos || 0  
+        ],
+        backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1'],
+        hoverOffset: 4
+      }]
+    };
+
+    const config = {
+      type: 'doughnut',
+      data: gastosData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          tooltip: {
+            callbacks: {
+              label: function(tooltipItem) {
+                return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
+              }
             }
           }
         }
       }
-    }
-  };
+    };
 
-  const ctx = document.getElementById('graficoGastos').getContext('2d');
-  new Chart(ctx, config);
-}
-
-// Función para mostrar los resultados de la evaluación
-function mostrarResultado(id) {
-  document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
-  document.getElementById(id).classList.add('active-res');
-  document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
-  const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
-  if (current) current.classList.add('active');
-}
-
-// Evento al hacer submit del formulario
-document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
-  e.preventDefault(); // Evitar que el formulario se envíe por defecto
-
-  const data = {};
-  Array.from(this.elements).forEach(el => {
-    if (el.name) {
-      if (el.type === "checkbox") {
-        data[el.name] = el.checked;
-      } else {
-        data[el.name] = el.value;
-      }
-    }
-  });
-
-  // Convertir los datos numéricos a valores flotantes donde sea necesario
-  for (let key in data) {
-    if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
+    const ctx = document.getElementById('graficoGastos').getContext('2d');
+    new Chart(ctx, config);
   }
 
-  // Llamada a la función para mostrar el gráfico de dona con los gastos
-  mostrarGraficoGastos(data);
-
-  // Llamar a la función de cálculo
-  calcularResultados(data);
-
-  // Mostrar los resultados
-  document.getElementById("resultadosContainer").style.display = "block";
-  mostrarResultado("resA");
-});
-      
   function calcularResultados(data) {
     calcularCategoriaA(data);
     calcularCategoriaB(data);
