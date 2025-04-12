@@ -457,47 +457,46 @@ function mostrarGraficoGastos(data) {
     return;
   }
 
-  const gastosData = {
-    labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos'],
-    datasets: [{
-      label: 'Distribución de gastos',
-      data: [
-        data.pago_deuda || 0,  
-        data.gastos_diarios || 0,  
-        data.seguros || 0,  
-        data.impuestos || 0  
-      ],
-      backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1'],
-      hoverOffset: 4
-    }]
-  };
+// Crear los datos y configuración del gráfico antes de usarlo
+const gastosData = {
+  labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos'],
+  datasets: [{
+    label: 'Distribución de gastos',
+    data: [
+      data.pago_deuda || 0,  
+      data.gastos_diarios || 0,  
+      data.seguros || 0,  
+      data.impuestos || 0  
+    ],
+    backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1'],
+    hoverOffset: 4
+  }]
+};
 
-  const config = {
-    type: 'doughnut',
-    data: gastosData,
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        tooltip: {
-          callbacks: {
-            label: function(tooltipItem) {
-              return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
-            }
+const config = {
+  type: 'doughnut',
+  data: gastosData,
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      tooltip: {
+        callbacks: {
+          label: function(tooltipItem) {
+            return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
           }
         }
       }
     }
-  };
+  }
+};
 
-  new Chart(ctx, config); // Crear el gráfico
-}
+// Ahora que config está definida, podemos crear el gráfico
+const ctx = document.getElementById('graficoGastos').getContext('2d');
+new Chart(ctx, config); // Crear el gráfico
 
-
-    const ctx = document.getElementById('graficoGastos').getContext('2d');
-    new Chart(ctx, config);
 
   function calcularResultados(data) {
     calcularCategoriaA(data);
