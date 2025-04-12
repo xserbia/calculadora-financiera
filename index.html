@@ -96,17 +96,20 @@
     /* Barra de progreso */
     #progress-bar-container {
       margin-bottom: 20px;
+      width: 100%; /* Aseguramos que ocupe todo el ancho disponible */
+      background-color: #e0e0e0; /* Fondo de la barra */
+      border-radius: 5px;
     }
 
     #progress-bar {
-      width: 0%;
+      width: 0%; /* Comienza desde 0% */
       height: 10px;
-      background-color: #4caf50;
+      background-color: #4caf50; /* Color de la barra */
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
-
 <!-- Aquí estará todo el formulario -->
 <div id="formularioContainer">
   <form id="calculadoraFormulario">
