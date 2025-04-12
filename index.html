@@ -457,48 +457,46 @@ function mostrarGraficoGastos(data) {
     return;
   }
 
-// Crear los datos y configuración del gráfico antes de usarlo
-const gastosData = {
-  labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos', 'Ahorros personales'], // Cambiar nombre a "Ahorros personales"
-  datasets: [{
-    label: 'Distribución de gastos',
-    data: [
-      data.pago_deuda || 0,  
-      data.gastos_diarios || 0,  
-      data.seguros || 0,  
-      data.impuestos || 0,
-      (data.aporte_personal_retiro || 0) + (data.otros_ahorros || 0)  // Solo los ahorros personales (sin el aporte del empleador)
-    ],
-    backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF7F50'], // Color para los ahorros personales
-    hoverOffset: 4
-  }]
-};
+  // Crear los datos y configuración del gráfico
+  const gastosData = {
+    labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos', 'Ahorro personal'],
+    datasets: [{
+      label: 'Distribución de gastos',
+      data: [
+        data.pago_deuda || 0,  
+        data.gastos_diarios || 0,  
+        data.seguros || 0,  
+        data.impuestos || 0,  
+        (data.aporte_personal_retiro || 0) + (data.otros_ahorros || 0)  // Suma solo los ahorros personales
+      ],
+      backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFC300'],  // Incluimos un color para el ahorro personal
+      hoverOffset: 4
+    }]
+  };
 
-const config = {
-  type: 'doughnut',
-  data: gastosData,
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      tooltip: {
-        callbacks: {
-          label: function(tooltipItem) {
-            return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
+  const config = {
+    type: 'doughnut',
+    data: gastosData,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem) {
+              return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
+            }
           }
         }
       }
     }
-  }
-};
+  };
 
-// Crear el gráfico
-const ctx = document.getElementById('graficoGastos').getContext('2d');
-new Chart(ctx, config); // Crear el gráfico
-
-
+  // Dibuja el gráfico
+  new Chart(ctx, config);
+}
 
   function calcularResultados(data) {
     calcularCategoriaA(data);
