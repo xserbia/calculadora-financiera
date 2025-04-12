@@ -345,9 +345,14 @@ function nextStep(stepName) {
   // Ocultamos todas las secciones
   steps.forEach(stepDiv => stepDiv.classList.remove('active'));
   
-  // Muestra la sección correspondiente al nombre de la sección
-  document.getElementById(stepName).classList.add('active');
-  updateNav(stepName);
+  // Mostramos la sección correspondiente al nombre de la sección
+  const stepToShow = document.getElementById(stepName);
+  if (stepToShow) {
+    stepToShow.classList.add('active');
+    updateNav(stepName);
+  } else {
+    console.error("Sección no encontrada: " + stepName);
+  }
 }
 
 // Función para volver a la sección anterior
