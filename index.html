@@ -139,10 +139,10 @@
         <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro" required></label><br><br>
         <label>Otros ahorros<br><input type="number" name="otros_ahorros" required></label><br><br>
       </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(1)">Anterior</button>
-        <button type="button" onclick="nextStep(3)">Siguiente</button>
-      </div>
+  <div class="nav-buttons">
+    <button type="button" onclick="prevStep('stepPersonal')">Anterior</button>
+    <button type="button" onclick="nextStep('stepGastos')">Siguiente</button>
+  </div>
     </div>
 
     <!-- Sección 3: Gastos -->
@@ -221,11 +221,10 @@
             <label>Auto<br><input type="number" name="impuesto_auto"></label><br><br>
           </div>
         </div>
-
-        <div class="nav-buttons">
-          <button type="button" onclick="prevStep(2)">Anterior</button>
-          <button type="button" onclick="nextStep(4)">Siguiente</button>
-        </div>
+  <div class="nav-buttons">
+    <button type="button" onclick="prevStep('stepIngresos')">Anterior</button>
+    <button type="button" onclick="nextStep('stepActivos')">Siguiente</button>
+  </div>
       </fieldset>
     </div>
     <!-- Sección 4: Activos -->
@@ -241,10 +240,10 @@
         <label>Vehículos<br><input type="number" name="valor_vehiculos" required></label><br><br>
         <label>Otros activos (joyas, muebles, etc.)<br><input type="number" name="valor_otros" required></label><br><br>
       </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(3)">Anterior</button>
-        <button type="button" onclick="nextStep(5)">Siguiente</button>
-      </div>
+<div class="nav-buttons">
+  <button type="button" onclick="prevStep('stepGastos')">Anterior</button>
+  <button type="button" onclick="nextStep('stepPasivos')">Siguiente</button>
+</div>
     </div>
 
     <!-- Sección 5: Pasivos -->
@@ -258,10 +257,10 @@
         <label>Deuda estudiantil<br><input type="number" name="deuda_estudios" required></label><br><br>
         <label>Otras deudas<br><input type="number" name="deuda_otros" required></label><br><br>
       </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(4)">Anterior</button>
-        <button type="button" onclick="nextStep(6)">Siguiente</button>
-      </div>
+<div class="nav-buttons">
+  <button type="button" onclick="prevStep('stepActivos')">Anterior</button>
+  <button type="button" onclick="nextStep('stepSeguros')">Siguiente</button>
+</div>
     </div>
 
     <!-- Sección 6: Seguros -->
@@ -281,10 +280,10 @@
           No tengo seguros actualmente
         </label>
       </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(5)">Anterior</button>
-        <button type="button" id="btnSigSeguros">Siguiente</button>
-      </div>
+<div class="nav-buttons">
+  <button type="button" onclick="prevStep('stepPasivos')">Anterior</button>
+  <button type="button" onclick="nextStep('stepPatrimonio')">Siguiente</button>
+</div>
     </div>
 
     <!-- Sección 7: Patrimonio -->
@@ -304,10 +303,10 @@
           No tengo documentos patrimoniales actualmente
         </label>
       </fieldset>
-      <div class="nav-buttons">
-        <button type="button" onclick="prevStep(6)">Anterior</button>
-        <button type="submit">Calcular</button>
-      </div>
+<div class="nav-buttons">
+  <button type="button" onclick="prevStep('stepSeguros')">Anterior</button>
+  <button type="submit">Calcular</button>
+</div>
     </div>
 
   </form>
