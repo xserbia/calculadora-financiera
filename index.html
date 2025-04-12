@@ -459,16 +459,17 @@ function mostrarGraficoGastos(data) {
 
 // Crear los datos y configuración del gráfico antes de usarlo
 const gastosData = {
-  labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos'],
+  labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos', 'Ahorros personales'], // Cambiar nombre a "Ahorros personales"
   datasets: [{
     label: 'Distribución de gastos',
     data: [
       data.pago_deuda || 0,  
       data.gastos_diarios || 0,  
       data.seguros || 0,  
-      data.impuestos || 0  
+      data.impuestos || 0,
+      (data.aporte_personal_retiro || 0) + (data.otros_ahorros || 0)  // Solo los ahorros personales (sin el aporte del empleador)
     ],
-    backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1'],
+    backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF7F50'], // Color para los ahorros personales
     hoverOffset: 4
   }]
 };
@@ -493,9 +494,10 @@ const config = {
   }
 };
 
-// Ahora que config está definida, podemos crear el gráfico
+// Crear el gráfico
 const ctx = document.getElementById('graficoGastos').getContext('2d');
 new Chart(ctx, config); // Crear el gráfico
+
 
 
   function calcularResultados(data) {
