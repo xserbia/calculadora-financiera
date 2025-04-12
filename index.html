@@ -451,12 +451,12 @@ function prevStep(stepName) {
 // Función para mostrar el gráfico de Dona para la distribución de gastos
 function mostrarGraficoGastos(data) {
   // Verifica si el canvas existe antes de intentar acceder a su contexto
-  const ctx = document.getElementById('graficoGastos');
-  if (!ctx) {
+  const canvas = document.getElementById('graficoGastos');
+  if (!canvas) {
     console.error("El elemento canvas con id 'graficoGastos' no se encuentra.");
     return;
   }
-
+const ctx = canvas.getContext('2d'); // Accede al contexto del canvas aquí
   // Crear los datos y configuración del gráfico
   const gastosData = {
     labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos', 'Ahorro personal'],
