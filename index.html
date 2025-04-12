@@ -325,6 +325,10 @@
     <div class="nav-res inactive" onclick="mostrarResultado('resH')">H. Estrés</div>
   </div>
 
+  <!-- Gráfico de Dona para la distribución de gastos -->
+  <h3>Distribución de gastos</h3>
+  <canvas id="graficoGastos" width="400" height="400"></canvas> <!-- Canvas para el gráfico -->
+  
   <div id="resA" class="resultado-categoria active-res">[Resultados A]</div>
   <div id="resB" class="resultado-categoria">[Resultados B]</div>
   <div id="resC" class="resultado-categoria">[Resultados C]</div>
@@ -439,42 +443,53 @@ function prevStep(stepName) {
     mostrarResultado("resA");
   });
 
-  // Función para mostrar el gráfico de Dona para la distribución de gastos
-  function mostrarGraficoGastos(data) {
-    const gastosData = {
-      labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos'],
-      datasets: [{
-        label: 'Distribución de gastos',
-        data: [
-          data.pago_deuda || 0,  
-          data.gastos_diarios || 0,  
-          data.seguros || 0,  
-          data.impuestos || 0  
-        ],
-        backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1'],
-        hoverOffset: 4
-      }]
-    };
+// Función para mostrar el gráfico de Dona para la distribución de gastos
+function mostrarGraficoGastos(data) {
+  // Verifica si el canvas existe antes de intentar acceder a su contexto
+  const ctx = document.getElementById('graficoGastos');
+  if (!ctx) {
+    console.error("El elemento canvas con id 'graficoGastos' no se encuentra.");
+    return;
+  }
 
-    const config = {
-      type: 'doughnut',
-      data: gastosData,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          tooltip: {
-            callbacks: {
-              label: function(tooltipItem) {
-                return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
-              }
+  const gastosData = {
+    labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos'],
+    datasets: [{
+      label: 'Distribución de gastos',
+      data: [
+        data.pago_deuda || 0,  
+        data.gastos_diarios || 0,  
+        data.seguros || 0,  
+        data.impuestos || 0  
+      ],
+      backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1'],
+      hoverOffset: 4
+    }]
+  };
+
+  const config = {
+    type: 'doughnut',
+    data: gastosData,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem) {
+              return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
             }
           }
         }
       }
-    };
+    }
+  };
+
+  new Chart(ctx, config); // Crear el gráfico
+}
+
 
     const ctx = document.getElementById('graficoGastos').getContext('2d');
     new Chart(ctx, config);
