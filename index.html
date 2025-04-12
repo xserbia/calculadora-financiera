@@ -516,7 +516,29 @@ const ctx = canvas.getContext('2d'); // Accede al contexto del canvas aquí
     calcularCategoriaG(data);
     calcularCategoriaH(data);
   }
+// Función para mostrar los resultados (solo se muestra la dona en la sección de flujo)
+function mostrarResultado(id) {
+  // Primero, eliminamos el gráfico de dona de todas las secciones
+  const canvas = document.getElementById('graficoGastos');
+  if (!canvas) {
+    console.error("El canvas para el gráfico de dona no se encuentra.");
+    return;
+  }
 
+  if (id !== 'resA') {
+    canvas.style.display = 'none'; // Ocultamos el gráfico en otras secciones
+  } else {
+    // Si estamos en la sección de "Flujo", mostramos el gráfico de dona
+    canvas.style.display = 'block'; // Aseguramos que el gráfico se muestre en "Flujo"
+    mostrarGraficoGastos(data); // Llamamos a la función para generar el gráfico
+  }
+  // Continuamos con la lógica de la navegación de resultados
+  document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
+  document.getElementById(id).classList.add('active-res');
+  document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
+  const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
+  if (current) current.classList.add('active');
+}
 // Función de cálculos para cada categoría
 function calcularCategoriaA(data) {
   const ingresoMensual = (
