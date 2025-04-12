@@ -353,6 +353,12 @@
   <div id="resH" class="resultado-categoria">[Resultados H]</div>
 </div>
 <script>
+  // Función para actualizar la barra de progreso
+function updateProgressBar(stepName, totalSteps) {
+  const stepIndex = Array.from(document.querySelectorAll('.step')).indexOf(document.getElementById(stepName)) + 1; 
+  const progress = (stepIndex / totalSteps) * 100;  // Calcula el porcentaje
+  document.getElementById('progress-bar').style.width = progress + '%'; // Actualiza el ancho de la barra
+}
 // Función para pasar a la siguiente sección
 function nextStep(stepName) {
   const steps = document.querySelectorAll('.step');
@@ -367,12 +373,6 @@ function nextStep(stepName) {
   } else {
     console.error("Sección no encontrada: " + stepName);
   }
-}
-// Función para actualizar la barra de progreso
-function updateProgressBar(stepName, totalSteps) {
-  const stepIndex = Array.from(document.querySelectorAll('.step')).indexOf(document.getElementById(stepName)) + 1; 
-  const progress = (stepIndex / totalSteps) * 100;  // Calcula el porcentaje
-  document.getElementById('progress-bar').style.width = progress + '%'; // Actualiza el ancho de la barra
 }
 // Función para volver a la sección anterior
 function prevStep(stepName) {
