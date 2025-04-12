@@ -68,17 +68,17 @@
 
     /* Detalles ocultos inicialmente */
     .details {
-      visibility: hidden; /* Las categorías estarán ocultas por defecto */
-      opacity: 0; /* Comienza invisible */
-      transition: visibility 0s 0.3s, opacity 0.3s ease; /* Transición suave */
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s 0.3s, opacity 0.3s ease;
       padding-left: 20px;
       margin-top: 10px;
     }
 
     .details.show {
-      visibility: visible; /* Hace la sección visible */
-      opacity: 1; /* Hace la sección completamente opaca */
-      transition: visibility 0s, opacity 0.3s ease; /* Desactiva el retraso de visibilidad */
+      visibility: visible;
+      opacity: 1;
+      transition: visibility 0s, opacity 0.3s ease;
     }
 
     .toggle-btn {
@@ -91,6 +91,17 @@
 
     .toggle-btn:hover {
       background-color: #0056b3;
+    }
+
+    /* Barra de progreso */
+    #progress-bar-container {
+      margin-bottom: 20px;
+    }
+
+    #progress-bar {
+      width: 0%;
+      height: 10px;
+      background-color: #4caf50;
     }
   </style>
 </head>
@@ -108,7 +119,10 @@
       <div id="navSeguros" class="inactive" data-target="stepSeguros">Seguros</div>
       <div id="navPatrimonio" class="inactive" data-target="stepPatrimonio">Patrimonio</div>
     </div>
-
+    <!-- Barra de progreso -->
+    <div id="progress-bar-container">
+      <div id="progress-bar"></div>
+    </div>
     <!-- Sección 1: Información personal -->
     <div class="step active" id="stepPersonal">
       <fieldset>
@@ -354,7 +368,12 @@ function nextStep(stepName) {
     console.error("Sección no encontrada: " + stepName);
   }
 }
-
+// Función para actualizar la barra de progreso
+function updateProgressBar(stepName, totalSteps) {
+  const stepIndex = Array.from(document.querySelectorAll('.step')).indexOf(document.getElementById(stepName)) + 1; 
+  const progress = (stepIndex / totalSteps) * 100;  // Calcula el porcentaje
+  document.getElementById('progress-bar').style.width = progress + '%'; // Actualiza el ancho de la barra
+}
 // Función para volver a la sección anterior
 function prevStep(stepName) {
   nextStep(stepName);
