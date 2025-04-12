@@ -336,20 +336,21 @@
   <div id="resH" class="resultado-categoria">[Resultados H]</div>
 </div>
 <script>
-  // Función para pasar a la siguiente sección
-  function nextStep(step) {
-    const steps = document.querySelectorAll('.step');
-    // Ocultamos todas las secciones
-    steps.forEach(stepDiv => stepDiv.classList.remove('active'));
-    // Mostramos la sección correspondiente
-    document.getElementById('step' + step).classList.add('active');
-    updateNav(step);
-  }
+// Función para pasar a la siguiente sección
+function nextStep(stepName) {
+  const steps = document.querySelectorAll('.step');
+  // Ocultamos todas las secciones
+  steps.forEach(stepDiv => stepDiv.classList.remove('active'));
+  
+  // Muestra la sección correspondiente al nombre de la sección
+  document.getElementById(stepName).classList.add('active');
+  updateNav(stepName);
+}
 
-  // Función para volver a la sección anterior
-  function prevStep(step) {
-    nextStep(step);
-  }
+// Función para volver a la sección anterior
+function prevStep(stepName) {
+  nextStep(stepName);
+}
 
   // Función para actualizar la navegación en la barra de progreso
   function updateNav(step) {
