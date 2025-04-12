@@ -457,6 +457,14 @@ function mostrarGraficoGastos(data) {
     return;
   }
 const ctx = canvas.getContext('2d'); // Accede al contexto del canvas aquí
+    // Verificación de los datos que se están pasando al gráfico
+  console.log("Datos para el gráfico de dona: ", {
+    pago_deuda: data.pago_deuda || 0,
+    gastos_diarios: data.gastos_diarios || 0,
+    seguros: data.seguros || 0,
+    impuestos: data.impuestos || 0,
+    ahorroPersonal: (data.aporte_personal_retiro || 0) + (data.otros_ahorros || 0)
+  });
   // Crear los datos y configuración del gráfico
   const gastosData = {
     labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos', 'Ahorro personal'],
