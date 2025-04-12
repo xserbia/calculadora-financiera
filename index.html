@@ -375,6 +375,29 @@
       updateNav(index + 1);
     });
   });
+  // Función para mostrar/ocultar los detalles de la deuda
+  function toggleDeudaDetails() {
+    var deudaDetails = document.getElementById("deudaDetails");
+    deudaDetails.style.display = deudaDetails.style.display === "none" ? "block" : "none";
+  }
+
+  // Función para mostrar/ocultar los detalles de los gastos diarios
+  function toggleGastosDetails() {
+    var gastosDetails = document.getElementById("gastosDetails");
+    gastosDetails.style.display = gastosDetails.style.display === "none" ? "block" : "none";
+  }
+
+  // Función para mostrar/ocultar los detalles de los seguros
+  function toggleSegurosDetails() {
+    var segurosDetails = document.getElementById("segurosDetails");
+    segurosDetails.style.display = segurosDetails.style.display === "none" ? "block" : "none";
+  }
+
+  // Función para mostrar/ocultar los detalles de los impuestos
+  function toggleImpuestosDetails() {
+    var impuestosDetails = document.getElementById("impuestosDetails");
+    impuestosDetails.style.display = impuestosDetails.style.display === "none" ? "block" : "none";
+  }
 
   // Función para mostrar los resultados
   function mostrarResultado(id) {
