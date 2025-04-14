@@ -434,8 +434,6 @@ function toggleImpuestosDetails() {
   var impuestosDetails = document.getElementById("impuestosDetails");
   impuestosDetails.style.display = impuestosDetails.style.display === "none" ? "block" : "none";
 }
-
-// Función para mostrar los resultados
 function mostrarResultado(id, data) {
   // Primero, eliminamos el gráfico de dona de todas las secciones
   const canvas = document.getElementById('graficoGastos');
@@ -444,9 +442,8 @@ function mostrarResultado(id, data) {
     return;
   }
 
-  // Si no estamos en la sección de "Flujo", ocultamos el gráfico de dona
   if (id !== 'resA') {
-    canvas.style.display = 'none'; 
+    canvas.style.display = 'none'; // Ocultamos el gráfico en otras secciones
   } else {
     // Si estamos en la sección de "Flujo", mostramos el gráfico de dona
     canvas.style.display = 'block'; // Aseguramos que el gráfico se muestre en "Flujo"
