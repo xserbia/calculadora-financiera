@@ -438,20 +438,54 @@ function prevStep(stepName) {
     if (current) current.classList.add('active');
   }
 
-  // Evento al hacer submit del formulario
-  document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
-    e.preventDefault(); // Evitar que el formulario se envíe por defecto
+// Evento al hacer submit del formulario
+document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
+  e.preventDefault(); // Evitar que el formulario se envíe por defecto
 
-    const data = {};
-    Array.from(this.elements).forEach(el => {
-      if (el.name) {
-        if (el.type === "checkbox") {
-          data[el.name] = el.checked;
-        } else {
-          data[el.name] = el.value;
-        }
+  // Asegurarse de que los campos sean visibles antes de enviar
+  document.getElementById("gastosDetails").style.display = "block";
+    
+  // Validación antes de enviar el formulario
+  const requiredFields = document.querySelectorAll('[required]');
+  let valid = true;
+  
+  requiredFields.forEach(field => {
+    if (!field.value) {
+      valid = false;
+      field.style.border = "2px solid red"; // Resalta los campos vacíos
+    } else {
+      field.style.border = "1px solid #ccc"; // Restablece el borde si está completado
+    }
+  });
+
+  // Si no es válido, muestra un mensaje de alerta
+  if (!valid) {
+    alert("Por favor, complete todos los campos requeridos.");
+    return; // Evita que se recojan los datos si no es válido
+  }
+
+  // Si el formulario es válido, recolectamos los datos
+  const data = {};
+  Array.from(this.elements).forEach(el => {
+    if (el.name) {
+      if (el.type === "checkbox") {
+        data[el.name] = el.checked;
+      } else {
+        data[el.name] = el.value;
       }
-    });
+    }
+  });
+
+  // Llamada a la función para mostrar el gráfico de dona con los gastos
+  mostrarGraficoGastos(data);
+
+  // Llamar a la función de cálculo de resultados
+  calcularResultados(data);
+
+  // Mostrar los resultados
+  document.getElementById("resultadosContainer").style.display = "block";
+  mostrarResultado("resA"); // Mostramos la sección de "Flujo"
+});
 
     // Convertir los datos numéricos a valores flotantes donde sea necesario
     for (let key in data) {
