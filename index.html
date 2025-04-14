@@ -521,12 +521,14 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
       (parseFloat(data.seguro_auto) || 0) +
       (parseFloat(data.seguro_propiedad_personal) || 0)
     ),
-    impuestos: (
-      (parseFloat(data.impuesto_federal) || 0) +
-      (parseFloat(data.impuesto_estatal_local) || 0) +
-      (parseFloat(data.impuesto_propiedad) || 0) +
-      (parseFloat(data.impuesto_auto) || 0)
-    ),
+  impuestos: (
+    (parseFloat(data.impuesto_federal) || 0) +
+    (parseFloat(data.impuesto_estatal_local) || 0) +
+    (parseFloat(data.impuesto_propiedad) || 0) +
+    (parseFloat(data.impuesto_auto) || 0) +
+    (parseFloat(data.seguro_social) || 0) +
+    (parseFloat(data.medicare) || 0)
+  ),
     ahorroPersonal: (parseFloat(data.aporte_personal_retiro) || 0) + (parseFloat(data.otros_ahorros) || 0)
   });
 
