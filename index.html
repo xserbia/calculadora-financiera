@@ -471,6 +471,16 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
     }
   });
 
+  // Convertir los datos numéricos a valores flotantes donde sea necesario
+  for (let key in data) {
+    if (!isNaN(data[key])) {
+      data[key] = parseFloat(data[key]); // Convertir los números a flotantes
+    }
+  }
+
+  // Recalcular el ahorro personal
+  data.ahorroPersonal = (data.aporte_personal_retiro || 0) + (data.otros_ahorros || 0);
+
   // Depuración: Imprime los datos para ver si se recogen correctamente
   console.log("Datos recogidos:", data);
 
@@ -484,6 +494,7 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
   document.getElementById("resultadosContainer").style.display = "block";
   mostrarResultado("resA", data); // Aquí se pasa 'data'
 });
+
 
 // Función para mostrar el gráfico de Dona para la distribución de gastos
 function mostrarGraficoGastos(data) {
