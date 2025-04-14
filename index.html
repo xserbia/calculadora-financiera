@@ -431,7 +431,7 @@ function prevStep(stepName) {
     impuestosDetails.style.display = impuestosDetails.style.display === "none" ? "block" : "none";
   }
 
-// Función para mostrar los resultados (solo se muestra la dona en la sección de flujo)
+// Función para mostrar los resultados
 function mostrarResultado(id, data) {
   // Primero, eliminamos el gráfico de dona de todas las secciones
   const canvas = document.getElementById('graficoGastos');
@@ -447,7 +447,7 @@ function mostrarResultado(id, data) {
     canvas.style.display = 'block'; // Aseguramos que el gráfico se muestre en "Flujo"
     mostrarGraficoGastos(data); // Llamamos a la función para generar el gráfico
   }
-  
+
   // Continuamos con la lógica de la navegación de resultados
   document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
   document.getElementById(id).classList.add('active-res');
@@ -460,7 +460,7 @@ function mostrarResultado(id, data) {
 document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
   e.preventDefault(); // Evitar que el formulario se envíe por defecto
 
-  // Recolectar los datos del formulario
+  // Recolectamos los datos del formulario
   const data = {};
   Array.from(this.elements).forEach(el => {
     if (el.name) {
@@ -472,10 +472,8 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
     }
   });
 
-  // Convertir los datos numéricos a valores flotantes donde sea necesario
-  for (let key in data) {
-    if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
-  }
+  // Depuración: Imprime los datos para ver si se recogen correctamente
+  console.log("Datos recogidos:", data);
 
   // Llamada a la función para mostrar el gráfico de dona con los gastos
   mostrarGraficoGastos(data);
@@ -485,8 +483,9 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
 
   // Mostrar los resultados
   document.getElementById("resultadosContainer").style.display = "block";
-  mostrarResultado("resA", data); // Pasamos 'data' a la función mostrarResultado
+  mostrarResultado("resA", data); // Pasar 'data' aquí
 });
+
 // Función para mostrar el gráfico de Dona para la distribución de gastos
 function mostrarGraficoGastos(data) {
   // Verifica si el canvas existe antes de intentar acceder a su contexto
