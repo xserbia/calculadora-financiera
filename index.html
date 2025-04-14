@@ -331,14 +331,14 @@
 <div id="resultadosContainer" style="display:none;">
   <h2>Resultados de tu evaluación financiera</h2>
   <div id="navResultados">
-    <div class="nav-res inactive" onclick="mostrarResultado('resA')">A. Flujo</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resB')">B. Deuda</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resC')">C. Patrimonio</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resD')">D. Seguridad</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resE')">E. Riesgo</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resF')">F. Patrimonial</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resG')">G. Retiro</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resH')">H. Estrés</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resA', data)">A. Flujo</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resB', data)">B. Deuda</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resC', data)">C. Patrimonio</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resD', data)">D. Seguridad</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resE', data)">E. Riesgo</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resF', data)">F. Patrimonial</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resG', data)">G. Retiro</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resH', data)">H. Estrés</div>
   </div>
 
   <!-- Gráfico de Dona para la distribución de gastos -->
@@ -438,7 +438,6 @@ function prevStep(stepName) {
     if (current) current.classList.add('active');
   }
 
-// Evento al hacer submit del formulario
 document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
   e.preventDefault(); // Evitar que el formulario se envíe por defecto
 
@@ -458,7 +457,6 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
     }
   });
 
-  // Si no es válido, muestra un mensaje de alerta
   if (!valid) {
     alert("Por favor, complete todos los campos requeridos.");
     return; // Evita que se recojan los datos si no es válido
@@ -484,8 +482,9 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
 
   // Mostrar los resultados
   document.getElementById("resultadosContainer").style.display = "block";
-  mostrarResultado("resA"); // Mostramos la sección de "Flujo"
+  mostrarResultado("resA", data); // Pasar "data" como argumento a mostrarResultado
 });
+
 
     // Convertir los datos numéricos a valores flotantes donde sea necesario
     for (let key in data) {
