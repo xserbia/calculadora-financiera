@@ -499,8 +499,12 @@ function mostrarGraficoGastos(data) {
     return;
   }
 
-  const ctx = canvas.getContext('2d'); // Accede al contexto del canvas aquí
+  // Si ya existe un gráfico, destrúyelo antes de crear uno nuevo
+  if (window.chartInstance) {
+    window.chartInstance.destroy(); // Destruye el gráfico existente
+  }
 
+  const ctx = canvas.getContext('2d'); // Accede al contexto del canvas aquí
   // Verificación de los datos que se están pasando al gráfico
   console.log("Datos para el gráfico de dona: ", {
     pago_deuda: data.pago_deuda || 0,
@@ -547,10 +551,9 @@ function mostrarGraficoGastos(data) {
     }
   };
 
-  // Dibuja el gráfico
-  new Chart(ctx, config); // Aquí es donde finalmente se ejecuta el gráfico
-} // Aquí termina correctamente la función mostrarGraficoGastos
-
+  // Crear el gráfico y guardarlo en la variable global
+  window.chartInstance = new Chart(ctx, config);
+}
   function calcularResultados(data) {
     calcularCategoriaA(data);
     calcularCategoriaB(data);
