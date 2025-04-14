@@ -455,7 +455,6 @@ function mostrarResultado(id, data) {
   const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
   if (current) current.classList.add('active');
 }
-
 // Evento al hacer submit del formulario
 document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
   e.preventDefault(); // Evitar que el formulario se envíe por defecto
@@ -483,7 +482,7 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
 
   // Mostrar los resultados
   document.getElementById("resultadosContainer").style.display = "block";
-  mostrarResultado("resA", data); // Pasar 'data' aquí
+  mostrarResultado("resA", data); // Aquí se pasa 'data'
 });
 
 // Función para mostrar el gráfico de Dona para la distribución de gastos
