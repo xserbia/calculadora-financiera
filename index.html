@@ -438,16 +438,17 @@ function prevStep(stepName) {
     if (current) current.classList.add('active');
   }
 
+// Evento al hacer submit del formulario
 document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
   e.preventDefault(); // Evitar que el formulario se envíe por defecto
 
   // Asegurarse de que los campos sean visibles antes de enviar
   document.getElementById("gastosDetails").style.display = "block";
-    
+
   // Validación antes de enviar el formulario
   const requiredFields = document.querySelectorAll('[required]');
   let valid = true;
-  
+
   requiredFields.forEach(field => {
     if (!field.value) {
       valid = false;
@@ -457,6 +458,7 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
     }
   });
 
+  // Si no es válido, muestra un mensaje de alerta
   if (!valid) {
     alert("Por favor, complete todos los campos requeridos.");
     return; // Evita que se recojan los datos si no es válido
@@ -474,33 +476,21 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
     }
   });
 
+  // Convertir los datos numéricos a valores flotantes donde sea necesario
+  for (let key in data) {
+    if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
+  }
+
   // Llamada a la función para mostrar el gráfico de dona con los gastos
   mostrarGraficoGastos(data);
 
-  // Llamar a la función de cálculo de resultados
+  // Llamar a la función de cálculo
   calcularResultados(data);
 
   // Mostrar los resultados
   document.getElementById("resultadosContainer").style.display = "block";
-  mostrarResultado("resA", data); // Pasar "data" como argumento a mostrarResultado
-});
-
-
-    // Convertir los datos numéricos a valores flotantes donde sea necesario
-    for (let key in data) {
-      if (!isNaN(data[key])) data[key] = parseFloat(data[key]);
-    }
-
-    // Llamada a la función para mostrar el gráfico de dona con los gastos
-    mostrarGraficoGastos(data);
-
-    // Llamar a la función de cálculo
-    calcularResultados(data);
-
-    // Mostrar los resultados
-    document.getElementById("resultadosContainer").style.display = "block";
-    mostrarResultado("resA");
-  });
+  mostrarResultado("resA");
+});  // Aquí falta la llave de cierre para el evento 'submit'
 
 // Función para mostrar el gráfico de Dona para la distribución de gastos
 function mostrarGraficoGastos(data) {
@@ -510,8 +500,8 @@ function mostrarGraficoGastos(data) {
     console.error("El elemento canvas con id 'graficoGastos' no se encuentra.");
     return;
   }
-const ctx = canvas.getContext('2d'); // Accede al contexto del canvas aquí
-    // Verificación de los datos que se están pasando al gráfico
+  const ctx = canvas.getContext('2d'); // Accede al contexto del canvas aquí
+  // Verificación de los datos que se están pasando al gráfico
   console.log("Datos para el gráfico de dona: ", {
     pago_deuda: data.pago_deuda || 0,
     gastos_diarios: data.gastos_diarios || 0,
