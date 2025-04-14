@@ -130,10 +130,10 @@
 <div class="step active" id="stepPersonal">
   <fieldset>
     <legend><strong>1. Información personal</strong></legend>
-    <label>Edad<br><input type="number" name="edad" required></label><br><br>
-    <label>Estado civil<br><input type="text" name="estado_civil" required></label><br><br>
-    <label>¿Tiene dependientes?<br><input type="text" name="tiene_dependientes" required></label><br><br>
-    <label>¿A qué edad desea retirarse?<br><input type="number" name="edad_retiro" required></label><br><br>
+    <label>Edad<br><input type="number" name="edad"></label><br><br>
+    <label>Estado civil<br><input type="text" name="estado_civil"></label><br><br>
+    <label>¿Tiene dependientes?<br><input type="text" name="tiene_dependientes"></label><br><br>
+    <label>¿A qué edad desea retirarse?<br><input type="number" name="edad_retiro"></label><br><br>
   </fieldset>
   <div class="nav-buttons">
     <button type="button" onclick="nextStep('stepIngresos')">Siguiente</button>
@@ -144,17 +144,17 @@
 <div class="step" id="stepIngresos">
   <fieldset>
     <legend><strong>2. Ingresos y ahorros (Anual)</strong></legend>
-    <label>Salario<br><input type="number" name="salario" required></label><br><br>
-    <label>Ingreso por negocio<br><input type="number" name="ingreso_negocio" required></label><br><br>
-    <label>Bonos<br><input type="number" name="bonos" required></label><br><br>
-    <label>Dividendos e intereses<br><input type="number" name="dividendos_intereses" required></label><br><br>
-    <label>Renta<br><input type="number" name="renta" required></label><br><br>
-    <label>Otros ingresos<br><input type="number" name="otros_ingresos" required></label><br><br>
+    <label>Salario<br><input type="number" name="salario"></label><br><br>
+    <label>Ingreso por negocio<br><input type="number" name="ingreso_negocio"></label><br><br>
+    <label>Bonos<br><input type="number" name="bonos"></label><br><br>
+    <label>Dividendos e intereses<br><input type="number" name="dividendos_intereses"></label><br><br>
+    <label>Renta<br><input type="number" name="renta"></label><br><br>
+    <label>Otros ingresos<br><input type="number" name="otros_ingresos"></label><br><br>
     
     <h4>Ahorros:</h4>
-    <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro" required></label><br><br>
-    <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro" required></label><br><br>
-    <label>Otros ahorros<br><input type="number" name="otros_ahorros" required></label><br><br>
+    <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro"></label><br><br>
+    <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro"></label><br><br>
+    <label>Otros ahorros<br><input type="number" name="otros_ahorros"></label><br><br>
   </fieldset>
   <div class="nav-buttons">
     <button type="button" onclick="prevStep('stepPersonal')">Anterior</button>
@@ -170,14 +170,14 @@
     <div>
       <button onclick="toggleDeudaDetails()">Abrir/Cerrar Pago de Deuda</button>
       <div id="deudaDetails" style="display:none; padding-left: 20px;">
-        <label>Hipoteca (o renta)<br><input type="number" name="hipoteca" required></label><br><br>
-        <label>Préstamo de auto<br><input type="number" name="prestamo_auto" required></label><br><br>
-        <label>Préstamo educativo<br><input type="number" name="prestamo_educativo" required></label><br><br>
-        <label>Préstamo personal<br><input type="number" name="prestamo_personal" required></label><br><br>
-        <label>Línea de crédito<br><input type="number" name="linea_credito" required></label><br><br>
-        <label>Manutención<br><input type="number" name="manutencion" required></label><br><br>
-        <label>Tarjetas de crédito<br><input type="number" name="tarjetas_credito" required></label><br><br>
-        <label>Otros<br><input type="number" name="otros_deuda" required></label><br><br>
+        <label>Hipoteca (o renta)<br><input type="number" name="hipoteca"></label><br><br>
+        <label>Préstamo de auto<br><input type="number" name="prestamo_auto"></label><br><br>
+        <label>Préstamo educativo<br><input type="number" name="prestamo_educativo"></label><br><br>
+        <label>Préstamo personal<br><input type="number" name="prestamo_personal"></label><br><br>
+        <label>Línea de crédito<br><input type="number" name="linea_credito"></label><br><br>
+        <label>Manutención<br><input type="number" name="manutencion"></label><br><br>
+        <label>Tarjetas de crédito<br><input type="number" name="tarjetas_credito"></label><br><br>
+        <label>Otros<br><input type="number" name="otros_deuda"></label><br><br>
       </div>
     </div>
 
@@ -185,28 +185,28 @@
     <div>
       <button onclick="toggleGastosDetails()">Abrir/Cerrar Gastos Diarios</button>
       <div id="gastosDetails" style="display:none; padding-left: 20px;">
-        <label>Servicio público<br><input type="number" name="servicio_publico" required></label><br><br>
-        <label>Cuidado de hijos<br><input type="number" name="cuidado_hijos" required></label><br><br>
-        <label>Mantenimiento auto<br><input type="number" name="mantenimiento_auto" required></label><br><br>
-        <label>Cuidado personal<br><input type="number" name="cuidado_personal" required></label><br><br>
-        <label>Supermercado<br><input type="number" name="supermercado" required></label><br><br>
-        <label>Comidas afuera<br><input type="number" name="comidas_afuera" required></label><br><br>
-        <label>Ropa<br><input type="number" name="ropa" required></label><br><br>
-        <label>Vacaciones<br><input type="number" name="vacaciones" required></label><br><br>
-        <label>Muebles y enseres<br><input type="number" name="muebles_enseres" required></label><br><br>
-        <label>Gastos Médicos y dentista<br><input type="number" name="gastos_medicos" required></label><br><br>
-        <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones" required></label><br><br>
-        <label>Mantenimiento del hogar<br><input type="number" name="mantenimiento_hogar" required></label><br><br>
-        <label>Entretenimiento<br><input type="number" name="entretenimiento" required></label><br><br>
-        <label>Libros y membresía de contenido<br><input type="number" name="libros_membresia" required></label><br><br>
-        <label>Regalos y mesada<br><input type="number" name="regalos_mesada" required></label><br><br>
-        <label>Donaciones<br><input type="number" name="donaciones" required></label><br><br>
-        <label>Fiestas<br><input type="number" name="fiestas" required></label><br><br>
-        <label>Mejoras al hogar<br><input type="number" name="mejoras_hogar" required></label><br><br>
-        <label>Dues<br><input type="number" name="dues" required></label><br><br>
-        <label>Servicios profesionales<br><input type="number" name="servicios_profesionales" required></label><br><br>
-        <label>Gastos de mascota<br><input type="number" name="gastos_mascota" required></label><br><br>
-        <label>Otros<br><input type="number" name="otros_gastos_diarios" required></label><br><br>
+        <label>Servicio público<br><input type="number" name="servicio_publico"></label><br><br>
+        <label>Cuidado de hijos<br><input type="number" name="cuidado_hijos"></label><br><br>
+        <label>Mantenimiento auto<br><input type="number" name="mantenimiento_auto"></label><br><br>
+        <label>Cuidado personal<br><input type="number" name="cuidado_personal"></label><br><br>
+        <label>Supermercado<br><input type="number" name="supermercado"></label><br><br>
+        <label>Comidas afuera<br><input type="number" name="comidas_afuera"></label><br><br>
+        <label>Ropa<br><input type="number" name="ropa"></label><br><br>
+        <label>Vacaciones<br><input type="number" name="vacaciones"></label><br><br>
+        <label>Muebles y enseres<br><input type="number" name="muebles_enseres"></label><br><br>
+        <label>Gastos Médicos y dentista<br><input type="number" name="gastos_medicos"></label><br><br>
+        <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones"></label><br><br>
+        <label>Mantenimiento del hogar<br><input type="number" name="mantenimiento_hogar"></label><br><br>
+        <label>Entretenimiento<br><input type="number" name="entretenimiento"></label><br><br>
+        <label>Libros y membresía de contenido<br><input type="number" name="libros_membresia"></label><br><br>
+        <label>Regalos y mesada<br><input type="number" name="regalos_mesada"></label><br><br>
+        <label>Donaciones<br><input type="number" name="donaciones"></label><br><br>
+        <label>Fiestas<br><input type="number" name="fiestas"></label><br><br>
+        <label>Mejoras al hogar<br><input type="number" name="mejoras_hogar"></label><br><br>
+        <label>Dues<br><input type="number" name="dues"></label><br><br>
+        <label>Servicios profesionales<br><input type="number" name="servicios_profesionales"></label><br><br>
+        <label>Gastos de mascota<br><input type="number" name="gastos_mascota"></label><br><br>
+        <label>Otros<br><input type="number" name="otros_gastos_diarios"></label><br><br>
       </div>
     </div>
 
@@ -214,14 +214,14 @@
     <div>
       <button onclick="toggleSegurosDetails()">Abrir/Cerrar Seguros</button>
       <div id="segurosDetails" style="display:none; padding-left: 20px;">
-        <label>Vida<br><input type="number" name="seguro_vida" required></label><br><br>
-        <label>Médico<br><input type="number" name="seguro_medico" required></label><br><br>
-        <label>Propiedad<br><input type="number" name="seguro_propiedad" required></label><br><br>
-        <label>Renta<br><input type="number" name="seguro_renta" required></label><br><br>
-        <label>Umbrella<br><input type="number" name="seguro_umbrella" required></label><br><br>
-        <label>Incapacidad<br><input type="number" name="seguro_incapacidad" required></label><br><br>
-        <label>Auto<br><input type="number" name="seguro_auto" required></label><br><br>
-        <label>Propiedad personal<br><input type="number" name="seguro_propiedad_personal" required></label><br><br>
+        <label>Vida<br><input type="number" name="seguro_vida"></label><br><br>
+        <label>Médico<br><input type="number" name="seguro_medico"></label><br><br>
+        <label>Propiedad<br><input type="number" name="seguro_propiedad"></label><br><br>
+        <label>Renta<br><input type="number" name="seguro_renta"></label><br><br>
+        <label>Umbrella<br><input type="number" name="seguro_umbrella"></label><br><br>
+        <label>Incapacidad<br><input type="number" name="seguro_incapacidad"></label><br><br>
+        <label>Auto<br><input type="number" name="seguro_auto"></label><br><br>
+        <label>Propiedad personal<br><input type="number" name="seguro_propiedad_personal"></label><br><br>
       </div>
     </div>
 
@@ -229,12 +229,12 @@
     <div>
       <button onclick="toggleImpuestosDetails()">Abrir/Cerrar Impuestos</button>
       <div id="impuestosDetails" style="display:none; padding-left: 20px;">
-        <label>Federal<br><input type="number" name="impuesto_federal" required></label><br><br>
-        <label>Seguro Social<br><input type="number" name="seguro_social" required></label><br><br>
-        <label>Medicare<br><input type="number" name="medicare" required></label><br><br>
-        <label>Estatales y locales<br><input type="number" name="impuesto_estatal_local" required></label><br><br>
-        <label>Propiedad<br><input type="number" name="impuesto_propiedad" required></label><br><br>
-        <label>Auto<br><input type="number" name="impuesto_auto" required></label><br><br>
+        <label>Federal<br><input type="number" name="impuesto_federal"></label><br><br>
+        <label>Seguro Social<br><input type="number" name="seguro_social"></label><br><br>
+        <label>Medicare<br><input type="number" name="medicare"></label><br><br>
+        <label>Estatales y locales<br><input type="number" name="impuesto_estatal_local"></label><br><br>
+        <label>Propiedad<br><input type="number" name="impuesto_propiedad"></label><br><br>
+        <label>Auto<br><input type="number" name="impuesto_auto"></label><br><br>
       </div>
     </div>
   <div class="nav-buttons">
@@ -243,18 +243,19 @@
   </div>
       </fieldset>
     </div>
+
     <!-- Sección 4: Activos -->
     <div class="step" id="stepActivos">
       <fieldset>
         <legend><strong>4. Activos</strong></legend>
-        <label>Cuentas bancarias y de ahorro<br><input type="number" name="cuentas_bancarias" required></label><br><br>
-        <label>Inversiones (no retiro)<br><input type="number" name="cuentas_inversion" required></label><br><br>
-        <label>Cuentas de retiro<br><input type="number" name="cuentas_retiro" required></label><br><br>
-        <label>Valor de la vivienda principal<br><input type="number" name="valor_vivienda" required></label><br><br>
-        <label>Propiedades de alquiler<br><input type="number" name="valor_propiedades_alquiler" required></label><br><br>
-        <label>Otras propiedades (vacacionales, etc.)<br><input type="number" name="valor_otros_activos" required></label><br><br>
-        <label>Vehículos<br><input type="number" name="valor_vehiculos" required></label><br><br>
-        <label>Otros activos (joyas, muebles, etc.)<br><input type="number" name="valor_otros" required></label><br><br>
+        <label>Cuentas bancarias y de ahorro<br><input type="number" name="cuentas_bancarias"></label><br><br>
+        <label>Inversiones (no retiro)<br><input type="number" name="cuentas_inversion"></label><br><br>
+        <label>Cuentas de retiro<br><input type="number" name="cuentas_retiro"></label><br><br>
+        <label>Valor de la vivienda principal<br><input type="number" name="valor_vivienda"></label><br><br>
+        <label>Propiedades de alquiler<br><input type="number" name="valor_propiedades_alquiler"></label><br><br>
+        <label>Otras propiedades (vacacionales, etc.)<br><input type="number" name="valor_otros_activos"></label><br><br>
+        <label>Vehículos<br><input type="number" name="valor_vehiculos"></label><br><br>
+        <label>Otros activos (joyas, muebles, etc.)<br><input type="number" name="valor_otros"></label><br><br>
       </fieldset>
 <div class="nav-buttons">
   <button type="button" onclick="prevStep('stepGastos')">Anterior</button>
@@ -266,12 +267,12 @@
     <div class="step" id="stepPasivos">
       <fieldset>
         <legend><strong>5. Pasivos</strong></legend>
-        <label>Deuda de tarjetas de crédito<br><input type="number" name="deuda_tarjetas" required></label><br><br>
-        <label>Hipotecas o alquiler<br><input type="number" name="deuda_hipotecaria" required></label><br><br>
-        <label>Deuda comercial<br><input type="number" name="deuda_comercial" required></label><br><br>
-        <label>Préstamos para vehículos<br><input type="number" name="deuda_vehiculos" required></label><br><br>
-        <label>Deuda estudiantil<br><input type="number" name="deuda_estudios" required></label><br><br>
-        <label>Otras deudas<br><input type="number" name="deuda_otros" required></label><br><br>
+        <label>Deuda de tarjetas de crédito<br><input type="number" name="deuda_tarjetas"></label><br><br>
+        <label>Hipotecas o alquiler<br><input type="number" name="deuda_hipotecaria"></label><br><br>
+        <label>Deuda comercial<br><input type="number" name="deuda_comercial"></label><br><br>
+        <label>Préstamos para vehículos<br><input type="number" name="deuda_vehiculos"></label><br><br>
+        <label>Deuda estudiantil<br><input type="number" name="deuda_estudios"></label><br><br>
+        <label>Otras deudas<br><input type="number" name="deuda_otros"></label><br><br>
       </fieldset>
 <div class="nav-buttons">
   <button type="button" onclick="prevStep('stepActivos')">Anterior</button>
@@ -285,6 +286,7 @@
         <legend><strong>6. Seguros</strong></legend>
         <label>Selecciona tus seguros:<br>
           <input type="checkbox" name="seguro_vida"> Vida<br>
+          <input type="checkbox" name="seguro_salud"> Salud<br>
           <input type="checkbox" name="seguro_incapacidad"> Incapacidad<br>
           <input type="checkbox" name="seguro_ltc"> LTC<br>
           <input type="checkbox" name="seguro_hogar"> Hogar<br>
