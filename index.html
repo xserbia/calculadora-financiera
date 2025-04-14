@@ -460,7 +460,6 @@ function mostrarResultado(id, data) {
   const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
   if (current) current.classList.add('active');
 }
-
 document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
   e.preventDefault(); // Evitar que el formulario se envíe por defecto
 
@@ -478,57 +477,57 @@ document.getElementById("calculadoraFormulario").addEventListener("submit", func
   // Verificación de los datos que se están pasando al gráfico
   console.log("Datos para el gráfico de dona: ", {
     pago_deuda: (
-      (data.hipoteca || 0) +
-      (data.prestamo_auto || 0) +
-      (data.prestamo_educativo || 0) +
-      (data.prestamo_personal || 0) +
-      (data.linea_credito || 0) +
-      (data.manutencion || 0) +
-      (data.tarjetas_credito || 0) +
-      (data.otros_deuda || 0) +
-      (data.deuda_vehiculos || 0)
+      (parseFloat(data.hipoteca) || 0) +
+      (parseFloat(data.prestamo_auto) || 0) +
+      (parseFloat(data.prestamo_educativo) || 0) +
+      (parseFloat(data.prestamo_personal) || 0) +
+      (parseFloat(data.linea_credito) || 0) +
+      (parseFloat(data.manutencion) || 0) +
+      (parseFloat(data.tarjetas_credito) || 0) +
+      (parseFloat(data.otros_deuda) || 0) +
+      (parseFloat(data.deuda_vehiculos) || 0)
     ),
     gastos_diarios: (
-      (data.servicio_publico || 0) +
-      (data.cuidado_hijos || 0) +
-      (data.mantenimiento_auto || 0) +
-      (data.cuidado_personal || 0) +
-      (data.supermercado || 0) +
-      (data.comidas_afuera || 0) +
-      (data.ropa || 0) +
-      (data.vacaciones || 0) +
-      (data.muebles_enseres || 0) +
-      (data.gastos_medicos || 0) +
-      (data.telecomunicaciones || 0) +
-      (data.mantenimiento_hogar || 0) +
-      (data.entretenimiento || 0) +
-      (data.libros_membresia || 0) +
-      (data.regalos_mesada || 0) +
-      (data.donaciones || 0) +
-      (data.fiestas || 0) +
-      (data.mejoras_hogar || 0) +
-      (data.dues || 0) +
-      (data.servicios_profesionales || 0) +
-      (data.gastos_mascota || 0) +
-      (data.otros_gastos_diarios || 0)
+      (parseFloat(data.servicio_publico) || 0) +
+      (parseFloat(data.cuidado_hijos) || 0) +
+      (parseFloat(data.mantenimiento_auto) || 0) +
+      (parseFloat(data.cuidado_personal) || 0) +
+      (parseFloat(data.supermercado) || 0) +
+      (parseFloat(data.comidas_afuera) || 0) +
+      (parseFloat(data.ropa) || 0) +
+      (parseFloat(data.vacaciones) || 0) +
+      (parseFloat(data.muebles_enseres) || 0) +
+      (parseFloat(data.gastos_medicos) || 0) +
+      (parseFloat(data.telecomunicaciones) || 0) +
+      (parseFloat(data.mantenimiento_hogar) || 0) +
+      (parseFloat(data.entretenimiento) || 0) +
+      (parseFloat(data.libros_membresia) || 0) +
+      (parseFloat(data.regalos_mesada) || 0) +
+      (parseFloat(data.donaciones) || 0) +
+      (parseFloat(data.fiestas) || 0) +
+      (parseFloat(data.mejoras_hogar) || 0) +
+      (parseFloat(data.dues) || 0) +
+      (parseFloat(data.servicios_profesionales) || 0) +
+      (parseFloat(data.gastos_mascota) || 0) +
+      (parseFloat(data.otros_gastos_diarios) || 0)
     ),
     seguros: (
-      (data.seguro_vida || 0) +
-      (data.seguro_medico || 0) +
-      (data.seguro_propiedad || 0) +
-      (data.seguro_renta || 0) +
-      (data.seguro_umbrella || 0) +
-      (data.seguro_incapacidad || 0) +
-      (data.seguro_auto || 0) +
-      (data.seguro_propiedad_personal || 0)
+      (parseFloat(data.seguro_vida) || 0) +
+      (parseFloat(data.seguro_medico) || 0) +
+      (parseFloat(data.seguro_propiedad) || 0) +
+      (parseFloat(data.seguro_renta) || 0) +
+      (parseFloat(data.seguro_umbrella) || 0) +
+      (parseFloat(data.seguro_incapacidad) || 0) +
+      (parseFloat(data.seguro_auto) || 0) +
+      (parseFloat(data.seguro_propiedad_personal) || 0)
     ),
     impuestos: (
-      (data.impuesto_federal || 0) +
-      (data.impuesto_estatal_local || 0) +
-      (data.impuesto_propiedad || 0) +
-      (data.impuesto_auto || 0)
+      (parseFloat(data.impuesto_federal) || 0) +
+      (parseFloat(data.impuesto_estatal_local) || 0) +
+      (parseFloat(data.impuesto_propiedad) || 0) +
+      (parseFloat(data.impuesto_auto) || 0)
     ),
-    ahorroPersonal: (data.aporte_personal_retiro || 0) + (data.otros_ahorros || 0)
+    ahorroPersonal: (parseFloat(data.aporte_personal_retiro) || 0) + (parseFloat(data.otros_ahorros) || 0)
   });
 
   // Luego, puedes llamar a la función para mostrar el gráfico de dona con los datos actualizados
