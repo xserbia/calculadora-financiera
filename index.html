@@ -356,13 +356,15 @@
   <div id="resG" class="resultado-categoria">[Resultados G]</div>
   <div id="resH" class="resultado-categoria">[Resultados H]</div>
 </div>
+
 <script>
-  // Función para actualizar la barra de progreso
+// Función para actualizar la barra de progreso
 function updateProgressBar(stepName, totalSteps) {
   const stepIndex = Array.from(document.querySelectorAll('.step')).indexOf(document.getElementById(stepName)) + 1; 
   const progress = (stepIndex / totalSteps) * 100;  // Calcula el porcentaje
   document.getElementById('progress-bar').style.width = progress + '%'; // Actualiza el ancho de la barra
 }
+
 // Función para pasar a la siguiente sección
 function nextStep(stepName) {
   const steps = document.querySelectorAll('.step');
@@ -378,58 +380,60 @@ function nextStep(stepName) {
     console.error("Sección no encontrada: " + stepName);
   }
 }
+
 // Función para volver a la sección anterior
 function prevStep(stepName) {
   nextStep(stepName);
 }
 
-  // Función para actualizar la navegación en la barra de progreso
-  function updateNav(step) {
-    const navItems = document.querySelectorAll('#nav div');
-    navItems.forEach((item, index) => {
-      item.classList.remove('completed', 'active', 'inactive');
-      if (index < step - 1) item.classList.add('completed');
-      else if (index === step - 1) item.classList.add('active');
-      else item.classList.add('inactive');
-    });
-  }
-
-  // Permitir navegación directa desde el menú
-  document.querySelectorAll('#nav div').forEach((navItem, index) => {
-    navItem.addEventListener('click', function () {
-      // Ocultamos todas las secciones
-      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
-
-      // Mostramos la sección correspondiente al índice
-      document.querySelectorAll('.step')[index].classList.add('active');
-
-      // Actualizamos visualmente el menú
-      updateNav(index + 1);
-    });
+// Función para actualizar la navegación en la barra de progreso
+function updateNav(step) {
+  const navItems = document.querySelectorAll('#nav div');
+  navItems.forEach((item, index) => {
+    item.classList.remove('completed', 'active', 'inactive');
+    if (index < step - 1) item.classList.add('completed');
+    else if (index === step - 1) item.classList.add('active');
+    else item.classList.add('inactive');
   });
-  // Función para mostrar/ocultar los detalles de la deuda
-  function toggleDeudaDetails() {
-    var deudaDetails = document.getElementById("deudaDetails");
-    deudaDetails.style.display = deudaDetails.style.display === "none" ? "block" : "none";
-  }
+}
 
-  // Función para mostrar/ocultar los detalles de los gastos diarios
-  function toggleGastosDetails() {
-    var gastosDetails = document.getElementById("gastosDetails");
-    gastosDetails.style.display = gastosDetails.style.display === "none" ? "block" : "none";
-  }
+// Permitir navegación directa desde el menú
+document.querySelectorAll('#nav div').forEach((navItem, index) => {
+  navItem.addEventListener('click', function () {
+    // Ocultamos todas las secciones
+    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
 
-  // Función para mostrar/ocultar los detalles de los seguros
-  function toggleSegurosDetails() {
-    var segurosDetails = document.getElementById("segurosDetails");
-    segurosDetails.style.display = segurosDetails.style.display === "none" ? "block" : "none";
-  }
+    // Mostramos la sección correspondiente al índice
+    document.querySelectorAll('.step')[index].classList.add('active');
 
-  // Función para mostrar/ocultar los detalles de los impuestos
-  function toggleImpuestosDetails() {
-    var impuestosDetails = document.getElementById("impuestosDetails");
-    impuestosDetails.style.display = impuestosDetails.style.display === "none" ? "block" : "none";
-  }
+    // Actualizamos visualmente el menú
+    updateNav(index + 1);
+  });
+});
+
+// Función para mostrar/ocultar los detalles de la deuda
+function toggleDeudaDetails() {
+  var deudaDetails = document.getElementById("deudaDetails");
+  deudaDetails.style.display = deudaDetails.style.display === "none" ? "block" : "none";
+}
+
+// Función para mostrar/ocultar los detalles de los gastos diarios
+function toggleGastosDetails() {
+  var gastosDetails = document.getElementById("gastosDetails");
+  gastosDetails.style.display = gastosDetails.style.display === "none" ? "block" : "none";
+}
+
+// Función para mostrar/ocultar los detalles de los seguros
+function toggleSegurosDetails() {
+  var segurosDetails = document.getElementById("segurosDetails");
+  segurosDetails.style.display = segurosDetails.style.display === "none" ? "block" : "none";
+}
+
+// Función para mostrar/ocultar los detalles de los impuestos
+function toggleImpuestosDetails() {
+  var impuestosDetails = document.getElementById("impuestosDetails");
+  impuestosDetails.style.display = impuestosDetails.style.display === "none" ? "block" : "none";
+}
 
 // Función para mostrar los resultados
 function mostrarResultado(id, data) {
@@ -440,8 +444,9 @@ function mostrarResultado(id, data) {
     return;
   }
 
+  // Si no estamos en la sección de "Flujo", ocultamos el gráfico de dona
   if (id !== 'resA') {
-    canvas.style.display = 'none'; // Ocultamos el gráfico en otras secciones
+    canvas.style.display = 'none'; 
   } else {
     // Si estamos en la sección de "Flujo", mostramos el gráfico de dona
     canvas.style.display = 'block'; // Aseguramos que el gráfico se muestre en "Flujo"
@@ -455,6 +460,7 @@ function mostrarResultado(id, data) {
   const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
   if (current) current.classList.add('active');
 }
+
 document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
   e.preventDefault(); // Evitar que el formulario se envíe por defecto
 
@@ -551,15 +557,6 @@ function mostrarGraficoGastos(data) {
   if (window.myChart) {
     window.myChart.destroy(); // Destruimos el gráfico anterior
   }
-
-  // Verificación de los datos que se están pasando al gráfico
-  console.log("Datos para el gráfico de dona: ", {
-    pago_deuda: data.pago_deuda || 0,
-    gastos_diarios: data.gastos_diarios || 0,
-    seguros: data.seguros || 0,
-    impuestos: data.impuestos || 0,
-    ahorroPersonal: data.ahorroPersonal || 0
-  });
 
   // Crear los datos y configuración del gráfico
   const gastosData = {
