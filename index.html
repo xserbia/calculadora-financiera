@@ -93,20 +93,24 @@
       background-color: #0056b3;
     }
 
-    /* Barra de progreso */
-    #progress-bar-container {
-      margin-bottom: 20px;
-      width: 100%; /* Aseguramos que ocupe todo el ancho disponible */
-      background-color: #e0e0e0; /* Fondo de la barra */
-      border-radius: 5px;
-    }
+/* Barra de progreso */
+#progress-bar-container {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 12px;
+  margin-bottom: 20px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
 
-    #progress-bar {
-      width: 0%; /* Comienza desde 0% */
-      height: 10px;
-      background-color: #4caf50; /* Color de la barra */
-      border-radius: 5px;
-    }
+#progress-bar {
+  width: 0%;
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease-in-out;
+  border-radius: 10px 0 0 10px;
+}
   </style>
 </head>
 <body>
@@ -517,24 +521,30 @@ options: {
   }
 
   // ✅ Función para actualizar la barra de progreso
-  function updateProgressBar(stepName, totalSteps) {
-    const stepIndex = Array.from(document.querySelectorAll('.step')).indexOf(document.getElementById(stepName)) + 1;
-    const progress = (stepIndex / totalSteps) * 100;
-    document.getElementById('progress-bar').style.width = progress + '%';
+function updateProgressBar(stepName, totalSteps) {
+  const steps = Array.from(document.querySelectorAll('.step'));
+  const currentIndex = steps.findIndex(step => step.id === stepName) + 1;
+  const progress = (currentIndex / totalSteps) * 100;
+  document.getElementById('progress-bar').style.width = progress + '%';
+}
+
   }
 
   // ✅ Funciones para avanzar y retroceder entre pasos
-  function nextStep(stepName) {
-    const steps = document.querySelectorAll('.step');
-    steps.forEach(stepDiv => stepDiv.classList.remove('active'));
-    const stepToShow = document.getElementById(stepName);
-    if (stepToShow) {
-      stepToShow.classList.add('active');
-      updateNav(stepName);
-    } else {
-      console.error("Sección no encontrada: " + stepName);
-    }
+function nextStep(stepName) {
+  const steps = document.querySelectorAll('.step');
+  steps.forEach(stepDiv => stepDiv.classList.remove('active'));
+
+  const stepToShow = document.getElementById(stepName);
+  if (stepToShow) {
+    stepToShow.classList.add('active');
+    updateNav(stepName);
+    updateProgressBar(stepName, steps.length); // ✅ Muy importante
+  } else {
+    console.error("Sección no encontrada: " + stepName);
   }
+}
+
 
   function prevStep(stepName) {
     nextStep(stepName);
