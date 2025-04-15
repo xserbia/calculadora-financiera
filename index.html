@@ -401,7 +401,8 @@
         data[key] = parseFloat(data[key]);
       }
     }
-
+  console.log("📦 Datos capturados del formulario:", data); // 👈 Aquí el log
+    
     mostrarGraficoGastos(data);
     calcularResultados(data);
     document.getElementById("resultadosContainer").style.display = "block";
