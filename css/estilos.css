@@ -142,15 +142,18 @@ input:focus {
   height: 10px;
   background-color: #e0e0e0;
   border-radius: 5px;
+  overflow: hidden;
   margin-bottom: 20px;
 }
 
 #progress-bar {
   height: 100%;
-  background-color: #4caf50;
   width: 0%;
-  border-radius: 5px;
+  background-color: #4caf50;
+  border-radius: 5px 0 0 5px;
+  transition: width 0.3s ease-in-out;
 }
+
 
 
 
