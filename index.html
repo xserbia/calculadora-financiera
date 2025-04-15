@@ -480,17 +480,20 @@
       }]
     };
 
-    const config = {
-      type: 'doughnut',
-      data: gastosData,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'top' },
-          tooltip: {
-            callbacks: {
-              label: function(tooltipItem) {
-                return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
+  const config = {
+    type: 'doughnut',
+    data: gastosData,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.raw;
+              const percentage = total ? ((value / total) * 100).toFixed(1) : 0;
+              return `${label}: ${percentage}%`;
               }
             }
           }
