@@ -329,24 +329,23 @@
 
   </form>
 </div>
-<!-- Aquí estará la sección de resultados -->
+  <!-- SECCIÓN DE RESULTADOS -->
 <div id="resultadosContainer" style="display:none;">
   <h2>Resultados de tu evaluación financiera</h2>
   <div id="navResultados">
-    <div class="nav-res inactive" onclick="mostrarResultado('resA', data)">A. Flujo</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resB', data)">B. Deuda</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resC', data)">C. Patrimonio</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resD', data)">D. Seguridad</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resE', data)">E. Riesgo</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resF', data)">F. Patrimonial</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resG', data)">G. Retiro</div>
-    <div class="nav-res inactive" onclick="mostrarResultado('resH', data)">H. Estrés</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resA')">A. Flujo</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resB')">B. Deuda</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resC')">C. Patrimonio</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resD')">D. Seguridad</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resE')">E. Riesgo</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resF')">F. Patrimonial</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resG')">G. Retiro</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resH')">H. Estrés</div>
   </div>
 
-  <!-- Gráfico de Dona para la distribución de gastos -->
   <h3>Distribución de gastos</h3>
-  <canvas id="graficoGastos" width="100" height="100"></canvas> <!-- Canvas para el gráfico -->
-  
+  <canvas id="graficoGastos" width="100" height="100"></canvas>
+
   <div id="resA" class="resultado-categoria active-res">[Resultados A]</div>
   <div id="resB" class="resultado-categoria">[Resultados B]</div>
   <div id="resC" class="resultado-categoria">[Resultados C]</div>
@@ -356,277 +355,225 @@
   <div id="resG" class="resultado-categoria">[Resultados G]</div>
   <div id="resH" class="resultado-categoria">[Resultados H]</div>
 </div>
-
 <script>
-// Función para actualizar la barra de progreso
-function updateProgressBar(stepName, totalSteps) {
-  const stepIndex = Array.from(document.querySelectorAll('.step')).indexOf(document.getElementById(stepName)) + 1; 
-  const progress = (stepIndex / totalSteps) * 100;  // Calcula el porcentaje
-  document.getElementById('progress-bar').style.width = progress + '%'; // Actualiza el ancho de la barra
-}
+  // ✅ Variable global para almacenar los datos del formulario
+  let data = {};
 
-// Función para pasar a la siguiente sección
-function nextStep(stepName) {
-  const steps = document.querySelectorAll('.step');
-  // Ocultamos todas las secciones
-  steps.forEach(stepDiv => stepDiv.classList.remove('active'));
-  
-  // Mostramos la sección correspondiente al nombre de la sección
-  const stepToShow = document.getElementById(stepName);
-  if (stepToShow) {
-    stepToShow.classList.add('active');
-    updateNav(stepName);
-  } else {
-    console.error("Sección no encontrada: " + stepName);
-  }
-}
+  // ✅ Función para mostrar resultados por sección
+  function mostrarResultado(id) {
+    const canvas = document.getElementById('graficoGastos');
+    if (!canvas) {
+      console.error("El canvas para el gráfico de dona no se encuentra.");
+      return;
+    }
 
-// Función para volver a la sección anterior
-function prevStep(stepName) {
-  nextStep(stepName);
-}
+    if (id !== 'resA') {
+      canvas.style.display = 'none';
+    } else {
+      canvas.style.display = 'block';
+      mostrarGraficoGastos(data);
+    }
 
-// Función para actualizar la navegación en la barra de progreso
-function updateNav(step) {
-  const navItems = document.querySelectorAll('#nav div');
-  navItems.forEach((item, index) => {
-    item.classList.remove('completed', 'active', 'inactive');
-    if (index < step - 1) item.classList.add('completed');
-    else if (index === step - 1) item.classList.add('active');
-    else item.classList.add('inactive');
-  });
-}
-
-// Permitir navegación directa desde el menú
-document.querySelectorAll('#nav div').forEach((navItem, index) => {
-  navItem.addEventListener('click', function () {
-    // Ocultamos todas las secciones
-    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
-
-    // Mostramos la sección correspondiente al índice
-    document.querySelectorAll('.step')[index].classList.add('active');
-
-    // Actualizamos visualmente el menú
-    updateNav(index + 1);
-  });
-});
-
-// Función para mostrar/ocultar los detalles de la deuda
-function toggleDeudaDetails() {
-  var deudaDetails = document.getElementById("deudaDetails");
-  deudaDetails.style.display = deudaDetails.style.display === "none" ? "block" : "none";
-}
-
-// Función para mostrar/ocultar los detalles de los gastos diarios
-function toggleGastosDetails() {
-  var gastosDetails = document.getElementById("gastosDetails");
-  gastosDetails.style.display = gastosDetails.style.display === "none" ? "block" : "none";
-}
-
-// Función para mostrar/ocultar los detalles de los seguros
-function toggleSegurosDetails() {
-  var segurosDetails = document.getElementById("segurosDetails");
-  segurosDetails.style.display = segurosDetails.style.display === "none" ? "block" : "none";
-}
-
-// Función para mostrar/ocultar los detalles de los impuestos
-function toggleImpuestosDetails() {
-  var impuestosDetails = document.getElementById("impuestosDetails");
-  impuestosDetails.style.display = impuestosDetails.style.display === "none" ? "block" : "none";
-}
-function mostrarResultado(id, data) {
-  // Primero, eliminamos el gráfico de dona de todas las secciones
-  const canvas = document.getElementById('graficoGastos');
-  if (!canvas) {
-    console.error("El canvas para el gráfico de dona no se encuentra.");
-    return;
+    document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
+    document.getElementById(id).classList.add('active-res');
+    document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
+    const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
+    if (current) current.classList.add('active');
   }
 
-  if (id !== 'resA') {
-    canvas.style.display = 'none'; // Ocultamos el gráfico en otras secciones
-  } else {
-    // Si estamos en la sección de "Flujo", mostramos el gráfico de dona
-    canvas.style.display = 'block'; // Aseguramos que el gráfico se muestre en "Flujo"
-    mostrarGraficoGastos(data); // Llamamos a la función para generar el gráfico
-  }
+  // ✅ Función para procesar y recolectar los datos del formulario
+  document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
+    e.preventDefault();
+    data = {}; // Reiniciamos
 
-  // Continuamos con la lógica de la navegación de resultados
-  document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
-  document.getElementById(id).classList.add('active-res');
-  document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
-  const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
-  if (current) current.classList.add('active');
-}
-document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
-  e.preventDefault(); // Evitar que el formulario se envíe por defecto
+    Array.from(this.elements).forEach(el => {
+      if (el.name) {
+        if (el.type === "checkbox") {
+          data[el.name] = el.checked;
+        } else {
+          data[el.name] = el.value;
+        }
+      }
+    });
 
-  const data = {};  // Define data
-
-  // Recolectar los valores del formulario
-  Array.from(this.elements).forEach(el => {
-    if (el.name) {
-      if (el.type === "checkbox") {
-        data[el.name] = el.checked;
-      } else {
-        data[el.name] = el.value;
+    for (let key in data) {
+      if (!isNaN(data[key])) {
+        data[key] = parseFloat(data[key]);
       }
     }
+
+    mostrarGraficoGastos(data);
+    calcularResultados(data);
+    document.getElementById("resultadosContainer").style.display = "block";
+    mostrarResultado("resA");
   });
-  
-    // Verificar si los valores son numéricos, si no, convertirlos a números
-  for (let key in data) {
-    if (!isNaN(data[key])) {
-      data[key] = parseFloat(data[key]);
+
+  // ✅ Función para mostrar gráfico de dona
+  function mostrarGraficoGastos(data) {
+    const canvas = document.getElementById('graficoGastos');
+    if (!canvas) {
+      console.error("El canvas para el gráfico de dona no se encuentra.");
+      return;
     }
-  }
-  // Llamar a la función para mostrar el gráfico de dona con los datos
-  mostrarGraficoGastos(data);
 
-  // Llamar a la función de cálculo de resultados
-  calcularResultados(data);
+    const ctx = canvas.getContext('2d');
+    if (window.myChart) window.myChart.destroy();
 
-  // Mostrar los resultados
-  document.getElementById("resultadosContainer").style.display = "block";
-  mostrarResultado("resA", data); // Pasamos data correctamente
-});
-  function mostrarResultado(id, data) {
-  // Primero, eliminamos el gráfico de dona de todas las secciones
-  const canvas = document.getElementById('graficoGastos');
-  if (!canvas) {
-    console.error("El canvas para el gráfico de dona no se encuentra.");
-    return;
-  }
+    const gastosData = {
+      labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos', 'Ahorro personal'],
+      datasets: [{
+        label: 'Distribución de gastos',
+        data: [
+          (parseFloat(data.hipoteca) || 0) +
+          (parseFloat(data.prestamo_auto) || 0) +
+          (parseFloat(data.prestamo_educativo) || 0) +
+          (parseFloat(data.prestamo_personal) || 0) +
+          (parseFloat(data.linea_credito) || 0) +
+          (parseFloat(data.manutencion) || 0) +
+          (parseFloat(data.tarjetas_credito) || 0) +
+          (parseFloat(data.otros_deuda) || 0) +
+          (parseFloat(data.deuda_vehiculos) || 0),
 
-  if (id !== 'resA') {
-    canvas.style.display = 'none'; // Ocultamos el gráfico en otras secciones
-  } else {
-    // Si estamos en la sección de "Flujo", mostramos el gráfico de dona
-    canvas.style.display = 'block'; // Aseguramos que el gráfico se muestre en "Flujo"
-    mostrarGraficoGastos(data); // Llamamos a la función para generar el gráfico
-  }
+          (parseFloat(data.servicio_publico) || 0) +
+          (parseFloat(data.cuidado_hijos) || 0) +
+          (parseFloat(data.mantenimiento_auto) || 0) +
+          (parseFloat(data.cuidado_personal) || 0) +
+          (parseFloat(data.supermercado) || 0) +
+          (parseFloat(data.comidas_afuera) || 0) +
+          (parseFloat(data.ropa) || 0) +
+          (parseFloat(data.vacaciones) || 0) +
+          (parseFloat(data.muebles_enseres) || 0) +
+          (parseFloat(data.gastos_medicos) || 0) +
+          (parseFloat(data.telecomunicaciones) || 0) +
+          (parseFloat(data.mantenimiento_hogar) || 0) +
+          (parseFloat(data.entretenimiento) || 0) +
+          (parseFloat(data.libros_membresia) || 0) +
+          (parseFloat(data.regalos_mesada) || 0) +
+          (parseFloat(data.donaciones) || 0) +
+          (parseFloat(data.fiestas) || 0) +
+          (parseFloat(data.mejoras_hogar) || 0) +
+          (parseFloat(data.dues) || 0) +
+          (parseFloat(data.servicios_profesionales) || 0) +
+          (parseFloat(data.gastos_mascota) || 0) +
+          (parseFloat(data.otros_gastos_diarios) || 0),
 
-  // Continuamos con la lógica de la navegación de resultados
-  document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
-  document.getElementById(id).classList.add('active-res');
-  document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
-  const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
-  if (current) current.classList.add('active');
-}
-// Verificación de los datos que se están pasando al gráfico
-console.log("Datos para el gráfico de dona: ", {
-  pago_deuda: (
-    (parseFloat(data.hipoteca) || 0) +
-    (parseFloat(data.prestamo_auto) || 0) +
-    (parseFloat(data.prestamo_educativo) || 0) +
-    (parseFloat(data.prestamo_personal) || 0) +
-    (parseFloat(data.linea_credito) || 0) +
-    (parseFloat(data.manutencion) || 0) +
-    (parseFloat(data.tarjetas_credito) || 0) +
-    (parseFloat(data.otros_deuda) || 0) +
-    (parseFloat(data.deuda_vehiculos) || 0)
-  ),
-  gastos_diarios: (
-    (parseFloat(data.servicio_publico) || 0) +
-    (parseFloat(data.cuidado_hijos) || 0) +
-    (parseFloat(data.mantenimiento_auto) || 0) +
-    (parseFloat(data.cuidado_personal) || 0) +
-    (parseFloat(data.supermercado) || 0) +
-    (parseFloat(data.comidas_afuera) || 0) +
-    (parseFloat(data.ropa) || 0) +
-    (parseFloat(data.vacaciones) || 0) +
-    (parseFloat(data.muebles_enseres) || 0) +
-    (parseFloat(data.gastos_medicos) || 0) +
-    (parseFloat(data.telecomunicaciones) || 0) +
-    (parseFloat(data.mantenimiento_hogar) || 0) +
-    (parseFloat(data.entretenimiento) || 0) +
-    (parseFloat(data.libros_membresia) || 0) +
-    (parseFloat(data.regalos_mesada) || 0) +
-    (parseFloat(data.donaciones) || 0) +
-    (parseFloat(data.fiestas) || 0) +
-    (parseFloat(data.mejoras_hogar) || 0) +
-    (parseFloat(data.dues) || 0) +
-    (parseFloat(data.servicios_profesionales) || 0) +
-    (parseFloat(data.gastos_mascota) || 0) +
-    (parseFloat(data.otros_gastos_diarios) || 0)
-  ),
-  seguros: (
-    (parseFloat(data.seguro_vida) || 0) +
-    (parseFloat(data.seguro_medico) || 0) +
-    (parseFloat(data.seguro_propiedad) || 0) +
-    (parseFloat(data.seguro_renta) || 0) +
-    (parseFloat(data.seguro_umbrella) || 0) +
-    (parseFloat(data.seguro_incapacidad) || 0) +
-    (parseFloat(data.seguro_auto) || 0) +
-    (parseFloat(data.seguro_propiedad_personal) || 0)
-  ),
-  impuestos: (
-    (parseFloat(data.impuesto_federal) || 0) +
-    (parseFloat(data.impuesto_estatal_local) || 0) +
-    (parseFloat(data.impuesto_propiedad) || 0) +
-    (parseFloat(data.impuesto_auto) || 0) +
-    (parseFloat(data.seguro_social) || 0) +
-    (parseFloat(data.medicare) || 0)
-  ),
-  ahorroPersonal: (parseFloat(data.aporte_personal_retiro) || 0) + (parseFloat(data.otros_ahorros) || 0)
-});
+          (parseFloat(data.seguro_vida) || 0) +
+          (parseFloat(data.seguro_medico) || 0) +
+          (parseFloat(data.seguro_propiedad) || 0) +
+          (parseFloat(data.seguro_renta) || 0) +
+          (parseFloat(data.seguro_umbrella) || 0) +
+          (parseFloat(data.seguro_incapacidad) || 0) +
+          (parseFloat(data.seguro_auto) || 0) +
+          (parseFloat(data.seguro_propiedad_personal) || 0),
 
-// Función para mostrar el gráfico de Dona para la distribución de gastos
-function mostrarGraficoGastos(data) {
-  // Verifica si el canvas existe antes de intentar acceder a su contexto
-  const canvas = document.getElementById('graficoGastos');
-  if (!canvas) {
-    console.error("El elemento canvas con id 'graficoGastos' no se encuentra.");
-    return;
-  }
+          (parseFloat(data.impuesto_federal) || 0) +
+          (parseFloat(data.impuesto_estatal_local) || 0) +
+          (parseFloat(data.impuesto_propiedad) || 0) +
+          (parseFloat(data.impuesto_auto) || 0) +
+          (parseFloat(data.seguro_social) || 0) +
+          (parseFloat(data.medicare) || 0),
 
-  const ctx = canvas.getContext('2d'); // Accede al contexto del canvas aquí
+          (parseFloat(data.aporte_personal_retiro) || 0) + (parseFloat(data.otros_ahorros) || 0)
+        ],
+        backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFC300'],
+        hoverOffset: 4
+      }]
+    };
 
-  // Si ya existe un gráfico, lo destruimos antes de crear uno nuevo
-  if (window.myChart) {
-    window.myChart.destroy(); // Destruimos el gráfico anterior
-  }
-
-  // Crear los datos y configuración del gráfico
-  const gastosData = {
-    labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos', 'Ahorro personal'],
-    datasets: [{
-      label: 'Distribución de gastos',
-      data: [
-        data.pago_deuda || 0,  
-        data.gastos_diarios || 0,  
-        data.seguros || 0,  
-        data.impuestos || 0,  
-        data.ahorroPersonal || 0  // Suma solo los ahorros personales
-      ],
-      backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFC300'],  // Incluimos un color para el ahorro personal
-      hoverOffset: 4
-    }]
-  };
-
-  const config = {
-    type: 'doughnut',
-    data: gastosData,
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        tooltip: {
-          callbacks: {
-            label: function(tooltipItem) {
-              return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
+    const config = {
+      type: 'doughnut',
+      data: gastosData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: {
+            callbacks: {
+              label: function(tooltipItem) {
+                return tooltipItem.label + ': ' + tooltipItem.raw.toFixed(2) + '€';
+              }
             }
           }
         }
       }
+    };
+
+    window.myChart = new Chart(ctx, config);
+  }
+
+  // ✅ Función placeholder para calcular y mostrar los resultados
+  function calcularResultados(data) {
+    document.getElementById("resA").innerHTML = `
+      Ingreso mensual neto: $${(data.ingreso_neto / 12 || 0).toFixed(2)}<br>
+      Ahorro personal anual: $${(data.aporte_personal_retiro || 0).toFixed(2)}
+    `;
+    // Puedes continuar agregando más resultados aquí para resB, resC, etc.
+  }
+
+  // ✅ Función para actualizar la barra de progreso
+  function updateProgressBar(stepName, totalSteps) {
+    const stepIndex = Array.from(document.querySelectorAll('.step')).indexOf(document.getElementById(stepName)) + 1;
+    const progress = (stepIndex / totalSteps) * 100;
+    document.getElementById('progress-bar').style.width = progress + '%';
+  }
+
+  // ✅ Funciones para avanzar y retroceder entre pasos
+  function nextStep(stepName) {
+    const steps = document.querySelectorAll('.step');
+    steps.forEach(stepDiv => stepDiv.classList.remove('active'));
+    const stepToShow = document.getElementById(stepName);
+    if (stepToShow) {
+      stepToShow.classList.add('active');
+      updateNav(stepName);
+    } else {
+      console.error("Sección no encontrada: " + stepName);
     }
-  };
+  }
 
-  // Crear el gráfico
-  window.myChart = new Chart(ctx, config); // Asignamos el gráfico a una variable global para poder destruirlo después
-}
+  function prevStep(stepName) {
+    nextStep(stepName);
+  }
 
+  // ✅ Actualizar navegación visual
+  function updateNav(step) {
+    const navItems = document.querySelectorAll('#nav div');
+    navItems.forEach((item, index) => {
+      item.classList.remove('completed', 'active', 'inactive');
+      if (index < step - 1) item.classList.add('completed');
+      else if (index === step - 1) item.classList.add('active');
+      else item.classList.add('inactive');
+    });
+  }
+
+  // ✅ Permitir navegación directa desde la barra
+  document.querySelectorAll('#nav div').forEach((navItem, index) => {
+    navItem.addEventListener('click', function () {
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+      document.querySelectorAll('.step')[index].classList.add('active');
+      updateNav(index + 1);
+    });
+  });
+
+  // ✅ Funciones para mostrar/ocultar detalles
+  function toggleDeudaDetails() {
+    const el = document.getElementById("deudaDetails");
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  }
+
+  function toggleGastosDetails() {
+    const el = document.getElementById("gastosDetails");
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  }
+
+  function toggleSegurosDetails() {
+    const el = document.getElementById("segurosDetails");
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  }
+
+  function toggleImpuestosDetails() {
+    const el = document.getElementById("impuestosDetails");
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  }
   function calcularResultados(data) {
     calcularCategoriaA(data);
     calcularCategoriaB(data);
