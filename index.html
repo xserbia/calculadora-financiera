@@ -396,11 +396,12 @@
       }
     });
 
-    for (let key in data) {
-      if (!isNaN(data[key])) {
-        data[key] = parseFloat(data[key]);
-      }
-    }
+ for (let key in data) {
+  // No intentes convertir a número si es booleano
+  if (typeof data[key] === "string" && !isNaN(data[key])) {
+    data[key] = parseFloat(data[key]);
+  }
+}
   console.log("📦 Datos capturados del formulario:", data); // 👈 Aquí el log
     
     mostrarGraficoGastos(data);
