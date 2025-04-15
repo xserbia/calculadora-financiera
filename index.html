@@ -485,17 +485,18 @@
   const config = {
     type: 'doughnut',
     data: gastosData,
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'top' },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              const label = context.label || '';
-              const value = context.raw;
-              const percentage = total ? ((value / total) * 100).toFixed(1) : 0;
-              return `${label}: ${percentage}%`;
+options: {
+  responsive: true,
+  plugins: {
+    legend: { position: 'top' },
+    tooltip: {
+      callbacks: {
+        label: function(context) {
+          const data = context.chart.data.datasets[0].data;
+          const total = data.reduce((acc, val) => acc + val, 0);
+          const value = context.raw;
+          const percent = total ? ((value / total) * 100).toFixed(1) : 0;
+          return `${context.label}: ${percent}%`;
               }
             }
           }
