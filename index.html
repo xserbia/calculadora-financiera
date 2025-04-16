@@ -621,25 +621,28 @@ function mostrarResultado(id) {
   const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
   if (current) current.classList.add('active');
 }
-// Función de cálculos para cada categoría
 function calcularCategoriaA(data) {
-  const ingresoMensual = (
+  // Ingresos mensuales y anuales
+  const ingresoAnual = (
     (data.salario || 0) +
     (data.ingreso_negocio || 0) +
     (data.bonos || 0) +
     (data.dividendos_intereses || 0) +
     (data.renta || 0) +
     (data.otros_ingresos || 0)
-  ) / 12; // Total mensual
+  );
+  const ingresoMensual = ingresoAnual / 12;
 
   // Ahorros
-  const ahorroMensual = (
+  const ahorroAnual = (
     (data.aporte_personal_retiro || 0) +
     (data.aporte_empleador_retiro || 0) +
     (data.otros_ahorros || 0)
-  ) / 12; // Total mensual
+  );
+  const ahorroMensual = ahorroAnual / 12;
 
-  const gastoMensual = (
+  // Gastos esenciales (anual y mensual)
+  const gastoAnual = (
     (data.alimentos_bebidas || 0) +
     (data.transporte || 0) +
     (data.telecomunicaciones || 0) +
@@ -649,40 +652,75 @@ function calcularCategoriaA(data) {
     (data.impuestos || 0) +
     (data.servicio_deuda || 0)
   );
+  const gastoMensual = gastoAnual / 12;
 
-  const tasaAhorro = (ahorroMensual / ingresoMensual) * 100;
+  // Tasa de ahorro
+  const tasaAhorro = ingresoMensual > 0 ? (ahorroMensual / ingresoMensual) * 100 : 0;
 
   // Meses de reserva
-  const mesesReserva = data.cuentas_bancarias / gastoMensual;
+  const mesesReserva = gastoMensual > 0 ? (data.cuentas_bancarias || 0) / gastoMensual : 0;
 
-  // Activos líquidos y ratio corriente
-  const activosLiquidos = data.cuentas_bancarias + data.cuentas_inversion;
-  const razonCorriente = activosLiquidos / data.deuda_tarjetas;
+  // Razón corriente
+  const activosLiquidos = (data.cuentas_bancarias || 0) + (data.cuentas_inversion || 0);
+  const razonCorriente = (activosLiquidos) / (data.deuda_tarjetas || 1);
 
-  // Activos totales y efectivo sobre activos
+  // Efectivo sobre activos
   const activosTotales = (
-    data.cuentas_bancarias + data.cuentas_inversion +
-    data.valor_vivienda + data.valor_propiedades_alquiler +
-    data.valor_vehiculos + data.valor_otros_activos + data.valor_otros
+    (data.cuentas_bancarias || 0) +
+    (data.cuentas_inversion || 0) +
+    (data.valor_vivienda || 0) +
+    (data.valor_propiedades_alquiler || 0) +
+    (data.valor_vehiculos || 0) +
+    (data.valor_otros_activos || 0) +
+    (data.valor_otros || 0)
   );
-  const efectivoSobreActivos = (data.cuentas_bancarias / activosTotales) * 100;
+  const efectivoSobreActivos = activosTotales > 0
+    ? ((data.cuentas_bancarias || 0) / activosTotales) * 100
+    : 0;
 
-  // ✅ Benchmarks con emojis según tu estándar
+  // Emojis
   const emojiAhorro = tasaAhorro >= 30 ? '✅' : (tasaAhorro >= 15 ? '⚠️' : '🚨');
-  const emojiReserva = mesesReserva >= 12 ? '✅' : (mesesReserva >= 6 ? '⚠️' : '🚨');
+  const emojiReserva = mesesReserva >= 12 ? '✅' : (mesesReserva >= 9 ? '⚠️' : '🚨');
   const emojiCorriente = razonCorriente >= 1 ? '✅' : '🚨';
   const emojiEfectivo = efectivoSobreActivos < 5 ? '⚠️' :
                         efectivoSobreActivos > 20 ? '🔁' : '✅';
 
+  // Resultado HTML
   document.getElementById("resA").innerHTML = `
     <h3>🅰️ A. Flujo de efectivo y liquidez</h3>
-    <p><strong>Ingreso mensual total:</strong> $${ingresoMensual.toFixed(2)}</p>
-    <p><strong>Ahorro mensual total:</strong> $${ahorroMensual.toFixed(2)}</p>
-    <p><strong>Gasto mensual estimado:</strong> $${gastoMensual.toFixed(0)}</p>
+
+    <table style="width:100%; border-collapse: collapse; margin-bottom: 1em;">
+      <thead>
+        <tr style="background-color:#f2f2f2;">
+          <th style="text-align:left; padding: 5px; border-bottom: 1px solid #ccc;"></th>
+          <th style="text-align:left; padding: 5px; border-bottom: 1px solid #ccc;">Anual</th>
+          <th style="text-align:left; padding: 5px; border-bottom: 1px solid #ccc;">Mensual</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 5px;">Ingreso</td>
+          <td style="padding: 5px;">$${ingresoAnual.toFixed(2)}</td>
+          <td style="padding: 5px;">$${ingresoMensual.toFixed(2)}</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;">Ahorro</td>
+          <td style="padding: 5px;">$${ahorroAnual.toFixed(2)}</td>
+          <td style="padding: 5px;">$${ahorroMensual.toFixed(2)}</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;">Gastos</td>
+          <td style="padding: 5px;">$${gastoAnual.toFixed(2)}</td>
+          <td style="padding: 5px;">$${gastoMensual.toFixed(2)}</td>
+        </tr>
+      </tbody>
+    </table>
+
     <p><strong>Tasa de ahorro:</strong> ${tasaAhorro.toFixed(1)}% ${emojiAhorro}</p>
     <p><strong>Meses de reserva de emergencia:</strong> ${mesesReserva.toFixed(1)} meses ${emojiReserva}</p>
     <p><strong>Razón corriente:</strong> ${razonCorriente.toFixed(2)} ${emojiCorriente}</p>
     <p><strong>Efectivo sobre activos totales:</strong> ${efectivoSobreActivos.toFixed(1)}% ${emojiEfectivo}</p>
+
     <p style="font-size: 0.85em; color: gray;">
       ✅ Dentro del rango ideal &nbsp;&nbsp; ⚠️ Aceptable o mejorable &nbsp;&nbsp; 🚨 Riesgo o alerta &nbsp;&nbsp; 🔁 Exceso conservador
     </p>
