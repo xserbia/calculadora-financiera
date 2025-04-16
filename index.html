@@ -622,252 +622,256 @@ function mostrarResultado(id) {
   if (current) current.classList.add('active');
 }
 function calcularCategoriaA(data) {
-  // Ingresos mensuales y anuales
-  const ingresoAnual = (
+  // 🔹 Ingreso anual total
+  const ingresoAnual =
     (data.salario || 0) +
     (data.ingreso_negocio || 0) +
+    (data.otros_ingresos || 0) +
     (data.bonos || 0) +
     (data.dividendos_intereses || 0) +
-    (data.renta || 0) +
-    (data.otros_ingresos || 0)
-  );
+    (data.renta || 0);
   const ingresoMensual = ingresoAnual / 12;
 
-  // Ahorros
-  const ahorroAnual = (
+  // 🔹 Ahorro anual total
+  const ahorroAnual =
     (data.aporte_personal_retiro || 0) +
     (data.aporte_empleador_retiro || 0) +
-    (data.otros_ahorros || 0)
-  );
+    (data.otros_ahorros || 0);
   const ahorroMensual = ahorroAnual / 12;
 
-  // Gastos esenciales (anual y mensual)
-  const gastoAnual = (
-    (data.alimentos_bebidas || 0) +
+  // 🔹 Gasto esencial anual (basado en definición)
+  const gastoEsencialAnual =
+    (data.supermercado || 0) +
     (data.transporte || 0) +
     (data.telecomunicaciones || 0) +
-    (data.servicios_publicos || 0) +
-    (data.seguros || 0) +
+    (data.servicio_publico || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) + // estimado si no existe
     (data.educacion || 0) +
-    (data.impuestos || 0) +
-    (data.servicio_deuda || 0)
-  );
-  const gastoMensual = gastoAnual / 12;
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.seguro_social || 0) +
+    (data.hipoteca || 0) +
+    (data.linea_credito || 0) +
+    (data.prestamo_auto || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0);
+  const gastoEsencialMensual = gastoEsencialAnual / 12;
 
-  // Tasa de ahorro
-  const tasaAhorro = ingresoMensual > 0 ? (ahorroMensual / ingresoMensual) * 100 : 0;
-
-  // Meses de reserva
-  const mesesReserva = gastoMensual > 0 ? (data.cuentas_bancarias || 0) / gastoMensual : 0;
-
-  // Razón corriente
+  // 🔹 Activos líquidos
   const activosLiquidos = (data.cuentas_bancarias || 0) + (data.cuentas_inversion || 0);
-  const razonCorriente = (activosLiquidos) / (data.deuda_tarjetas || 1);
 
-  // Efectivo sobre activos
-  const activosTotales = (
+  // 🔹 Activos totales
+  const activosTotales =
     (data.cuentas_bancarias || 0) +
     (data.cuentas_inversion || 0) +
+    (data.cuentas_retiro || 0) +
     (data.valor_vivienda || 0) +
     (data.valor_propiedades_alquiler || 0) +
     (data.valor_vehiculos || 0) +
     (data.valor_otros_activos || 0) +
-    (data.valor_otros || 0)
-  );
-  const efectivoSobreActivos = activosTotales > 0
-    ? ((data.cuentas_bancarias || 0) / activosTotales) * 100
-    : 0;
+    (data.valor_otros || 0);
 
-  // Emojis
-  const emojiAhorro = tasaAhorro >= 30 ? '✅' : (tasaAhorro >= 15 ? '⚠️' : '🚨');
-  const emojiReserva = mesesReserva >= 12 ? '✅' : (mesesReserva >= 9 ? '⚠️' : '🚨');
-  const emojiCorriente = razonCorriente >= 1 ? '✅' : '🚨';
-  const emojiEfectivo = efectivoSobreActivos < 5 ? '⚠️' :
-                        efectivoSobreActivos > 20 ? '🔁' : '✅';
+  // 🔹 Razón corriente
+  const razonCorriente = activosLiquidos / (data.deuda_tarjetas || 1); // evitar división por 0
 
-  // Resultado HTML
-  document.getElementById("resA").innerHTML = `
-    <h3>🅰️ A. Flujo de efectivo y liquidez</h3>
+  // 🔹 Efectivo / activos totales
+  const efectivoSobreActivos = ((data.cuentas_bancarias || 0) / activosTotales) * 100;
 
-    <table style="width:100%; border-collapse: collapse; margin-bottom: 1em;">
+  // 🔹 Meses de reserva
+  const mesesReserva = (data.cuentas_bancarias || 0) / gastoEsencialMensual;
+
+  // 🔹 Tasa de ahorro
+  const tasaAhorro = (ahorroAnual / ingresoAnual) * 100;
+
+  // 🔹 Emojis evaluación
+  const emojiAhorro = tasaAhorro >= 30 ? "✅" : (tasaAhorro >= 15 ? "⚠️" : "🚨");
+  const emojiReserva = mesesReserva >= 12 ? "✅" : (mesesReserva >= 6 ? "⚠️" : "🚨");
+  const emojiCorriente = razonCorriente >= 1 ? "✅" : "🚨";
+  const emojiEfectivo = efectivoSobreActivos < 5 ? "⚠️" :
+                        efectivoSobreActivos > 20 ? "🔁" : "✅";
+
+  // 🔹 Tabla visual de resultados
+  const tablaResumen = `
+    <table style="font-size: 0.95em; margin-top: 10px;">
       <thead>
-        <tr style="background-color:#f2f2f2;">
-          <th style="text-align:left; padding: 5px; border-bottom: 1px solid #ccc;"></th>
-          <th style="text-align:left; padding: 5px; border-bottom: 1px solid #ccc;">Anual</th>
-          <th style="text-align:left; padding: 5px; border-bottom: 1px solid #ccc;">Mensual</th>
-        </tr>
+        <tr><th>Indicador</th><th>Resultado</th><th>Evaluación</th></tr>
       </thead>
       <tbody>
-        <tr>
-          <td style="padding: 5px;">Ingreso</td>
-          <td style="padding: 5px;">$${ingresoAnual.toFixed(2)}</td>
-          <td style="padding: 5px;">$${ingresoMensual.toFixed(2)}</td>
-        </tr>
-        <tr>
-          <td style="padding: 5px;">Ahorro</td>
-          <td style="padding: 5px;">$${ahorroAnual.toFixed(2)}</td>
-          <td style="padding: 5px;">$${ahorroMensual.toFixed(2)}</td>
-        </tr>
-        <tr>
-          <td style="padding: 5px;">Gastos</td>
-          <td style="padding: 5px;">$${gastoAnual.toFixed(2)}</td>
-          <td style="padding: 5px;">$${gastoMensual.toFixed(2)}</td>
-        </tr>
+        <tr><td>Ingreso anual / mensual</td><td>$${ingresoAnual.toLocaleString()} / $${ingresoMensual.toFixed(2)}</td><td>–</td></tr>
+        <tr><td>Gasto esencial anual / mensual</td><td>$${gastoEsencialAnual.toLocaleString()} / $${gastoEsencialMensual.toFixed(2)}</td><td>–</td></tr>
+        <tr><td>Ahorro anual / mensual</td><td>$${ahorroAnual.toLocaleString()} / $${ahorroMensual.toFixed(2)}</td><td>–</td></tr>
+        <tr><td>Tasa de ahorro</td><td>${tasaAhorro.toFixed(1)}%</td><td>${emojiAhorro}</td></tr>
+        <tr><td>Meses de reserva</td><td>${mesesReserva.toFixed(1)} meses</td><td>${emojiReserva}</td></tr>
+        <tr><td>Razón corriente</td><td>${razonCorriente.toFixed(2)}</td><td>${emojiCorriente}</td></tr>
+        <tr><td>Efectivo / activos totales</td><td>${efectivoSobreActivos.toFixed(1)}%</td><td>${emojiEfectivo}</td></tr>
       </tbody>
     </table>
-
-    <p><strong>Tasa de ahorro:</strong> ${tasaAhorro.toFixed(1)}% ${emojiAhorro}</p>
-    <p><strong>Meses de reserva de emergencia:</strong> ${mesesReserva.toFixed(1)} meses ${emojiReserva}</p>
-    <p><strong>Razón corriente:</strong> ${razonCorriente.toFixed(2)} ${emojiCorriente}</p>
-    <p><strong>Efectivo sobre activos totales:</strong> ${efectivoSobreActivos.toFixed(1)}% ${emojiEfectivo}</p>
-
     <p style="font-size: 0.85em; color: gray;">
       ✅ Dentro del rango ideal &nbsp;&nbsp; ⚠️ Aceptable o mejorable &nbsp;&nbsp; 🚨 Riesgo o alerta &nbsp;&nbsp; 🔁 Exceso conservador
     </p>
   `;
+
+  document.getElementById("resA").innerHTML = `
+    <h3>🅰️ A. Flujo de efectivo y liquidez</h3>
+    ${tablaResumen}
+  `;
 }
-  
+
 function calcularCategoriaB(data) {
-  const ingresoMensualBruto = (data.ingreso_anual_bruto || 0) / 12;
-  const ingresoMensualNeto  = (data.ingreso_anual_neto  || 0) / 12;
+  // 🔹 Ingresos
+  const ingresoBruto = data.salario + (data.ingreso_negocio || 0);
+  const ingresoNeto = ingresoBruto * 0.80; // Asumimos 20% impuestos para neto
 
-  const gastoViviendaMensual = 
-    (data.vivienda  || 0) + 
-    (data.seguros   || 0) + 
-    (data.impuestos || 0);
+  // 🔹 Gasto de vivienda (hipoteca + seguros + impuestos relevantes)
+  const gastoVivienda = 
+    (data.hipoteca || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_auto || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.seguro_social || 0);
 
-  const porcentajeViviendaBruto = ingresoMensualBruto > 0 
-    ? (gastoViviendaMensual / ingresoMensualBruto) * 100 : 0;
+  const porcentajeViviendaNeto = (gastoVivienda / ingresoNeto) * 100;
+  const porcentajeViviendaBruto = (gastoVivienda / ingresoBruto) * 100;
 
-  const porcentajeViviendaNeto = ingresoMensualNeto > 0 
-    ? (gastoViviendaMensual / ingresoMensualNeto) * 100 : 0;
+  // 🔹 Servicio de deuda anual
+  const servicioDeuda = 
+    (data.hipoteca || 0) +
+    (data.linea_credito || 0) +
+    (data.prestamo_auto || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0);
 
-  const dtiBruto = ingresoMensualBruto > 0 
-    ? (data.servicio_deuda || 0) / ingresoMensualBruto * 100 : 0;
+  const dtiNeto = (servicioDeuda / ingresoNeto) * 100;
+  const dtiBruto = (servicioDeuda / ingresoBruto) * 100;
 
-  const dtiNeto = ingresoMensualNeto > 0 
-    ? (data.servicio_deuda || 0) / ingresoMensualNeto * 100 : 0;
-
-  const activosTotales = (
+  // 🔹 Activos y pasivos
+  const activosTotales =
     (data.cuentas_bancarias || 0) +
     (data.cuentas_inversion || 0) +
     (data.cuentas_retiro || 0) +
     (data.valor_vivienda || 0) +
     (data.valor_propiedades_alquiler || 0) +
-    (data.valor_otros_activos || 0) +
     (data.valor_vehiculos || 0) +
-    (data.valor_otros || 0)
-  );
+    (data.valor_otros_activos || 0) +
+    (data.valor_otros || 0);
 
-  const pasivosTotales = (
+  const pasivosCorrientes = 
     (data.deuda_tarjetas || 0) +
+    (data.deuda_vehiculos || 0) +
+    (data.deuda_comercial || 0) +
+    (data.deuda_otros || 0);
+
+  const pasivosTotales =
+    pasivosCorrientes +
     (data.deuda_hipotecaria || 0) +
-    (data.deuda_comercial || 0) +
-    (data.deuda_vehiculos || 0) +
-    (data.deuda_estudios || 0) +
-    (data.deuda_otros || 0)
-  );
-
-  const pasivosCorrientes = (
-    (data.deuda_tarjetas || 0) +
-    (data.deuda_comercial || 0) +
-    (data.deuda_vehiculos || 0) +
-    (data.deuda_otros || 0)
-  );
+    (data.deuda_estudios || 0);
 
   const patrimonioNeto = activosTotales - pasivosTotales;
 
-  const relacionPasivosCorrientes = activosTotales > 0 
-    ? (pasivosCorrientes / activosTotales) * 100 : 0;
+  // 🔹 Indicadores
+  const relacionPasivosCorrientes = (pasivosCorrientes / activosTotales) * 100;
+  const relacionDeudaActivos = (pasivosTotales / activosTotales) * 100;
+  const relacionDeudaPatrimonio = (pasivosTotales / patrimonioNeto) * 100;
 
-  const relacionDeudaActivos = activosTotales > 0 
-    ? (pasivosTotales / activosTotales) * 100 : 0;
-
-  const relacionDeudaPatrimonio = patrimonioNeto > 0 
-    ? (pasivosTotales / patrimonioNeto) * 100 : 0;
-
-  // Benchmarks
+  // 🔹 Emojis evaluación
   const emojiViviendaNeto = porcentajeViviendaNeto <= 28 ? '✅' : '🚨';
   const emojiViviendaBruto = porcentajeViviendaBruto <= 24 ? '✅' : '🚨';
-
   const emojiDTINeto = dtiNeto <= 36 ? '✅' : '🚨';
   const emojiDTIBruto = dtiBruto <= 30 ? '✅' : '🚨';
-
-  const emojiPasivosCorrientes = relacionPasivosCorrientes <= 20 ? '✅' : '⚠️';
+  const emojiPasivosCorr = relacionPasivosCorrientes <= 20 ? '✅' : '⚠️';
   const emojiDeudaActivos = relacionDeudaActivos <= 50 ? '✅' : '⚠️';
-
   const emojiDeudaPatrimonio = 
     relacionDeudaPatrimonio <= 50 ? '✅' :
     relacionDeudaPatrimonio <= 100 ? '⚠️' : '🚨';
 
-  // Resultado final
-  document.getElementById("resB").innerHTML = `
-    <h3>🅱️ B. Endeudamiento</h3>
-    <p><strong>% Ingreso destinado a vivienda (neto):</strong> ${porcentajeViviendaNeto.toFixed(1)}% ${emojiViviendaNeto}</p>
-    <p><strong>% Ingreso destinado a vivienda (bruto):</strong> ${porcentajeViviendaBruto.toFixed(1)}% ${emojiViviendaBruto}</p>
-    <p><strong>DTI (neto):</strong> ${dtiNeto.toFixed(1)}% ${emojiDTINeto}</p>
-    <p><strong>DTI (bruto):</strong> ${dtiBruto.toFixed(1)}% ${emojiDTIBruto}</p>
-    <p><strong>Pasivos corrientes / activos totales:</strong> ${relacionPasivosCorrientes.toFixed(1)}% ${emojiPasivosCorrientes}</p>
-    <p><strong>Deuda total / activos totales:</strong> ${relacionDeudaActivos.toFixed(1)}% ${emojiDeudaActivos}</p>
-    <p><strong>Deuda total / patrimonio neto:</strong> ${relacionDeudaPatrimonio.toFixed(1)}% ${emojiDeudaPatrimonio}</p>
+  // 🔹 Tabla con resultados
+  const tabla = `
+    <table style="font-size: 0.95em; margin-top: 10px;">
+      <thead>
+        <tr><th>Indicador</th><th>Resultado</th><th>Evaluación</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>% Vivienda / ingreso neto</td><td>${porcentajeViviendaNeto.toFixed(1)}%</td><td>${emojiViviendaNeto}</td></tr>
+        <tr><td>% Vivienda / ingreso bruto</td><td>${porcentajeViviendaBruto.toFixed(1)}%</td><td>${emojiViviendaBruto}</td></tr>
+        <tr><td>DTI / ingreso neto</td><td>${dtiNeto.toFixed(1)}%</td><td>${emojiDTINeto}</td></tr>
+        <tr><td>DTI / ingreso bruto</td><td>${dtiBruto.toFixed(1)}%</td><td>${emojiDTIBruto}</td></tr>
+        <tr><td>Pasivos corrientes / activos</td><td>${relacionPasivosCorrientes.toFixed(1)}%</td><td>${emojiPasivosCorr}</td></tr>
+        <tr><td>Deuda total / activos</td><td>${relacionDeudaActivos.toFixed(1)}%</td><td>${emojiDeudaActivos}</td></tr>
+        <tr><td>Deuda total / patrimonio neto</td><td>${relacionDeudaPatrimonio.toFixed(1)}%</td><td>${emojiDeudaPatrimonio}</td></tr>
+      </tbody>
+    </table>
 
     <h4 style="margin-top: 20px;">📊 Benchmarks utilizados</h4>
     <ul style="font-size: 0.9em;">
-      <li><strong>Vivienda / ingreso neto:</strong> ≤ 28% ✅</li>
-      <li><strong>Vivienda / ingreso bruto:</strong> ≤ 24% ✅</li>
-      <li><strong>DTI neto:</strong> ≤ 36% ✅</li>
-      <li><strong>DTI bruto:</strong> ≤ 30% ✅</li>
-      <li><strong>Pasivos corrientes / activos:</strong> ≤ 20% ✅</li>
-      <li><strong>Deuda / activos:</strong> ≤ 50% ✅</li>
-      <li><strong>Deuda / patrimonio neto:</strong> ≤ 50% ✅ · 51–100% ⚠️ · > 100% 🚨</li>
+      <li>Vivienda / ingreso neto: ≤ 28% ✅</li>
+      <li>Vivienda / ingreso bruto: ≤ 24% ✅</li>
+      <li>DTI neto: ≤ 36% ✅</li>
+      <li>DTI bruto: ≤ 30% ✅</li>
+      <li>Pasivos corrientes / activos: ≤ 20% ✅</li>
+      <li>Deuda / activos: ≤ 50% ✅</li>
+      <li>Deuda / patrimonio neto: ≤ 50% ✅ · 51–100% ⚠️ · > 100% 🚨</li>
     </ul>
   `;
-}
 
-  function calcularCategoriaC(data) {
-  const totalActivos = (
+  document.getElementById("resB").innerHTML = `
+    <h3>🅱️ B. Endeudamiento</h3>
+    ${tabla}
+  `;
+}
+function calcularCategoriaC(data) {
+  // 🔹 Activos
+  const totalActivos =
     (data.cuentas_bancarias || 0) +
     (data.cuentas_inversion || 0) +
     (data.cuentas_retiro || 0) +
     (data.valor_vivienda || 0) +
     (data.valor_propiedades_alquiler || 0) +
-    (data.valor_otros_activos || 0) +
     (data.valor_vehiculos || 0) +
-    (data.valor_otros || 0)
-  );
+    (data.valor_otros_activos || 0) +
+    (data.valor_otros || 0);
 
-  const totalPasivos = (
-    (data.deuda_tarjetas || 0) +
+  // 🔹 Pasivos
+  const totalPasivos =
     (data.deuda_hipotecaria || 0) +
-    (data.deuda_comercial || 0) +
+    (data.deuda_tarjetas || 0) +
     (data.deuda_vehiculos || 0) +
+    (data.deuda_comercial || 0) +
     (data.deuda_estudios || 0) +
-    (data.deuda_otros || 0)
-  );
+    (data.deuda_otros || 0) +
+    (data.linea_credito || 0);
 
+  // 🔹 Cálculo de patrimonio neto
   const patrimonioNeto = totalActivos - totalPasivos;
 
-  const ratioPatrimonioActivos = totalActivos > 0
-    ? (patrimonioNeto / totalActivos) * 100 : 0;
+  // 🔹 Ratios
+  const ratioPatrimonioActivos = (patrimonioNeto / totalActivos) * 100;
+  const ratioPatrimonioPasivos = (patrimonioNeto / totalPasivos) * 100;
 
-  const ratioPatrimonioPasivos = totalPasivos > 0
-    ? (patrimonioNeto / totalPasivos) * 100 : 0;
-
-  // Benchmarks
+  // 🔹 Evaluación con emojis
   const emojiActivos = ratioPatrimonioActivos >= 70 ? '✅' :
                        ratioPatrimonioActivos >= 50 ? '⚠️' : '🚨';
 
   const emojiPasivos = ratioPatrimonioPasivos >= 200 ? '✅' :
                        ratioPatrimonioPasivos >= 100 ? '⚠️' : '🚨';
 
-  // Mostrar resultados
-  document.getElementById("resC").innerHTML = `
-    <h3>🅲 C. Patrimonio neto</h3>
-    <p><strong>Activos totales:</strong> $${totalActivos.toLocaleString('en-US')}</p>
-    <p><strong>Pasivos totales:</strong> $${totalPasivos.toLocaleString('en-US')}</p>
-    <p><strong>Patrimonio neto:</strong> $${patrimonioNeto.toLocaleString('en-US')}</p>
-    <p><strong>Relación patrimonio / activos:</strong> ${ratioPatrimonioActivos.toFixed(1)}% ${emojiActivos}</p>
-    <p><strong>Relación patrimonio / pasivos:</strong> ${ratioPatrimonioPasivos.toFixed(1)}% ${emojiPasivos}</p>
+  // 🔹 Tabla visual con resultados
+  const tabla = `
+    <table style="font-size: 0.95em; margin-top: 10px;">
+      <thead>
+        <tr><th>Indicador</th><th>Resultado</th><th>Evaluación</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Activos totales</td><td>$${totalActivos.toLocaleString()}</td><td>–</td></tr>
+        <tr><td>Pasivos totales</td><td>$${totalPasivos.toLocaleString()}</td><td>–</td></tr>
+        <tr><td>Patrimonio neto</td><td>$${patrimonioNeto.toLocaleString()}</td><td>–</td></tr>
+        <tr><td>Relación patrimonio / activos</td><td>${ratioPatrimonioActivos.toFixed(1)}%</td><td>${emojiActivos}</td></tr>
+        <tr><td>Relación patrimonio / pasivos</td><td>${ratioPatrimonioPasivos.toFixed(1)}%</td><td>${emojiPasivos}</td></tr>
+      </tbody>
+    </table>
 
     <h4 style="margin-top: 20px;">📊 Benchmarks utilizados</h4>
     <ul style="font-size: 0.9em;">
@@ -877,175 +881,180 @@ function calcularCategoriaB(data) {
       <li><strong>Relación patrimonio / pasivos:</strong>
         ≥ 200% ✅ · 100–199% ⚠️ · &lt; 100% 🚨
       </li>
-      <li><strong>Patrimonio neto absoluto:</strong> Evaluado en función de edad, ingresos y metas.</li>
+      <li><strong>Patrimonio neto absoluto:</strong>
+        Evaluado en función de edad, ingresos y metas.
+      </li>
     </ul>
   `;
+
+  // Mostrar resultados
+  document.getElementById("resC").innerHTML = `
+    <h3>🅲 C. Patrimonio neto</h3>
+    ${tabla}
+  `;
 }
+function calcularCategoriaD(data) {
+  // 🔹 Ingreso y ahorro
+  const ingresoAnualBruto = data.salario + (data.ingreso_negocio || 0);
+  const ingresoMensual = ingresoAnualBruto / 12;
+  const ahorroAnual = (data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0);
+  const tasaAhorro = (ahorroAnual / ingresoAnualBruto) * 100;
 
-  function calcularCategoriaD(data) {
-  const ingresoMensual = (data.ingreso_anual_neto || 0) / 12;
-  const ingresoBruto = data.ingreso_anual_bruto || 0;
-
-  const ahorroMensual = ((data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0));
-  const tasaAhorro = ingresoMensual > 0 ? (ahorroMensual / ingresoMensual) * 100 : 0;
-
-  const activosDeInversion = 
-    (data.cuentas_inversion || 0) +
-    (data.cuentas_retiro || 0) +
-    (data.valor_propiedades_alquiler || 0);
-
-  const activosTotales = 
+  // 🔹 Activos
+  const activosDeInversion = (data.cuentas_inversion || 0) + (data.cuentas_retiro || 0) + (data.valor_propiedades_alquiler || 0);
+  const activosTotales =
     (data.cuentas_bancarias || 0) +
     (data.cuentas_inversion || 0) +
     (data.cuentas_retiro || 0) +
     (data.valor_vivienda || 0) +
     (data.valor_propiedades_alquiler || 0) +
-    (data.valor_otros_activos || 0) +
     (data.valor_vehiculos || 0) +
+    (data.valor_otros_activos || 0) +
     (data.valor_otros || 0);
 
-  const activosDeInversionSobreTotales = activosTotales > 0 
-    ? (activosDeInversion / activosTotales) * 100 : 0;
+  const patrimonioNeto = activosTotales -
+    ((data.deuda_hipotecaria || 0) + (data.deuda_tarjetas || 0) +
+     (data.deuda_comercial || 0) + (data.deuda_vehiculos || 0) +
+     (data.deuda_estudios || 0) + (data.deuda_otros || 0) + (data.linea_credito || 0));
 
-  const activosDeInversionSobreIngreso = ingresoBruto > 0 
-    ? activosDeInversion / ingresoBruto : 0;
-
+  // 🔹 Gastos esenciales mensuales
   const gastosEsencialesMensuales = (
-    (data.alimentos_bebidas || 0) +
+    (data.supermercado || 0) +
     (data.transporte || 0) +
     (data.telecomunicaciones || 0) +
-    (data.servicios_publicos || 0) +
-    (data.seguros || 0) +
+    (data.servicio_publico || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) +
     (data.educacion || 0) +
-    (data.impuestos || 0) +
-    (data.deuda_hipotecaria || 0) +
-    (data.deuda_tarjetas || 0) +
-    (data.deuda_comercial || 0) +
-    (data.deuda_vehiculos || 0) +
-    (data.deuda_estudios || 0) +
-    (data.deuda_otros || 0)
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.seguro_social || 0) +
+    (data.hipoteca || 0) +
+    (data.linea_credito || 0) +
+    (data.prestamo_auto || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0)
   ) / 12;
 
-  const activosDeInversionSobreGastos = gastosEsencialesMensuales > 0 
-    ? activosDeInversion / gastosEsencialesMensuales : 0;
+  // 🔹 Indicadores clave
+  const activosInversionSobreTotales = (activosDeInversion / activosTotales) * 100;
+  const activosInversionSobreIngreso = activosDeInversion / ingresoAnualBruto;
+  const activosInversionSobreGastos = activosDeInversion / gastosEsencialesMensuales;
+  const patrimonioSobreIngreso = patrimonioNeto / ingresoAnualBruto;
 
-  const pasivosTotales = 
-    (data.deuda_tarjetas || 0) +
-    (data.deuda_hipotecaria || 0) +
-    (data.deuda_comercial || 0) +
-    (data.deuda_vehiculos || 0) +
-    (data.deuda_estudios || 0) +
-    (data.deuda_otros || 0);
-
-  const patrimonioNeto = activosTotales - pasivosTotales;
-
-  const patrimonioSobreIngreso = ingresoBruto > 0 
-    ? patrimonioNeto / ingresoBruto : 0;
-
-  // Benchmarks
+  // 🔹 Benchmarks edad → 45 años → 4.5x
+  const benchmarkEdad = 4.5;
   const emojiAhorro = tasaAhorro >= 30 ? '✅' : (tasaAhorro >= 15 ? '⚠️' : '🚨');
-  const emojiActivosInversion = activosDeInversionSobreTotales >= 50 ? '✅' : (activosDeInversionSobreTotales >= 30 ? '⚠️' : '🚨');
-  const emojiActivosSobreIngreso = activosDeInversionSobreIngreso >= 1.6 ? '✅' : (activosDeInversionSobreIngreso >= 0.6 ? '⚠️' : '🚨');
-  const emojiActivosSobreGastos = activosDeInversionSobreGastos >= 120 ? '✅' : (activosDeInversionSobreGastos >= 60 ? '⚠️' : '🚨');
-  const emojiPatrimonioSobreIngreso = patrimonioSobreIngreso >= 3.5 ? '✅' : (patrimonioSobreIngreso >= 3 ? '⚠️' : '🚨');
+  const emojiInversionTotales = activosInversionSobreTotales >= 50 ? '✅' : (activosInversionSobreTotales >= 30 ? '⚠️' : '🚨');
+  const emojiInversionIngreso = activosInversionSobreIngreso >= 1.6 ? '✅' : (activosInversionSobreIngreso >= 0.6 ? '⚠️' : '🚨');
+  const emojiInversionGastos = activosInversionSobreGastos >= 120 ? '✅' : (activosInversionSobreGastos >= 60 ? '⚠️' : '🚨');
+  const emojiPatrimonioIngreso = patrimonioSobreIngreso >= benchmarkEdad ? '✅' : (patrimonioSobreIngreso >= benchmarkEdad * 0.8 ? '⚠️' : '🚨');
 
-  const edad = data.edad || 0;
-  let benchmarkPatrimonioIngreso;
-  if (edad <= 30) benchmarkPatrimonioIngreso = 3;
-  else if (edad <= 35) benchmarkPatrimonioIngreso = 3.5;
-  else if (edad <= 40) benchmarkPatrimonioIngreso = 4;
-  else if (edad <= 45) benchmarkPatrimonioIngreso = 4.5;
-  else if (edad <= 50) benchmarkPatrimonioIngreso = 5;
-  else if (edad <= 55) benchmarkPatrimonioIngreso = 5.5;
-  else benchmarkPatrimonioIngreso = 6;
-
-  const emojiPatrimonioIngreso = patrimonioSobreIngreso >= benchmarkPatrimonioIngreso ? '✅' : '⚠️';
-
-  // Mostrar resultados
-  document.getElementById("resD").innerHTML = `
-    <h3>🅳 D. Seguridad financiera</h3>
-    <p><strong>Tasa de ahorro (retirement):</strong> ${tasaAhorro.toFixed(1)}% ${emojiAhorro}</p>
-    <p><strong>Activos de inversión / activos totales:</strong> ${activosDeInversionSobreTotales.toFixed(1)}% ${emojiActivosInversion}</p>
-    <p><strong>Activos de inversión / ingreso bruto anual:</strong> ${activosDeInversionSobreIngreso.toFixed(2)}x ${emojiActivosSobreIngreso}</p>
-    <p><strong>Activos de inversión / gastos mensuales no discrecionales:</strong> ${activosDeInversionSobreGastos.toFixed(0)} meses ${emojiActivosSobreGastos}</p>
-    <p><strong>Patrimonio neto / ingreso bruto anual:</strong> ${patrimonioSobreIngreso.toFixed(2)}x ${emojiPatrimonioIngreso}</p>
+  // 🔹 Tabla visual
+  const tabla = `
+    <table style="font-size: 0.95em; margin-top: 10px;">
+      <thead>
+        <tr><th>Indicador</th><th>Resultado</th><th>Evaluación</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Tasa de ahorro (retirement)</td><td>${tasaAhorro.toFixed(1)}%</td><td>${emojiAhorro}</td></tr>
+        <tr><td>Activos de inversión / activos totales</td><td>${activosInversionSobreTotales.toFixed(1)}%</td><td>${emojiInversionTotales}</td></tr>
+        <tr><td>Activos de inversión / ingreso bruto anual</td><td>${activosInversionSobreIngreso.toFixed(2)}x</td><td>${emojiInversionIngreso}</td></tr>
+        <tr><td>Activos de inversión / gastos esenciales</td><td>${activosInversionSobreGastos.toFixed(0)} meses</td><td>${emojiInversionGastos}</td></tr>
+        <tr><td>Patrimonio neto / ingreso bruto anual</td><td>${patrimonioSobreIngreso.toFixed(2)}x</td><td>${emojiPatrimonioIngreso}</td></tr>
+      </tbody>
+    </table>
 
     <h4 style="margin-top: 20px;">📊 Benchmarks utilizados</h4>
     <ul style="font-size: 0.9em;">
-      <li><strong>Tasa de ahorro:</strong> ≥ 30% ✅ · 15%–29% ⚠️ · < 15% 🚨</li>
-      <li><strong>Activos de inversión / activos totales:</strong> ≥ 50% ✅ · 30%–49% ⚠️ · < 30% 🚨</li>
-      <li><strong>Activos de inversión / ingreso bruto anual:</strong> ≥ 1.6x ✅ · 0.6x–1.6x ⚠️ · < 0.6x 🚨</li>
-      <li><strong>Activos de inversión / gastos mensuales no discrecionales:</strong> ≥ 120 meses ✅ · 60–119 meses ⚠️ · < 60 meses 🚨</li>
-      <li><strong>Patrimonio neto / ingreso bruto anual:</strong> Evaluado según edad: ${benchmarkPatrimonioIngreso}x ✅</li>
+      <li>Tasa de ahorro: ≥ 30% ✅ · 15–29% ⚠️ · < 15% 🚨</li>
+      <li>Activos de inversión / activos totales: ≥ 50% ✅ · 30–49% ⚠️ · < 30% 🚨</li>
+      <li>Activos de inversión / ingreso bruto anual: ≥ 1.6x ✅ · 0.6–1.59x ⚠️ · < 0.6x 🚨</li>
+      <li>Activos de inversión / gastos esenciales mensuales: ≥ 120 meses ✅ · 60–119 ⚠️ · < 60 🚨</li>
+      <li>Patrimonio neto / ingreso bruto anual: ≥ ${benchmarkEdad}x ✅ · ≥ ${(benchmarkEdad * 0.8).toFixed(1)}x ⚠️</li>
     </ul>
+  `;
+
+  document.getElementById("resD").innerHTML = `
+    <h3>🅳 D. Seguridad financiera</h3>
+    ${tabla}
   `;
 }
 function calcularCategoriaE(data) {
-  // Activos por nivel de liquidez
-  const cuentasLiquidas = (data.cuentas_bancarias || 0) + (data.cuentas_inversion || 0); // 100%
-  const activosReales = (
-    (data.valor_vivienda || 0) +
-    (data.valor_propiedades_alquiler || 0) +
-    (data.valor_otros_activos || 0)
-  ) * 0.8;
-
-  const activosMenosLiquidos = (
-    (data.valor_vehiculos || 0) +
-    (data.valor_otros || 0)
-  ) * 0.5;
-
-  const cuentasRetiro = (data.cuentas_retiro || 0); // Última línea de defensa
-
-  // Gastos esenciales mensuales
+  // 🔹 Gastos mensuales esenciales
   const gastosEsencialesMensuales = (
-    (data.alimentos_bebidas || 0) +
+    (data.supermercado || 0) +
     (data.transporte || 0) +
     (data.telecomunicaciones || 0) +
-    (data.servicios_publicos || 0) +
-    (data.seguros || 0) +
+    (data.servicio_publico || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) +
     (data.educacion || 0) +
-    (data.impuestos || 0) +
-    (data.deuda_hipotecaria || 0) +
-    (data.deuda_tarjetas || 0) +
-    (data.deuda_comercial || 0) +
-    (data.deuda_vehiculos || 0) +
-    (data.deuda_estudios || 0) +
-    (data.deuda_otros || 0)
-  );
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.seguro_social || 0) +
+    (data.hipoteca || 0) +
+    (data.linea_credito || 0) +
+    (data.prestamo_auto || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0)
+  ) / 12;
 
-  // Evita divisiones por 0
-  const divisor = gastosEsencialesMensuales > 0 ? gastosEsencialesMensuales : 1;
+  // 🔹 Cálculo de activos con descuentos por liquidez
+  const cuentasLiquidas = (data.cuentas_bancarias || 0) + (data.cuentas_inversion || 0); // 100%
+  const activosReales = ((data.valor_vivienda || 0) + (data.valor_propiedades_alquiler || 0) + (data.valor_otros_activos || 0)) * 0.8;
+  const activosMenosLiquidos = ((data.valor_vehiculos || 0) + (data.valor_otros || 0)) * 0.5;
+  const cuentasRetiro = (data.cuentas_retiro || 0); // 100%, pero solo en total
 
-  // Meses de cobertura por tipo de activo
-  const mesesCuentasLiquidas = cuentasLiquidas / divisor;
-  const mesesActivosReales = activosReales / divisor;
-  const mesesActivosMenosLiquidos = activosMenosLiquidos / divisor;
-  const mesesCuentasRetiro = cuentasRetiro / divisor;
+  // 🔹 Cálculo de meses por tipo
+  const mesesLiquidos = cuentasLiquidas / gastosEsencialesMensuales;
+  const mesesReales = activosReales / gastosEsencialesMensuales;
+  const mesesMenosLiquidos = activosMenosLiquidos / gastosEsencialesMensuales;
+  const mesesRetiro = cuentasRetiro / gastosEsencialesMensuales;
 
-  const totalSinRetiro = mesesCuentasLiquidas + mesesActivosReales + mesesActivosMenosLiquidos;
-  const totalConRetiro = totalSinRetiro + mesesCuentasRetiro;
+  const totalSinRetiro = mesesLiquidos + mesesReales + mesesMenosLiquidos;
+  const totalConRetiro = totalSinRetiro + mesesRetiro;
 
-  // Mostrar resultados
+  // 🔹 Checklist
+  const checklist = {
+    'Seguro médico': data.seguro_medico ? '✅ Sí' : '❌ No',
+    'Seguro de vida': data.seguro_vida ? '✅ Sí' : '❌ No',
+    'Seguros clave (discapacidad, hogar, auto, umbrella)': (
+      data.seguro_incapacidad || data.seguro_hogar || data.seguro_auto || data.seguro_umbrella
+    ) ? '✅ Sí' : '❌ No',
+    'Fondos de contingencia alternativos': data.fondos_contingencia_alternativos ? '✅ Sí' : '❌ No',
+    'Diversificación de ingresos': data.diversificacion_ingresos ? '✅ Sí' : '❌ No',
+    'Provisión para eventos inesperados': data.provision_eventos ? '✅ Sí' : '❌ No'
+  };
+
+  // 🔹 Output visual
+  const barras = `
+    <div style="background-color:#007bff;height:20px;width:${(mesesLiquidos / totalConRetiro * 100).toFixed(1)}%"></div>
+    <p>Cuentas líquidas (100%): ${mesesLiquidos.toFixed(1)} meses</p>
+    <div style="background-color:#00bfae;height:20px;width:${(mesesReales / totalConRetiro * 100).toFixed(1)}%"></div>
+    <p>Activos reales (80%): ${mesesReales.toFixed(1)} meses</p>
+    <div style="background-color:#ffdd57;height:20px;width:${(mesesMenosLiquidos / totalConRetiro * 100).toFixed(1)}%"></div>
+    <p>Activos menos líquidos (50%): ${mesesMenosLiquidos.toFixed(1)} meses</p>
+    <div style="background-color:#6c757d;height:20px;width:${(mesesRetiro / totalConRetiro * 100).toFixed(1)}%"></div>
+    <p>Cuentas de retiro: ${mesesRetiro.toFixed(1)} meses</p>
+  `;
+
+  const checklistHTML = Object.entries(checklist)
+    .map(([key, val]) => `<li><strong>${key}:</strong> ${val}</li>`)
+    .join('');
+
   document.getElementById("resE").innerHTML = `
     <h3>🅴 E. Manejo de riesgo</h3>
     <p><strong>Fondos de contingencia inmediatos (sin retiro):</strong> ${totalSinRetiro.toFixed(1)} meses</p>
     <p><strong>Fondos totales incluyendo cuentas de retiro:</strong> ${totalConRetiro.toFixed(1)} meses</p>
 
     <h4>Barras de cobertura por tipo de activo</h4>
-    <div style="background-color: #007bff; height: 30px; width: ${(mesesCuentasLiquidas / totalConRetiro * 100).toFixed(1)}%;"></div><p>Cuentas líquidas (100%): ${mesesCuentasLiquidas.toFixed(1)} meses</p>
-    <div style="background-color: #00bfae; height: 30px; width: ${(mesesActivosReales / totalConRetiro * 100).toFixed(1)}%;"></div><p>Activos reales (80%): ${mesesActivosReales.toFixed(1)} meses</p>
-    <div style="background-color: #ffdd57; height: 30px; width: ${(mesesActivosMenosLiquidos / totalConRetiro * 100).toFixed(1)}%;"></div><p>Activos menos líquidos (50%): ${mesesActivosMenosLiquidos.toFixed(1)} meses</p>
-    <div style="background-color: #6c757d; height: 30px; width: ${(mesesCuentasRetiro / totalConRetiro * 100).toFixed(1)}%;"></div><p>Cuentas de retiro: ${mesesCuentasRetiro.toFixed(1)} meses</p>
+    ${barras}
 
     <h4 style="margin-top: 20px;">📋 Checklist de cobertura y resiliencia</h4>
-    <ul style="font-size: 0.9em;">
-      <li><strong>Seguro médico:</strong> ${data.seguro_medico ? "✅ Sí" : "❌ No"}</li>
-      <li><strong>Seguro de vida:</strong> ${data.seguro_vida ? "✅ Sí" : "❌ No"}</li>
-      <li><strong>Seguros clave (discapacidad, hogar, auto, umbrella):</strong> ${data.seguro_incapacidad ? "✅ Sí" : "❌ No"}</li>
-      <li><strong>Fondos de contingencia alternativos:</strong> ${data.fondos_contingencia_alternativos ? "✅ Sí" : "❌ No"}</li>
-      <li><strong>Diversificación de ingresos:</strong> ${data.diversificacion_ingresos ? "✅ Sí" : "❌ No"}</li>
-      <li><strong>Provisión para eventos inesperados:</strong> ${data.provision_eventos ? "✅ Sí" : "❌ No"}</li>
-    </ul>
+    <ul style="font-size: 0.9em;">${checklistHTML}</ul>
   `;
 }
 
@@ -1079,108 +1088,121 @@ function calcularCategoriaF(data) {
     </ul>
   `;
 }
-
 function calcularCategoriaG(data) {
-  const edadActual = data.edad || 0;
-  const edadRetiro = data.edad_retiro || 65;
-  const anosAcumulacion = Math.max(edadRetiro - edadActual, 0);
+  const edadActual = data.edad;
+  const edadRetiro = data.edad_retiro;
+  const anosAcumulacion = edadRetiro - edadActual;
   const anosDistribucion = 100 - edadRetiro;
 
-  const ingresoDeseadoAnual = (data.ingreso_anual_bruto || 0) * 0.7;
+  const ingresoDeseadoAnual = (data.salario + (data.ingreso_negocio || 0)) * 0.7;
 
   const tasaAcumulacion = 0.07;
   const tasaDistribucion = 0.04;
 
+  // Valor presente necesario al momento del retiro
   const necesidadFondo = ingresoDeseadoAnual * ((1 - Math.pow(1 + tasaDistribucion, -anosDistribucion)) / tasaDistribucion);
 
-  const fondoAcumulado = data.cuentas_retiro || 0;
+  const fondoActual = data.cuentas_retiro || 0;
   const aportesAnuales = (data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0);
 
-  const factorFuturo = anosAcumulacion > 0
-    ? (Math.pow(1 + tasaAcumulacion, anosAcumulacion) - 1) / tasaAcumulacion
-    : 0;
+  const factorFuturo = (Math.pow(1 + tasaAcumulacion, anosAcumulacion) - 1) / tasaAcumulacion;
+  const montoEsperado = fondoActual * Math.pow(1 + tasaAcumulacion, anosAcumulacion) + aportesAnuales * factorFuturo;
 
-  const montoEsperado = fondoAcumulado * Math.pow(1 + tasaAcumulacion, anosAcumulacion) +
-                        aportesAnuales * factorFuturo;
-
-  const montoFaltante = Math.max(necesidadFondo - montoEsperado, 0);
-  const ahorroRequeridoAnual = factorFuturo > 0 ? montoFaltante / factorFuturo : 0;
+  const montoFaltante = necesidadFondo - montoEsperado;
+  const ahorroRequeridoAnual = montoFaltante > 0 ? montoFaltante / factorFuturo : 0;
   const ahorroRequeridoMensual = ahorroRequeridoAnual / 12;
 
   // Mostrar resultados
   document.getElementById("resG").innerHTML = `
     <h3>🅶 G. Futuro financiero</h3>
-    <p><strong>Monto necesario al momento del retiro:</strong> $${necesidadFondo.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
-    <p><strong>Monto proyectado con ahorro actual:</strong> $${montoEsperado.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
-    <p><strong>Ahorro adicional anual requerido:</strong> $${ahorroRequeridoAnual.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
-    <p><strong>Ahorro adicional mensual requerido:</strong> $${ahorroRequeridoMensual.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
-    <p><strong>Resultado preliminar:</strong> ${montoFaltante <= 0 ? '✅ Superávit' : '⚠️ Déficit'}</p>
+    <table style="font-size: 0.95em; margin-top: 10px;">
+      <thead><tr><th>Indicador</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td>Monto necesario al momento del retiro</td><td>$${necesidadFondo.toLocaleString(undefined, {maximumFractionDigits: 0})}</td></tr>
+        <tr><td>Monto proyectado con ahorro actual</td><td>$${montoEsperado.toLocaleString(undefined, {maximumFractionDigits: 0})}</td></tr>
+        <tr><td>Ahorro adicional anual requerido</td><td>$${ahorroRequeridoAnual.toLocaleString(undefined, {maximumFractionDigits: 0})}</td></tr>
+        <tr><td>Ahorro adicional mensual requerido</td><td>$${ahorroRequeridoMensual.toLocaleString(undefined, {maximumFractionDigits: 0})}</td></tr>
+        <tr><td>Resultado preliminar</td><td>${montoFaltante <= 0 ? '✅ Superávit' : '⚠️ Déficit'}</td></tr>
+      </tbody>
+    </table>
+
     <p style="font-size: 0.9em; color: gray;">
       Supuestos: inflación 3%, tasa de reemplazo 70%, rendimiento acumulación 7%, distribución 4%, expectativa de vida 100 años.<br>
-      Este resultado es una estimación. Para un análisis más detallado, consulta nuestra <a href="#" target="_blank">calculadora avanzada de retiro</a>.
+      Este resultado es una estimación. Para un análisis más detallado, consulta nuestra <a href="#">calculadora avanzada de retiro</a>.
     </p>
   `;
 }
-
 function calcularCategoriaH(data) {
-  // Datos base con protección
-  const ingresoAnual = data.ingreso_anual_neto || 0;
+  // 🔹 Ingreso anual
+  const ingresoAnual = (data.salario || 0) + (data.ingreso_negocio || 0);
 
-  const gastosAnuales = (
-    (data.alimentos_bebidas || 0) +
+  // 🔹 Gastos anuales esenciales
+  const gastosMensualesEsenciales = (
+    (data.supermercado || 0) +
     (data.transporte || 0) +
     (data.telecomunicaciones || 0) +
-    (data.servicios_publicos || 0) +
-    (data.seguros || 0) +
+    (data.servicio_publico || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) +
     (data.educacion || 0) +
-    (data.impuestos || 0) +
-    (data.deuda_hipotecaria || 0) +
-    (data.deuda_tarjetas || 0) +
-    (data.deuda_comercial || 0) +
-    (data.deuda_vehiculos || 0) +
-    (data.deuda_estudios || 0) +
-    (data.deuda_otros || 0)
-  ) * 12; // Gasto anual estimado
-
-  const pagosAnualesDeuda = (
-    (data.deuda_tarjetas || 0) +
-    (data.deuda_comercial || 0) +
-    (data.deuda_vehiculos || 0) +
-    (data.deuda_estudios || 0) +
-    (data.deuda_otros || 0)
-  ) * 12;
-
-  const activosNoLiquidos = (
-    (data.valor_vivienda || 0) +
-    (data.valor_propiedades_alquiler || 0) +
-    (data.valor_otros_activos || 0)
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.seguro_social || 0) +
+    (data.hipoteca || 0) +
+    (data.linea_credito || 0) +
+    (data.prestamo_auto || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0)
   );
 
+  const gastosAnuales = gastosMensualesEsenciales * 12;
+
+  // 🔹 Deuda total
+  const deudaAnual = (
+    (data.deuda_tarjetas || 0) +
+    (data.deuda_hipotecaria || 0) +
+    (data.deuda_vehiculos || 0) +
+    (data.deuda_estudios || 0) +
+    (data.deuda_comercial || 0) +
+    (data.deuda_otros || 0) +
+    (data.linea_credito || 0)
+  );
+
+  // 🔹 Activos no líquidos (los que se deprecian en los escenarios)
+  const activosNoLiquidos = 
+    (data.valor_vivienda || 0) +
+    (data.valor_propiedades_alquiler || 0) +
+    (data.valor_vehiculos || 0) +
+    (data.valor_otros_activos || 0) +
+    (data.valor_otros || 0);
+
+  // 🔹 Escenarios
   const escenarios = [
-    { nombre: "Leve", ajusteIngreso: 0.9, ajusteActivo: 0.9 },
-    { nombre: "Moderado", ajusteIngreso: 0.7, ajusteActivo: 0.7 },
-    { nombre: "Severo", ajusteIngreso: 0.5, ajusteActivo: 0.5 }
+    { nombre: "Leve", ajusteIngreso: 0.90, ajusteActivo: 0.90 },
+    { nombre: "Moderado", ajusteIngreso: 0.70, ajusteActivo: 0.70 },
+    { nombre: "Severo", ajusteIngreso: 0.50, ajusteActivo: 0.50 }
   ];
 
-  let tabla = `<h3>🅷 H. Pruebas de estrés</h3>
-  <table style="border-collapse: collapse; width: 100%;">
-    <thead>
-      <tr>
-        <th style="border-bottom: 1px solid #ccc;">Escenario</th>
-        <th style="border-bottom: 1px solid #ccc;">¿Cubre gastos?</th>
-        <th style="border-bottom: 1px solid #ccc;">¿Cubre deudas?</th>
-        <th style="border-bottom: 1px solid #ccc;">¿Sigue ahorrando?</th>
-      </tr>
-    </thead>
-    <tbody>`;
+  let tabla = `
+    <h3>🅷 H. Pruebas de estrés</h3>
+    <table style="font-size: 0.95em; margin-top: 10px;">
+      <thead><tr>
+        <th>Escenario</th>
+        <th>¿Cubre gastos?</th>
+        <th>¿Cubre deudas?</th>
+        <th>¿Sigue ahorrando?</th>
+      </tr></thead><tbody>
+  `;
 
   escenarios.forEach(esc => {
     const ingresoAjustado = ingresoAnual * esc.ajusteIngreso;
     const activosAjustados = activosNoLiquidos * esc.ajusteActivo;
+    const ingresoTotalDisponible = ingresoAjustado + activosAjustados;
 
-    const puedeCubrirGastos = ingresoAjustado >= gastosAnuales;
-    const puedeCubrirDeudas = ingresoAjustado >= (gastosAnuales + pagosAnualesDeuda);
-    const puedeAhorrar = ingresoAjustado > (gastosAnuales + pagosAnualesDeuda);
+    const puedeCubrirGastos = ingresoTotalDisponible >= gastosAnuales;
+    const puedeCubrirDeudas = ingresoTotalDisponible >= (gastosAnuales + deudaAnual);
+    const puedeAhorrar = ingresoTotalDisponible > (gastosAnuales + deudaAnual);
 
     tabla += `
       <tr>
@@ -1188,13 +1210,17 @@ function calcularCategoriaH(data) {
         <td>${puedeCubrirGastos ? '✅' : '🚨'}</td>
         <td>${puedeCubrirDeudas ? '✅' : '🚨'}</td>
         <td>${puedeAhorrar ? '✅' : (puedeCubrirDeudas ? '⚠️' : '🚨')}</td>
-      </tr>`;
+      </tr>
+    `;
   });
 
-  tabla += `</tbody></table>
-    <p style="font-size:0.9em; color:gray; margin-top: 10px;">
-      Simulación basada en caídas del 10%, 30% y 50% en ingresos y activos no líquidos. Efectivo y equivalentes no se afectan.
-    </p>`;
+  tabla += `
+    </tbody></table>
+    <p style="font-size: 0.9em;">
+      Simulación basada en caídas del 10%, 30% y 50% en ingresos y activos no líquidos.<br>
+      Efectivo y equivalentes no se afectan.
+    </p>
+  `;
 
   document.getElementById("resH").innerHTML = tabla;
 }
