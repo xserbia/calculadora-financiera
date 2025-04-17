@@ -283,30 +283,59 @@
   <button type="button" onclick="nextStep('stepSeguros')">Siguiente</button>
 </div>
     </div>
+    
+<!-- Sección 6: Seguros -->
+<div class="step" id="stepSeguros">
+  <fieldset>
+    <legend><strong>6. Seguros</strong></legend>
+    <p>Selecciona los seguros que tienes y su costo anual:</p>
 
-    <!-- Sección 6: Seguros -->
-    <div class="step" id="stepSeguros">
-      <fieldset>
-        <legend><strong>6. Seguros</strong></legend>
-        <label>Selecciona tus seguros:<br>
-          <input type="checkbox" name="seguro_vida"> Vida<br>
-          <input type="checkbox" name="seguro_salud"> Salud<br>
-          <input type="checkbox" name="seguro_incapacidad"> Incapacidad<br>
-          <input type="checkbox" name="seguro_ltc"> LTC<br>
-          <input type="checkbox" name="seguro_hogar"> Hogar<br>
-          <input type="checkbox" name="seguro_auto"> Auto<br>
-          <input type="checkbox" name="seguro_umbrella"> Umbrella<br>
-        </label><br>
-        <label>
-          <input type="checkbox" id="ningunSeguroActivo" name="ningunSeguroActivo">
-          No tengo seguros actualmente
-        </label>
-      </fieldset>
-<div class="nav-buttons">
-  <button type="button" onclick="prevStep('stepPasivos')">Anterior</button>
-  <button type="button" onclick="nextStep('stepPatrimonio')">Siguiente</button>
+    <label>
+      <input type="checkbox" name="tiene_seguro_vida"> Seguro de vida
+      <input type="number" name="seguro_vida" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_salud"> Seguro de salud
+      <input type="number" name="seguro_medico" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_incapacidad"> Seguro de incapacidad
+      <input type="number" name="seguro_incapacidad" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_ltc"> Seguro de cuidado a largo plazo (LTC)
+      <input type="number" name="seguro_ltc" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_hogar"> Seguro del hogar
+      <input type="number" name="seguro_propiedad" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_auto"> Seguro de auto
+      <input type="number" name="seguro_auto" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_umbrella"> Seguro umbrella
+      <input type="number" name="seguro_umbrella" placeholder="Costo anual ($)" step="0.01">
+    </label><br><br>
+
+    <label>
+      <input type="checkbox" id="ningunSeguroActivo" name="ningunSeguroActivo">
+      No tengo seguros actualmente
+    </label>
+  </fieldset>
+
+  <div class="nav-buttons">
+    <button type="button" onclick="prevStep('stepPasivos')">Anterior</button>
+    <button type="button" onclick="nextStep('stepPatrimonio')">Siguiente</button>
+  </div>
 </div>
-    </div>
 
     <!-- Sección 7: Patrimonio -->
     <div class="step" id="stepPatrimonio">
@@ -647,7 +676,12 @@ function calcularCategoriaA(data) {
     (data.servicio_publico || 0) +
     (data.seguro_medico || 0) +
     (data.seguro_propiedad || 0) +
-    (data.seguro_auto || 0) + // estimado si no existe
+    (data.seguro_auto || 0) +
+    (data.seguro_vida || 0) +
+    (data.seguro_renta || 0) +
+    (data.seguro_umbrella || 0) +
+    (data.seguro_incapacidad || 0) +
+    (data.seguro_propiedad_personal || 0) +
     (data.educacion || 0) +
     (data.impuesto_federal || 0) +
     (data.impuesto_propiedad || 0) +
@@ -658,6 +692,11 @@ function calcularCategoriaA(data) {
     (data.tarjetas_credito || 0) +
     (data.otros_deuda || 0);
   const gastoEsencialMensual = gastoEsencialAnual / 12;
+
+  // 🔹 Superávit
+  const totalGastoYahorro = gastoEsencialAnual + ahorroAnual;
+  const superavitAnual = ingresoAnual - totalGastoYahorro;
+  const superavitMensual = superavitAnual / 12;
 
   // 🔹 Activos líquidos
   const activosLiquidos = (data.cuentas_bancarias || 0) + (data.cuentas_inversion || 0);
@@ -702,6 +741,7 @@ function calcularCategoriaA(data) {
         <tr><td>Ingreso anual / mensual</td><td>$${ingresoAnual.toLocaleString()} / $${ingresoMensual.toFixed(2)}</td><td>–</td></tr>
         <tr><td>Gasto esencial anual / mensual</td><td>$${gastoEsencialAnual.toLocaleString()} / $${gastoEsencialMensual.toFixed(2)}</td><td>–</td></tr>
         <tr><td>Ahorro anual / mensual</td><td>$${ahorroAnual.toLocaleString()} / $${ahorroMensual.toFixed(2)}</td><td>–</td></tr>
+        <tr><td>Superávit anual / mensual</td><td>$${superavitAnual.toLocaleString()} / $${superavitMensual.toFixed(2)}</td><td>–</td></tr>
         <tr><td>Tasa de ahorro</td><td>${tasaAhorro.toFixed(1)}%</td><td>${emojiAhorro}</td></tr>
         <tr><td>Meses de reserva</td><td>${mesesReserva.toFixed(1)} meses</td><td>${emojiReserva}</td></tr>
         <tr><td>Razón corriente</td><td>${razonCorriente.toFixed(2)}</td><td>${emojiCorriente}</td></tr>
