@@ -213,22 +213,7 @@
         <label>Otros<br><input type="number" name="otros_gastos_diarios"></label><br><br>
       </div>
     </div>
-
-    <!-- Sección de Seguros -->
-    <div>
-      <button onclick="toggleSegurosDetails()">Abrir/Cerrar Seguros</button>
-      <div id="segurosDetails" style="display:none; padding-left: 20px;">
-        <label>Vida<br><input type="number" name="seguro_vida"></label><br><br>
-        <label>Médico<br><input type="number" name="seguro_medico"></label><br><br>
-        <label>Propiedad<br><input type="number" name="seguro_propiedad"></label><br><br>
-        <label>Renta<br><input type="number" name="seguro_renta"></label><br><br>
-        <label>Umbrella<br><input type="number" name="seguro_umbrella"></label><br><br>
-        <label>Incapacidad<br><input type="number" name="seguro_incapacidad"></label><br><br>
-        <label>Auto<br><input type="number" name="seguro_auto"></label><br><br>
-        <label>Propiedad personal<br><input type="number" name="seguro_propiedad_personal"></label><br><br>
-      </div>
-    </div>
-
+    
     <!-- Sección de Impuestos -->
     <div>
       <button onclick="toggleImpuestosDetails()">Abrir/Cerrar Impuestos</button>
@@ -324,6 +309,16 @@
       <input type="checkbox" name="tiene_seguro_umbrella"> Seguro umbrella
       <input type="number" name="seguro_umbrella" placeholder="Costo anual ($)" step="0.01">
     </label><br><br>
+
+    <label>
+  <input type="checkbox" name="tiene_seguro_renta"> Seguro de renta
+  <input type="number" name="seguro_renta" placeholder="Costo anual ($)" step="0.01">
+</label><br>
+
+<label>
+  <input type="checkbox" name="tiene_seguro_propiedad_personal"> Seguro de propiedad personal
+  <input type="number" name="seguro_propiedad_personal" placeholder="Costo anual ($)" step="0.01">
+</label><br>
 
     <label>
       <input type="checkbox" id="ningunSeguroActivo" name="ningunSeguroActivo">
@@ -677,15 +672,17 @@ function calcularCategoriaA(data) {
     (data.impuesto_auto || 0) +
     (data.medicare || 0);
 
-  const segurosAnual = 
-    (data.seguro_vida || 0) +
-    (data.seguro_medico || 0) +
-    (data.seguro_propiedad || 0) +
-    (data.seguro_renta || 0) +
-    (data.seguro_umbrella || 0) +
-    (data.seguro_incapacidad || 0) +
-    (data.seguro_auto || 0) +
-    (data.seguro_propiedad_personal || 0);
+  const gastoSeguroAnual =
+  (data.seguro_vida || 0) +
+  (data.seguro_medico || 0) +
+  (data.seguro_incapacidad || 0) +
+  (data.seguro_ltc || 0) +
+  (data.seguro_propiedad || 0) +
+  (data.seguro_auto || 0) +
+  (data.seguro_umbrella || 0) +
+  (data.seguro_renta || 0) +
+  (data.seguro_propiedad_personal || 0);
+
 
   const gastosDiariosAnual = 
     (data.supermercado || 0) +
