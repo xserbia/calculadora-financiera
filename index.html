@@ -755,32 +755,86 @@ const deudaMensual = deudaAnual / 12;
   const emojiCorriente = razonCorriente >= 1 ? "✅" : "🚨";
   const emojiEfectivo = efectivoSobreActivos < 5 ? "⚠️" : (efectivoSobreActivos > 20 ? "🔁" : "✅");
 
-  // 🔹 Tabla
-  const tabla = `
-    <table style="font-size: 0.95em; margin-top: 10px; text-align: center; border-collapse: collapse;">
-      <thead>
-        <tr>
-          <th>Indicador</th><th>Anual</th><th>Mensual</th><th>Evaluación</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Ingreso total</td><td>$${ingresoAnual.toLocaleString()}</td><td>$${ingresoMensual.toFixed(2)}</td><td>–</td></tr>
-        <tr><td>Impuestos</td><td>$${impuestosAnual.toLocaleString()}</td><td>$${impuestosMensual.toFixed(2)}</td><td>–</td></tr>
-        <tr><td>Seguros</td><td>$${segurosAnual.toLocaleString()}</td><td>$${segurosMensual.toFixed(2)}</td><td>–</td></tr>
-        <tr><td>Gastos diarios</td><td>$${gastosDiariosAnual.toLocaleString()}</td><td>$${gastosDiariosMensual.toFixed(2)}</td><td>–</td></tr>
-        <tr><td>Servicio de deuda</td><td>$${deudaAnual.toLocaleString()}</td><td>$${deudaMensual.toFixed(2)}</td><td>–</td></tr>
-        <tr><td>Total egresos (incluye ahorro)</td><td>$${egresosAnual.toLocaleString()}</td><td>$${egresosMensual.toFixed(2)}</td><td>–</td></tr>
-        <tr><td>Ahorro</td><td>$${ahorroAnual.toLocaleString()}</td><td>$${ahorroMensual.toFixed(2)}</td><td>${emojiAhorro}</td></tr>
-        <tr><td>Superávit</td><td>$${superavitAnual.toLocaleString()}</td><td>$${superavitMensual.toFixed(2)}</td><td>–</td></tr>
-        <tr><td>Meses de reserva</td><td colspan="2">${mesesReserva.toFixed(1)} meses</td><td>${emojiReserva}</td></tr>
-        <tr><td>Razón corriente</td><td colspan="2">${razonCorriente.toFixed(2)}</td><td>${emojiCorriente}</td></tr>
-        <tr><td>Efectivo / activos totales</td><td colspan="2">${efectivoSobreActivos.toFixed(1)}%</td><td>${emojiEfectivo}</td></tr>
-      </tbody>
-    </table>
-    <p style="font-size: 0.85em; color: gray; margin-top: 5px;">
-      ✅ Dentro del rango ideal &nbsp;&nbsp; ⚠️ Aceptable o mejorable &nbsp;&nbsp; 🚨 Riesgo o alerta &nbsp;&nbsp; 🔁 Exceso conservador
-    </p>
-  `;
+const tablaResumen = `
+  <table style="font-size: 0.95em; width: 100%; border-collapse: separate; border-spacing: 0 8px;">
+    <thead>
+      <tr style="text-align: center;">
+        <th style="text-align: left; padding-bottom: 6px;">Indicador</th>
+        <th style="text-align: center; padding-bottom: 6px;">Anual</th>
+        <th style="text-align: center; padding-bottom: 6px;">Mensual</th>
+        <th style="text-align: center; padding-bottom: 6px;">Evaluación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align: left;">Ingreso total</td>
+        <td style="text-align: center;">$${ingresoAnual.toLocaleString()}</td>
+        <td style="text-align: center;">$${ingresoMensual.toFixed(2)}</td>
+        <td style="text-align: center;">–</td>
+      </tr>
+      <tr>
+        <td style="text-align: left;">Impuestos</td>
+        <td style="text-align: center;">$${impuestosAnual.toLocaleString()}</td>
+        <td style="text-align: center;">$${impuestosMensual.toFixed(2)}</td>
+        <td style="text-align: center;">–</td>
+      </tr>
+      <tr>
+        <td style="text-align: left;">Seguros</td>
+        <td style="text-align: center;">$${segurosAnual.toLocaleString()}</td>
+        <td style="text-align: center;">$${segurosMensual.toFixed(2)}</td>
+        <td style="text-align: center;">–</td>
+      </tr>
+      <tr>
+        <td style="text-align: left;">Gastos diarios</td>
+        <td style="text-align: center;">$${gastosDiariosAnual.toLocaleString()}</td>
+        <td style="text-align: center;">$${gastosDiariosMensual.toFixed(2)}</td>
+        <td style="text-align: center;">–</td>
+      </tr>
+      <tr>
+        <td style="text-align: left;">Servicio de deuda</td>
+        <td style="text-align: center;">$${deudaAnual.toLocaleString()}</td>
+        <td style="text-align: center;">$${deudaMensual.toFixed(2)}</td>
+        <td style="text-align: center;">–</td>
+      </tr>
+      <tr>
+        <td style="text-align: left;"><strong>Total egresos (incluye ahorro)</strong></td>
+        <td style="text-align: center;"><strong>$${totalEgresosAnual.toLocaleString()}</strong></td>
+        <td style="text-align: center;"><strong>$${totalEgresosMensual.toFixed(2)}</strong></td>
+        <td style="text-align: center;">–</td>
+      </tr>
+      <tr>
+        <td style="text-align: left;">Ahorro</td>
+        <td style="text-align: center;">$${ahorroAnual.toLocaleString()}</td>
+        <td style="text-align: center;">$${ahorroMensual.toFixed(2)}</td>
+        <td style="text-align: center;">${emojiAhorro}</td>
+      </tr>
+      <tr>
+        <td style="text-align: left;">Superávit</td>
+        <td style="text-align: center;">$${superavitAnual.toLocaleString()}</td>
+        <td style="text-align: center;">$${superavitMensual.toFixed(2)}</td>
+        <td style="text-align: center;">–</td>
+      </tr>
+      <tr>
+        <td style="text-align: left;">Meses de reserva</td>
+        <td style="text-align: center;" colspan="2">${mesesReserva.toFixed(1)} meses</td>
+        <td style="text-align: center;">${emojiReserva}</td>
+      </tr>
+      <tr>
+        <td style="text-align: left;">Razón corriente</td>
+        <td style="text-align: center;" colspan="2">${razonCorriente.toFixed(2)}</td>
+        <td style="text-align: center;">${emojiCorriente}</td>
+      </tr>
+      <tr>
+        <td style="text-align: left;">Efectivo / activos totales</td>
+        <td style="text-align: center;" colspan="2">${efectivoSobreActivos.toFixed(1)}%</td>
+        <td style="text-align: center;">${emojiEfectivo}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size: 0.85em; color: gray; text-align: center; margin-top: 10px;">
+    ✅ Dentro del rango ideal &nbsp;&nbsp; ⚠️ Aceptable o mejorable &nbsp;&nbsp; 🚨 Riesgo o alerta &nbsp;&nbsp; 🔁 Exceso conservador
+  </p>
+`;
 
   document.getElementById("resA").innerHTML = `
     <h3>🅰️ A. Flujo de efectivo y liquidez</h3>
