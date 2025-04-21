@@ -777,9 +777,9 @@ function calcularCategoriaA(data) {
 function calcularCategoriaB(data) {
   // 🔹 Ingresos
   const ingresoBruto = (data.salario || 0) + (data.ingreso_negocio || 0);
-  const ingresoNeto = ingresoBruto * 0.80; // Estimación de neto
+  const ingresoNeto = ingresoBruto * 0.80; // Estimación de ingreso neto
 
-  // 🔹 Gasto de vivienda
+  // 🔹 Gasto de vivienda (sólo componentes de vivienda)
   const gastoVivienda = 
     (data.hipoteca || 0) +
     (data.impuesto_propiedad || 0) +
@@ -788,7 +788,7 @@ function calcularCategoriaB(data) {
   const porcentajeViviendaNeto = (gastoVivienda / ingresoNeto) * 100;
   const porcentajeViviendaBruto = (gastoVivienda / ingresoBruto) * 100;
 
-  // 🔹 Servicio de deuda (pago anual)
+  // 🔹 Servicio de deuda
   const servicioDeuda = 
     (data.hipoteca || 0) +
     (data.prestamo_auto || 0) +
@@ -802,8 +802,8 @@ function calcularCategoriaB(data) {
   const dtiNeto = (servicioDeuda / ingresoNeto) * 100;
   const dtiBruto = (servicioDeuda / ingresoBruto) * 100;
 
-  // 🔹 Gastos esenciales (para pasivos corrientes)
-  const pasivosCorrientes = 
+  // 🔹 Gastos esenciales anuales = Pasivos corrientes
+  const pasivosCorrientes =
     (data.impuesto_federal || 0) +
     (data.impuesto_propiedad || 0) +
     (data.impuesto_auto || 0) +
@@ -837,7 +837,18 @@ function calcularCategoriaB(data) {
     (data.cuidado_hijos || 0) +
     (data.cuidado_personal || 0);
 
-  // 🔹 Activos
+  // 🔹 Total deudas (sólo saldos)
+  const deudas = 
+    (data.deuda_tarjetas || 0) +
+    (data.deuda_vehiculos || 0) +
+    (data.deuda_comercial || 0) +
+    (data.deuda_hipotecaria || 0) +
+    (data.deuda_estudios || 0) +
+    (data.deuda_otros || 0);
+
+  const pasivosTotales = deudas + pasivosCorrientes;
+
+  // 🔹 Activos totales
   const activosTotales =
     (data.cuentas_bancarias || 0) +
     (data.cuentas_inversion || 0) +
@@ -847,15 +858,6 @@ function calcularCategoriaB(data) {
     (data.valor_vehiculos || 0) +
     (data.valor_otros_activos || 0) +
     (data.valor_otros || 0);
-
-  // 🔹 Pasivos
-  const pasivosTotales = 
-    (data.deuda_tarjetas || 0) +
-    (data.deuda_vehiculos || 0) +
-    (data.deuda_comercial || 0) +
-    (data.deuda_hipotecaria || 0) +
-    (data.deuda_estudios || 0) +
-    (data.deuda_otros || 0);
 
   const patrimonioNeto = activosTotales - pasivosTotales;
 
@@ -887,7 +889,7 @@ function calcularCategoriaB(data) {
       </thead>
       <tbody>
         <tr><td>Activos totales</td><td style="text-align: center;">$${activosTotales.toLocaleString()}</td><td style="text-align: center;">–</td></tr>
-        <tr><td>Pasivos totales</td><td style="text-align: center;">$${pasivosTotales.toLocaleString()}</td><td style="text-align: center;">–</td></tr>
+        <tr><td>Pasivos totales (incluye gastos esenciales)</td><td style="text-align: center;">$${pasivosTotales.toLocaleString()}</td><td style="text-align: center;">–</td></tr>
         <tr><td>% Vivienda / ingreso neto</td><td style="text-align: center;">${porcentajeViviendaNeto.toFixed(1)}%</td><td style="text-align: center;">${emojiViviendaNeto}</td></tr>
         <tr><td>% Vivienda / ingreso bruto</td><td style="text-align: center;">${porcentajeViviendaBruto.toFixed(1)}%</td><td style="text-align: center;">${emojiViviendaBruto}</td></tr>
         <tr><td>DTI / ingreso neto</td><td style="text-align: center;">${dtiNeto.toFixed(1)}%</td><td style="text-align: center;">${emojiDTINeto}</td></tr>
@@ -989,14 +991,48 @@ function calcularCategoriaC(data) {
 }
 function calcularCategoriaD(data) {
   // 🔹 Ingreso y ahorro
-  const ingresoAnualBruto = data.salario + (data.ingreso_negocio || 0);
+  const ingresoAnualBruto = (data.salario || 0) + (data.ingreso_negocio || 0) + (data.otros_ingresos || 0) + (data.bonos || 0) + (data.dividendos_intereses || 0) + (data.renta || 0);
   const ingresoMensual = ingresoAnualBruto / 12;
-  const ahorroAnual = (data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0);
+  const ahorroAnual = (data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0) + (data.otros_ahorros || 0);
   const tasaAhorro = (ahorroAnual / ingresoAnualBruto) * 100;
+
+  // 🔹 Gastos esenciales anuales
+  const gastosEsencialesAnual = 
+    (data.servicio_publico || 0) +
+    (data.mantenimiento_auto || 0) +
+    (data.cuidado_hijos || 0) +
+    (data.supermercado || 0) +
+    (data.comidas_afuera || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.mantenimiento_hogar || 0) +
+    (data.cuidado_personal || 0) +
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.impuesto_auto || 0) +
+    (data.impuesto_estatal_local || 0) +
+    (data.seguro_vida || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_incapacidad || 0) +
+    (data.seguro_ltc || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) +
+    (data.seguro_umbrella || 0) +
+    (data.seguro_renta || 0) +
+    (data.seguro_propiedad_personal || 0) +
+    (data.hipoteca || 0) +
+    (data.prestamo_auto || 0) +
+    (data.prestamo_educativo || 0) +
+    (data.prestamo_personal || 0) +
+    (data.linea_credito || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0) +
+    (data.manutencion || 0);
+
+  const gastosEsencialesMensual = gastosEsencialesAnual / 12;
 
   // 🔹 Activos
   const activosDeInversion = (data.cuentas_inversion || 0) + (data.cuentas_retiro || 0) + (data.valor_propiedades_alquiler || 0);
-  const activosTotales =
+  const activosTotales = 
     (data.cuentas_bancarias || 0) +
     (data.cuentas_inversion || 0) +
     (data.cuentas_retiro || 0) +
@@ -1006,40 +1042,29 @@ function calcularCategoriaD(data) {
     (data.valor_otros_activos || 0) +
     (data.valor_otros || 0);
 
-  const patrimonioNeto = activosTotales -
-    ((data.deuda_hipotecaria || 0) + (data.deuda_tarjetas || 0) +
-     (data.deuda_comercial || 0) + (data.deuda_vehiculos || 0) +
-     (data.deuda_estudios || 0) + (data.deuda_otros || 0) + (data.linea_credito || 0));
+  const pasivosTotales =
+    (data.deuda_hipotecaria || 0) + (data.deuda_tarjetas || 0) +
+    (data.deuda_comercial || 0) + (data.deuda_vehiculos || 0) +
+    (data.deuda_estudios || 0) + (data.deuda_otros || 0) + (data.linea_credito || 0);
 
-  // 🔹 Gastos esenciales mensuales
-  const gastosEsencialesMensuales = (
-    (data.supermercado || 0) +
-    (data.transporte || 0) +
-    (data.telecomunicaciones || 0) +
-    (data.servicio_publico || 0) +
-    (data.seguro_medico || 0) +
-    (data.seguro_propiedad || 0) +
-    (data.seguro_auto || 0) +
-    (data.educacion || 0) +
-    (data.impuesto_federal || 0) +
-    (data.impuesto_propiedad || 0) +
-    (data.seguro_social || 0) +
-    (data.hipoteca || 0) +
-    (data.linea_credito || 0) +
-    (data.prestamo_auto || 0) +
-    (data.tarjetas_credito || 0) +
-    (data.otros_deuda || 0)
-  ) / 12;
+  const patrimonioNeto = activosTotales - pasivosTotales;
 
   // 🔹 Indicadores clave
   const activosInversionSobreTotales = (activosDeInversion / activosTotales) * 100;
   const activosInversionSobreIngreso = activosDeInversion / ingresoAnualBruto;
-  const activosInversionSobreGastos = activosDeInversion / gastosEsencialesMensuales;
+  const activosInversionSobreGastos = activosDeInversion / gastosEsencialesMensual;
   const patrimonioSobreIngreso = patrimonioNeto / ingresoAnualBruto;
+
+  // 🔹 Capacidad de acumulación
+  const superavit = ingresoAnualBruto - gastosEsencialesAnual - ahorroAnual;
+  const capacidadAcumulacion = (ahorroAnual + superavit) / ingresoAnualBruto * 100;
 
   // 🔹 Benchmarks edad → 45 años → 4.5x
   const benchmarkEdad = 4.5;
+
+  // 🔹 Emojis
   const emojiAhorro = tasaAhorro >= 30 ? '✅' : (tasaAhorro >= 15 ? '⚠️' : '🚨');
+  const emojiCapacidad = capacidadAcumulacion >= 30 ? '✅' : (capacidadAcumulacion >= 15 ? '⚠️' : '🚨');
   const emojiInversionTotales = activosInversionSobreTotales >= 50 ? '✅' : (activosInversionSobreTotales >= 30 ? '⚠️' : '🚨');
   const emojiInversionIngreso = activosInversionSobreIngreso >= 1.6 ? '✅' : (activosInversionSobreIngreso >= 0.6 ? '⚠️' : '🚨');
   const emojiInversionGastos = activosInversionSobreGastos >= 120 ? '✅' : (activosInversionSobreGastos >= 60 ? '⚠️' : '🚨');
@@ -1053,6 +1078,7 @@ function calcularCategoriaD(data) {
       </thead>
       <tbody>
         <tr><td>Tasa de ahorro (retirement)</td><td>${tasaAhorro.toFixed(1)}%</td><td>${emojiAhorro}</td></tr>
+        <tr><td>Capacidad de acumulación</td><td>${capacidadAcumulacion.toFixed(1)}%</td><td>${emojiCapacidad}</td></tr>
         <tr><td>Activos de inversión / activos totales</td><td>${activosInversionSobreTotales.toFixed(1)}%</td><td>${emojiInversionTotales}</td></tr>
         <tr><td>Activos de inversión / ingreso bruto anual</td><td>${activosInversionSobreIngreso.toFixed(2)}x</td><td>${emojiInversionIngreso}</td></tr>
         <tr><td>Activos de inversión / gastos esenciales</td><td>${activosInversionSobreGastos.toFixed(0)} meses</td><td>${emojiInversionGastos}</td></tr>
@@ -1063,6 +1089,7 @@ function calcularCategoriaD(data) {
     <h4 style="margin-top: 20px;">📊 Benchmarks utilizados</h4>
     <ul style="font-size: 0.9em;">
       <li>Tasa de ahorro: ≥ 30% ✅ · 15–29% ⚠️ · < 15% 🚨</li>
+      <li>Capacidad de acumulación: ≥ 30% ✅ · 15–29% ⚠️ · < 15% 🚨</li>
       <li>Activos de inversión / activos totales: ≥ 50% ✅ · 30–49% ⚠️ · < 30% 🚨</li>
       <li>Activos de inversión / ingreso bruto anual: ≥ 1.6x ✅ · 0.6–1.59x ⚠️ · < 0.6x 🚨</li>
       <li>Activos de inversión / gastos esenciales mensuales: ≥ 120 meses ✅ · 60–119 ⚠️ · < 60 🚨</li>
@@ -1075,6 +1102,7 @@ function calcularCategoriaD(data) {
     ${tabla}
   `;
 }
+
 function calcularCategoriaE(data) {
   // 🔹 Gastos mensuales esenciales
   const gastosEsencialesMensuales = (
