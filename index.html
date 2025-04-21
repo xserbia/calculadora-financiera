@@ -651,69 +651,134 @@ function mostrarResultado(id) {
   if (current) current.classList.add('active');
 }
 function calcularCategoriaA(data) {
-  // 🔹 Ingreso total
-  const ingresoAnual = (data.salario || 0) + (data.ingreso_negocio || 0) + (data.otros_ingresos || 0) + (data.bonos || 0) + (data.dividendos_intereses || 0) + (data.renta || 0);
+  // Ingreso total
+  const ingresoAnual = 
+    (data.salario || 0) +
+    (data.ingreso_negocio || 0) +
+    (data.otros_ingresos || 0) +
+    (data.bonos || 0) +
+    (data.dividendos_intereses || 0) +
+    (data.renta || 0);
   const ingresoMensual = ingresoAnual / 12;
 
-  // 🔹 Ahorro
-  const ahorroAnual = (data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0) + (data.otros_ahorros || 0);
+  // Ahorro total
+  const ahorroAnual = 
+    (data.aporte_personal_retiro || 0) +
+    (data.aporte_empleador_retiro || 0) +
+    (data.otros_ahorros || 0);
   const ahorroMensual = ahorroAnual / 12;
 
-  // 🔹 Categorías de gasto
-  const impuestosAnual = (data.impuesto_federal || 0) + (data.impuesto_propiedad || 0) + (data.seguro_social || 0);
-  const segurosAnual = (data.seguro_medico || 0) + (data.seguro_propiedad || 0) + (data.seguro_auto || 0);
-  const gastosDiariosAnual =
-    (data.supermercado || 0) + (data.transporte || 0) + (data.telecomunicaciones || 0) +
-    (data.servicio_publico || 0) + (data.educacion || 0);
+  // Egresos por categoría
+  const impuestosAnual = 
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.seguro_social || 0) +
+    (data.impuesto_estatal_local || 0) +
+    (data.impuesto_auto || 0) +
+    (data.medicare || 0);
 
-  const servicioDeudaAnual =
-    (data.hipoteca || 0) + (data.linea_credito || 0) + (data.prestamo_auto || 0) +
-    (data.tarjetas_credito || 0) + (data.otros_deuda || 0);
+  const segurosAnual = 
+    (data.seguro_vida || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_renta || 0) +
+    (data.seguro_umbrella || 0) +
+    (data.seguro_incapacidad || 0) +
+    (data.seguro_auto || 0) +
+    (data.seguro_propiedad_personal || 0);
 
-  // 🔹 Total de egresos "necesarios"
-  const egresosTotalesAnual = impuestosAnual + segurosAnual + gastosDiariosAnual + servicioDeudaAnual + ahorroAnual;
-  const egresosTotalesMensual = egresosTotalesAnual / 12;
+  const gastosDiariosAnual = 
+    (data.supermercado || 0) +
+    (data.comidas_afuera || 0) +
+    (data.ropa || 0) +
+    (data.vacaciones || 0) +
+    (data.muebles_enseres || 0) +
+    (data.gastos_medicos || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.servicio_publico || 0) +
+    (data.mantenimiento_hogar || 0) +
+    (data.entretenimiento || 0) +
+    (data.libros_membresia || 0) +
+    (data.regalos_mesada || 0) +
+    (data.donaciones || 0) +
+    (data.fiestas || 0) +
+    (data.mejoras_hogar || 0) +
+    (data.dues || 0) +
+    (data.servicios_profesionales || 0) +
+    (data.gastos_mascota || 0) +
+    (data.otros_gastos_diarios || 0);
 
-  const superavitAnual = ingresoAnual - egresosTotalesAnual;
+  const deudaAnual =
+    (data.hipoteca || 0) +
+    (data.linea_credito || 0) +
+    (data.prestamo_auto || 0) +
+    (data.prestamo_educativo || 0) +
+    (data.prestamo_personal || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0) +
+    (data.manutencion || 0);
+
+  const totalEgresosAnual = impuestosAnual + segurosAnual + gastosDiariosAnual + deudaAnual + ahorroAnual;
+  const totalEgresosMensual = totalEgresosAnual / 12;
+
+  const superavitAnual = ingresoAnual - totalEgresosAnual;
   const superavitMensual = superavitAnual / 12;
 
-  // 🔹 Indicadores
-  const tasaAhorro = (ahorroAnual / ingresoAnual) * 100;
-  const mesesReserva = (data.cuentas_bancarias || 0) / (egresosTotalesMensual || 1);
+  // Meses de reserva
+  const gastoMensualEsencial = totalEgresosMensual;
+  const mesesReserva = (data.cuentas_bancarias || 0) / gastoMensualEsencial;
+
+  // Razón corriente
   const activosLiquidos = (data.cuentas_bancarias || 0) + (data.cuentas_inversion || 0);
+  const razonCorriente = activosLiquidos / ((data.deuda_tarjetas || 1)); // evitar división por cero
+
+  // Efectivo sobre activos
   const activosTotales =
-    activosLiquidos + (data.cuentas_retiro || 0) + (data.valor_vivienda || 0) +
-    (data.valor_propiedades_alquiler || 0) + (data.valor_vehiculos || 0) +
-    (data.valor_otros_activos || 0) + (data.valor_otros || 0);
-  const razonCorriente = activosLiquidos / (data.deuda_tarjetas || 1);
+    (data.cuentas_bancarias || 0) +
+    (data.cuentas_inversion || 0) +
+    (data.cuentas_retiro || 0) +
+    (data.valor_vivienda || 0) +
+    (data.valor_propiedades_alquiler || 0) +
+    (data.valor_vehiculos || 0) +
+    (data.valor_otros_activos || 0) +
+    (data.valor_otros || 0);
   const efectivoSobreActivos = ((data.cuentas_bancarias || 0) / activosTotales) * 100;
 
+  // Tasa de ahorro
+  const tasaAhorro = (ahorroAnual / ingresoAnual) * 100;
+
+  // Emojis
   const emojiAhorro = tasaAhorro >= 30 ? "✅" : (tasaAhorro >= 15 ? "⚠️" : "🚨");
   const emojiReserva = mesesReserva >= 12 ? "✅" : (mesesReserva >= 6 ? "⚠️" : "🚨");
   const emojiCorriente = razonCorriente >= 1 ? "✅" : "🚨";
-  const emojiEfectivo = efectivoSobreActivos < 5 ? "⚠️" : (efectivoSobreActivos > 20 ? "🔁" : "✅");
+  const emojiEfectivo = efectivoSobreActivos < 5 ? "⚠️" :
+                        efectivoSobreActivos > 20 ? "🔁" : "✅";
 
-  // 🔹 Tabla
   const tablaResumen = `
-    <table style="font-size: 0.95em; margin-top: 10px; border-collapse: collapse;">
+    <table style="font-size: 0.95em; margin-top: 10px; border-collapse: collapse; width: 100%; text-align: center;">
       <thead>
-        <tr><th style="padding: 6px 12px;">Indicador</th><th style="padding: 6px 12px;">Anual</th><th style="padding: 6px 12px;">Mensual</th><th style="padding: 6px 12px;">Evaluación</th></tr>
+        <tr>
+          <th>Indicador</th>
+          <th>Anual</th>
+          <th>Mensual</th>
+          <th>Evaluación</th>
+        </tr>
       </thead>
       <tbody>
-        <tr><td style="padding:6px 12px;">Ingreso total</td><td>$${ingresoAnual.toLocaleString()}</td><td>$${ingresoMensual.toFixed(2)}</td><td>–</td></tr>
-        <tr><td style="padding:6px 12px;">Impuestos</td><td>$${impuestosAnual.toLocaleString()}</td><td>$${(impuestosAnual / 12).toFixed(2)}</td><td>–</td></tr>
-        <tr><td style="padding:6px 12px;">Seguros</td><td>$${segurosAnual.toLocaleString()}</td><td>$${(segurosAnual / 12).toFixed(2)}</td><td>–</td></tr>
-        <tr><td style="padding:6px 12px;">Gastos diarios</td><td>$${gastosDiariosAnual.toLocaleString()}</td><td>$${(gastosDiariosAnual / 12).toFixed(2)}</td><td>–</td></tr>
-        <tr><td style="padding:6px 12px;">Servicio de deuda</td><td>$${servicioDeudaAnual.toLocaleString()}</td><td>$${(servicioDeudaAnual / 12).toFixed(2)}</td><td>–</td></tr>
-        <tr><td style="padding:6px 12px;"><strong>Total egresos (incluye ahorro)</strong></td><td><strong>$${egresosTotalesAnual.toLocaleString()}</strong></td><td><strong>$${egresosTotalesMensual.toFixed(2)}</strong></td><td>–</td></tr>
-        <tr><td style="padding:6px 12px;">Ahorro</td><td>$${ahorroAnual.toLocaleString()}</td><td>$${ahorroMensual.toFixed(2)}</td><td>${emojiAhorro}</td></tr>
-        <tr><td style="padding:6px 12px;"><strong>Superávit</strong></td><td><strong>$${superavitAnual.toLocaleString()}</strong></td><td><strong>$${superavitMensual.toFixed(2)}</strong></td><td>–</td></tr>
-        <tr><td style="padding:6px 12px;">Meses de reserva</td><td colspan="2">${mesesReserva.toFixed(1)} meses</td><td>${emojiReserva}</td></tr>
-        <tr><td style="padding:6px 12px;">Razón corriente</td><td colspan="2">${razonCorriente.toFixed(2)}</td><td>${emojiCorriente}</td></tr>
-        <tr><td style="padding:6px 12px;">Efectivo / activos totales</td><td colspan="2">${efectivoSobreActivos.toFixed(1)}%</td><td>${emojiEfectivo}</td></tr>
+        <tr><td>Ingreso total</td><td>$${ingresoAnual.toLocaleString()}</td><td>$${ingresoMensual.toFixed(2)}</td><td>–</td></tr>
+        <tr><td>Impuestos</td><td>$${impuestosAnual.toLocaleString()}</td><td>$${(impuestosAnual/12).toFixed(2)}</td><td>–</td></tr>
+        <tr><td>Seguros</td><td>$${segurosAnual.toLocaleString()}</td><td>$${(segurosAnual/12).toFixed(2)}</td><td>–</td></tr>
+        <tr><td>Gastos diarios</td><td>$${gastosDiariosAnual.toLocaleString()}</td><td>$${(gastosDiariosAnual/12).toFixed(2)}</td><td>–</td></tr>
+        <tr><td>Servicio de deuda</td><td>$${deudaAnual.toLocaleString()}</td><td>$${(deudaAnual/12).toFixed(2)}</td><td>–</td></tr>
+        <tr><td>Total egresos (incluye ahorro)</td><td>$${totalEgresosAnual.toLocaleString()}</td><td>$${totalEgresosMensual.toFixed(2)}</td><td>–</td></tr>
+        <tr><td>Ahorro</td><td>$${ahorroAnual.toLocaleString()}</td><td>$${ahorroMensual.toFixed(2)}</td><td>${emojiAhorro}</td></tr>
+        <tr><td>Superávit</td><td>$${superavitAnual.toLocaleString()}</td><td>$${superavitMensual.toFixed(2)}</td><td>–</td></tr>
+        <tr><td>Meses de reserva</td><td colspan="2">${mesesReserva.toFixed(1)} meses</td><td>${emojiReserva}</td></tr>
+        <tr><td>Razón corriente</td><td colspan="2">${razonCorriente.toFixed(2)}</td><td>${emojiCorriente}</td></tr>
+        <tr><td>Efectivo / activos totales</td><td colspan="2">${efectivoSobreActivos.toFixed(1)}%</td><td>${emojiEfectivo}</td></tr>
       </tbody>
     </table>
-    <p style="font-size: 0.85em; color: gray;">
+    <p style="font-size: 0.85em; color: gray; text-align: center;">
       ✅ Dentro del rango ideal &nbsp;&nbsp; ⚠️ Aceptable o mejorable &nbsp;&nbsp; 🚨 Riesgo o alerta &nbsp;&nbsp; 🔁 Exceso conservador
     </p>
   `;
