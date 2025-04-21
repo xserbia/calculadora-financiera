@@ -711,20 +711,17 @@ function calcularCategoriaA(data) {
     (data.otros_gastos_diarios || 0);
   const gastosDiariosMensual = gastosDiariosAnual / 12;
 
-  // 🔹 Servicio de deuda
-  const deudaAnual =
-    (data.hipoteca || 0) +
-    (data.linea_credito || 0) +
-    (data.prestamo_auto || 0) +
-    (data.prestamo_personal || 0) +
-    (data.prestamo_educativo || 0) +
-    (data.deuda_vehiculos || 0) +
-    (data.deuda_tarjetas || 0) +
-    (data.deuda_comercial || 0) +
-    (data.deuda_hipotecaria || 0) +
-    (data.deuda_otros || 0) +
-    (data.manutencion || 0);
-  const deudaMensual = deudaAnual / 12;
+// 🔹 Servicio de deuda (solo pagos anuales, no saldos pendientes)
+const deudaAnual =
+  (data.hipoteca || 0) +
+  (data.prestamo_auto || 0) +
+  (data.prestamo_educativo || 0) +
+  (data.prestamo_personal || 0) +
+  (data.linea_credito || 0) +
+  (data.manutencion || 0) +
+  (data.tarjetas_credito || 0) +
+  (data.otros_deuda || 0);
+const deudaMensual = deudaAnual / 12;
 
   // 🔹 Total egresos
   const egresosAnual = impuestosAnual + segurosAnual + gastosDiariosAnual + deudaAnual + ahorroAnual;
