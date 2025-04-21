@@ -776,34 +776,68 @@ function calcularCategoriaA(data) {
 }
 function calcularCategoriaB(data) {
   // 🔹 Ingresos
-  const ingresoBruto = data.salario + (data.ingreso_negocio || 0);
-  const ingresoNeto = ingresoBruto * 0.80; // Asumimos 20% impuestos para neto
+  const ingresoBruto = (data.salario || 0) + (data.ingreso_negocio || 0);
+  const ingresoNeto = ingresoBruto * 0.80; // Estimación de neto
 
-  // 🔹 Gasto de vivienda (hipoteca + seguros + impuestos relevantes)
+  // 🔹 Gasto de vivienda
   const gastoVivienda = 
     (data.hipoteca || 0) +
-    (data.seguro_medico || 0) +
-    (data.seguro_auto || 0) +
-    (data.seguro_propiedad || 0) +
-    (data.impuesto_federal || 0) +
     (data.impuesto_propiedad || 0) +
-    (data.seguro_social || 0);
+    (data.seguro_propiedad || 0);
 
   const porcentajeViviendaNeto = (gastoVivienda / ingresoNeto) * 100;
   const porcentajeViviendaBruto = (gastoVivienda / ingresoBruto) * 100;
 
-  // 🔹 Servicio de deuda anual
+  // 🔹 Servicio de deuda (pago anual)
   const servicioDeuda = 
     (data.hipoteca || 0) +
-    (data.linea_credito || 0) +
     (data.prestamo_auto || 0) +
+    (data.prestamo_educativo || 0) +
+    (data.prestamo_personal || 0) +
+    (data.linea_credito || 0) +
+    (data.manutencion || 0) +
     (data.tarjetas_credito || 0) +
     (data.otros_deuda || 0);
 
   const dtiNeto = (servicioDeuda / ingresoNeto) * 100;
   const dtiBruto = (servicioDeuda / ingresoBruto) * 100;
 
-  // 🔹 Activos y pasivos
+  // 🔹 Gastos esenciales (para pasivos corrientes)
+  const pasivosCorrientes = 
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.impuesto_auto || 0) +
+    (data.impuesto_estatal_local || 0) +
+    (data.seguro_social || 0) +
+    (data.medicare || 0) +
+    (data.seguro_vida || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_incapacidad || 0) +
+    (data.seguro_ltc || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) +
+    (data.seguro_umbrella || 0) +
+    (data.seguro_renta || 0) +
+    (data.seguro_propiedad_personal || 0) +
+    (data.hipoteca || 0) +
+    (data.prestamo_auto || 0) +
+    (data.prestamo_educativo || 0) +
+    (data.prestamo_personal || 0) +
+    (data.linea_credito || 0) +
+    (data.manutencion || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0) +
+    (data.supermercado || 0) +
+    (data.comidas_afuera || 0) +
+    (data.transporte || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.servicio_publico || 0) +
+    (data.mantenimiento_auto || 0) +
+    (data.mantenimiento_hogar || 0) +
+    (data.cuidado_hijos || 0) +
+    (data.cuidado_personal || 0);
+
+  // 🔹 Activos
   const activosTotales =
     (data.cuentas_bancarias || 0) +
     (data.cuentas_inversion || 0) +
@@ -814,16 +848,14 @@ function calcularCategoriaB(data) {
     (data.valor_otros_activos || 0) +
     (data.valor_otros || 0);
 
-  const pasivosCorrientes = 
+  // 🔹 Pasivos
+  const pasivosTotales = 
     (data.deuda_tarjetas || 0) +
     (data.deuda_vehiculos || 0) +
     (data.deuda_comercial || 0) +
-    (data.deuda_otros || 0);
-
-  const pasivosTotales =
-    pasivosCorrientes +
     (data.deuda_hipotecaria || 0) +
-    (data.deuda_estudios || 0);
+    (data.deuda_estudios || 0) +
+    (data.deuda_otros || 0);
 
   const patrimonioNeto = activosTotales - pasivosTotales;
 
@@ -843,20 +875,26 @@ function calcularCategoriaB(data) {
     relacionDeudaPatrimonio <= 50 ? '✅' :
     relacionDeudaPatrimonio <= 100 ? '⚠️' : '🚨';
 
-  // 🔹 Tabla con resultados
+  // 🔹 Tabla
   const tabla = `
-    <table style="font-size: 0.95em; margin-top: 10px;">
+    <table style="font-size: 0.95em; width: 100%; border-collapse: separate; border-spacing: 0 8px;">
       <thead>
-        <tr><th>Indicador</th><th>Resultado</th><th>Evaluación</th></tr>
+        <tr style="text-align: center;">
+          <th style="text-align: left;">Indicador</th>
+          <th style="text-align: center;">Resultado</th>
+          <th style="text-align: center;">Evaluación</th>
+        </tr>
       </thead>
       <tbody>
-        <tr><td>% Vivienda / ingreso neto</td><td>${porcentajeViviendaNeto.toFixed(1)}%</td><td>${emojiViviendaNeto}</td></tr>
-        <tr><td>% Vivienda / ingreso bruto</td><td>${porcentajeViviendaBruto.toFixed(1)}%</td><td>${emojiViviendaBruto}</td></tr>
-        <tr><td>DTI / ingreso neto</td><td>${dtiNeto.toFixed(1)}%</td><td>${emojiDTINeto}</td></tr>
-        <tr><td>DTI / ingreso bruto</td><td>${dtiBruto.toFixed(1)}%</td><td>${emojiDTIBruto}</td></tr>
-        <tr><td>Pasivos corrientes / activos</td><td>${relacionPasivosCorrientes.toFixed(1)}%</td><td>${emojiPasivosCorr}</td></tr>
-        <tr><td>Deuda total / activos</td><td>${relacionDeudaActivos.toFixed(1)}%</td><td>${emojiDeudaActivos}</td></tr>
-        <tr><td>Deuda total / patrimonio neto</td><td>${relacionDeudaPatrimonio.toFixed(1)}%</td><td>${emojiDeudaPatrimonio}</td></tr>
+        <tr><td>Activos totales</td><td style="text-align: center;">$${activosTotales.toLocaleString()}</td><td style="text-align: center;">–</td></tr>
+        <tr><td>Pasivos totales</td><td style="text-align: center;">$${pasivosTotales.toLocaleString()}</td><td style="text-align: center;">–</td></tr>
+        <tr><td>% Vivienda / ingreso neto</td><td style="text-align: center;">${porcentajeViviendaNeto.toFixed(1)}%</td><td style="text-align: center;">${emojiViviendaNeto}</td></tr>
+        <tr><td>% Vivienda / ingreso bruto</td><td style="text-align: center;">${porcentajeViviendaBruto.toFixed(1)}%</td><td style="text-align: center;">${emojiViviendaBruto}</td></tr>
+        <tr><td>DTI / ingreso neto</td><td style="text-align: center;">${dtiNeto.toFixed(1)}%</td><td style="text-align: center;">${emojiDTINeto}</td></tr>
+        <tr><td>DTI / ingreso bruto</td><td style="text-align: center;">${dtiBruto.toFixed(1)}%</td><td style="text-align: center;">${emojiDTIBruto}</td></tr>
+        <tr><td>Pasivos corrientes / activos</td><td style="text-align: center;">${relacionPasivosCorrientes.toFixed(1)}%</td><td style="text-align: center;">${emojiPasivosCorr}</td></tr>
+        <tr><td>Deuda total / activos</td><td style="text-align: center;">${relacionDeudaActivos.toFixed(1)}%</td><td style="text-align: center;">${emojiDeudaActivos}</td></tr>
+        <tr><td>Deuda total / patrimonio neto</td><td style="text-align: center;">${relacionDeudaPatrimonio.toFixed(1)}%</td><td style="text-align: center;">${emojiDeudaPatrimonio}</td></tr>
       </tbody>
     </table>
 
@@ -877,6 +915,7 @@ function calcularCategoriaB(data) {
     ${tabla}
   `;
 }
+
 function calcularCategoriaC(data) {
   // 🔹 Activos
   const totalActivos =
