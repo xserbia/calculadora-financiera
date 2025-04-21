@@ -686,29 +686,16 @@ function calcularCategoriaA(data) {
     (data.medicare || 0);
   const impuestosMensual = impuestosAnual / 12;
 
-  // 🔹 Gastos diarios
+  // 🔹 Gastos diarios esenciales
   const gastosDiariosAnual =
     (data.supermercado || 0) +
     (data.comidas_afuera || 0) +
-    (data.ropa || 0) +
-    (data.transporte || 0) +
-    (data.servicio_publico || 0) +
     (data.telecomunicaciones || 0) +
-    (data.educacion || 0) +
-    (data.entretenimiento || 0) +
-    (data.vacaciones || 0) +
-    (data.regalos_mesada || 0) +
-    (data.fiestas || 0) +
-    (data.libros_membresia || 0) +
-    (data.donaciones || 0) +
-    (data.servicios_profesionales || 0) +
+    (data.servicio_publico || 0) +
     (data.mantenimiento_auto || 0) +
     (data.mantenimiento_hogar || 0) +
     (data.cuidado_hijos || 0) +
-    (data.cuidado_personal || 0) +
-    (data.gastos_mascota || 0) +
-    (data.gastos_medicos || 0) +
-    (data.otros_gastos_diarios || 0);
+    (data.cuidado_personal || 0);
   const gastosDiariosMensual = gastosDiariosAnual / 12;
 
   // 🔹 Servicio de deuda
@@ -742,7 +729,10 @@ function calcularCategoriaA(data) {
 
   const razonCorriente = activosLiquidos / ((data.deuda_tarjetas || 1));
   const efectivoSobreActivos = ((data.cuentas_bancarias || 0) / activosTotales) * 100;
-  const mesesReserva = (data.cuentas_bancarias || 0) / (egresosMensual || 1);
+
+  // 🔹 Gastos esenciales para reserva
+  const gastosEsencialesMensual = impuestosMensual + segurosMensual + gastosDiariosMensual + deudaMensual;
+  const mesesReserva = (data.cuentas_bancarias || 0) / (gastosEsencialesMensual || 1);
 
   // 🔹 Emojis
   const emojiAhorro = ahorroAnual / ingresoAnual >= 0.3 ? "✅" : (ahorroAnual / ingresoAnual >= 0.15 ? "⚠️" : "🚨");
@@ -784,7 +774,6 @@ function calcularCategoriaA(data) {
     ${tabla}
   `;
 }
-
 function calcularCategoriaB(data) {
   // 🔹 Ingresos
   const ingresoBruto = data.salario + (data.ingreso_negocio || 0);
