@@ -687,7 +687,7 @@ function calcularCategoriaA(data) {
   const impuestosMensual = impuestosAnual / 12;
 
   // 🔹 Gastos diarios esenciales
-  const gastosDiariosAnual =
+  const gastosEsencialesAnual =
     (data.supermercado || 0) +
     (data.comidas_afuera || 0) +
     (data.telecomunicaciones || 0) +
@@ -696,7 +696,33 @@ function calcularCategoriaA(data) {
     (data.mantenimiento_hogar || 0) +
     (data.cuidado_hijos || 0) +
     (data.cuidado_personal || 0);
-  const gastosDiariosMensual = gastosDiariosAnual / 12;
+  const gastosEsencialesMensual = gastosEsencialesAnual / 12;
+
+  // 🔹 Gastos diarios totales (todos los gastos listados en imagen)
+  const gastosTotalesAnual =
+    (data.servicio_publico || 0) +
+    (data.cuidado_hijos || 0) +
+    (data.mantenimiento_auto || 0) +
+    (data.cuidado_personal || 0) +
+    (data.supermercado || 0) +
+    (data.comidas_afuera || 0) +
+    (data.ropa || 0) +
+    (data.vacaciones || 0) +
+    (data.muebles_enseres || 0) +
+    (data.gastos_medicos || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.mantenimiento_hogar || 0) +
+    (data.entretenimiento || 0) +
+    (data.libros_membresia || 0) +
+    (data.regalos_mesada || 0) +
+    (data.donaciones || 0) +
+    (data.fiestas || 0) +
+    (data.mejoras_hogar || 0) +
+    (data.dues || 0) +
+    (data.servicios_profesionales || 0) +
+    (data.gastos_mascota || 0) +
+    (data.otros_gastos_diarios || 0);
+  const gastosTotalesMensual = gastosTotalesAnual / 12;
 
   // 🔹 Servicio de deuda
   const deudaAnual =
@@ -711,7 +737,7 @@ function calcularCategoriaA(data) {
   const deudaMensual = deudaAnual / 12;
 
   // 🔹 Total egresos y superávit
-  const egresosAnual = impuestosAnual + segurosAnual + gastosDiariosAnual + deudaAnual + ahorroAnual;
+  const egresosAnual = impuestosAnual + segurosAnual + gastosEsencialesAnual + deudaAnual + ahorroAnual;
   const egresosMensual = egresosAnual / 12;
   const superavitAnual = ingresoAnual - egresosAnual;
   const superavitMensual = ingresoMensual - egresosMensual;
@@ -729,12 +755,8 @@ function calcularCategoriaA(data) {
 
   const razonCorriente = activosLiquidos / ((data.deuda_tarjetas || 1));
   const efectivoSobreActivos = ((data.cuentas_bancarias || 0) / activosTotales) * 100;
+  const mesesReserva = (data.cuentas_bancarias || 0) / (impuestosMensual + segurosMensual + gastosEsencialesMensual + deudaMensual || 1);
 
-  // 🔹 Gastos esenciales para reserva
-  const gastosEsencialesMensual = impuestosMensual + segurosMensual + gastosDiariosMensual + deudaMensual;
-  const mesesReserva = (data.cuentas_bancarias || 0) / (gastosEsencialesMensual || 1);
-
-  // 🔹 Emojis
   const emojiAhorro = ahorroAnual / ingresoAnual >= 0.3 ? "✅" : (ahorroAnual / ingresoAnual >= 0.15 ? "⚠️" : "🚨");
   const emojiReserva = mesesReserva >= 12 ? "✅" : (mesesReserva >= 6 ? "⚠️" : "🚨");
   const emojiCorriente = razonCorriente >= 1 ? "✅" : "🚨";
@@ -752,9 +774,10 @@ function calcularCategoriaA(data) {
     </thead>
     <tbody>
       <tr><td>Ingreso total</td><td>$${ingresoAnual.toLocaleString()}</td><td>$${ingresoMensual.toFixed(2)}</td><td>–</td></tr>
+      <tr><td>Gastos diarios (solo esenciales)</td><td>$${gastosEsencialesAnual.toLocaleString()}</td><td>$${gastosEsencialesMensual.toFixed(2)}</td><td>–</td></tr>
+      <tr><td>Gastos diarios (totales)</td><td>$${gastosTotalesAnual.toLocaleString()}</td><td>$${gastosTotalesMensual.toFixed(2)}</td><td>–</td></tr>
       <tr><td>Impuestos</td><td>$${impuestosAnual.toLocaleString()}</td><td>$${impuestosMensual.toFixed(2)}</td><td>–</td></tr>
       <tr><td>Seguros</td><td>$${segurosAnual.toLocaleString()}</td><td>$${segurosMensual.toFixed(2)}</td><td>–</td></tr>
-      <tr><td>Gastos diarios</td><td>$${gastosDiariosAnual.toLocaleString()}</td><td>$${gastosDiariosMensual.toFixed(2)}</td><td>–</td></tr>
       <tr><td>Servicio de deuda</td><td>$${deudaAnual.toLocaleString()}</td><td>$${deudaMensual.toFixed(2)}</td><td>–</td></tr>
       <tr><td><strong>Total egresos (incluye ahorro)</strong></td><td><strong>$${egresosAnual.toLocaleString()}</strong></td><td><strong>$${egresosMensual.toFixed(2)}</strong></td><td>–</td></tr>
       <tr><td>Ahorro</td><td>$${ahorroAnual.toLocaleString()}</td><td>$${ahorroMensual.toFixed(2)}</td><td>${emojiAhorro}</td></tr>
@@ -774,6 +797,7 @@ function calcularCategoriaA(data) {
     ${tabla}
   `;
 }
+
 function calcularCategoriaB(data) {
   // 🔹 Ingresos
   const ingresoBruto = (data.salario || 0) + (data.ingreso_negocio || 0);
