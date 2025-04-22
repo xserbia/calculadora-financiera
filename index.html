@@ -349,12 +349,32 @@
           No tengo documentos patrimoniales actualmente
         </label>
       </fieldset>
-    <div class="nav-buttons">
+  <div class="nav-buttons">
+    <button type="button" onclick="prevStep('stepSeguros')">Anterior</button>
+    <button type="button" onclick="nextStep('stepResumen')">Siguiente</button>
+  </div>
+</div>
+<!-- Sección 8: Retiro -->
+<div class="step" id="stepRetiro">
+  <fieldset>
+    <legend><strong>8. Información de retiro</strong></legend>
+    <label>Edad actual<br><input type="number" name="edad_retiro_actual"></label><br>
+    <label>Edad deseada de retiro<br><input type="number" name="edad_retiro_meta"></label><br>
+    <label>Expectativa de vida<br><input type="number" name="expectativa_vida"></label><br>
+    <label>Ingreso anual actual<br><input type="number" name="ingreso_actual"></label><br>
+    <label>Porcentaje de reemplazo deseado (%)<br><input type="number" name="porcentaje_reemplazo"></label><br>
+    <label>Ingreso por pensión o seguro social (anual)<br><input type="number" name="ingreso_seguro_social"></label><br>
+    <label>Ahorro inicial para retiro<br><input type="number" name="ahorro_retiro_actual"></label><br>
+    <label>Aporte anual al retiro<br><input type="number" name="aporte_retiro_anual"></label><br>
+    <label>Tasa de acumulación estimada (%)<br><input type="number" name="tasa_acumulacion"></label><br>
+    <label>Tasa estimada durante retiro (%)<br><input type="number" name="tasa_retiro"></label><br>
+    <label>Inflación estimada (%)<br><input type="number" name="inflacion_esperada"></label><br>
+  </fieldset>
+      <div class="nav-buttons">
       <button type="button" onclick="prevStep('stepSeguros')">Anterior</button>
       <button type="submit">Calcular</button>
     </div>
     </div>
-
   </form>
 </div>
   <!-- SECCIÓN DE RESULTADOS -->
@@ -1241,41 +1261,42 @@ function calcularCategoriaG(data) {
   const anosDistribucion = 100 - edadRetiro;
 
   const ingresoDeseadoAnual = (data.salario + (data.ingreso_negocio || 0)) * 0.7;
+  const ingresoSeguro = (data.seguro_social || 0);
+  const ingresoRequerido = Math.max(ingresoDeseadoAnual - ingresoSeguro, 0);
 
   const tasaAcumulacion = 0.07;
   const tasaDistribucion = 0.04;
 
-  // Valor presente necesario al momento del retiro
-  const necesidadFondo = ingresoDeseadoAnual * ((1 - Math.pow(1 + tasaDistribucion, -anosDistribucion)) / tasaDistribucion);
+  const tasaReal = (1 + tasaDistribucion) / (1 + 0.03) - 1;
+  const factorOrdinario = (1 - Math.pow(1 + tasaReal, -anosDistribucion)) / tasaReal;
+  const factorAnticipado = factorOrdinario * (1 + tasaReal);
+  const necesidadFondo = ingresoRequerido * Math.pow(1 + 0.03, anosAcumulacion) * factorAnticipado;
 
   const fondoActual = data.cuentas_retiro || 0;
   const aportesAnuales = (data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0);
-
-  const factorFuturo = (Math.pow(1 + tasaAcumulacion, anosAcumulacion) - 1) / tasaAcumulacion;
-  const montoEsperado = fondoActual * Math.pow(1 + tasaAcumulacion, anosAcumulacion) + aportesAnuales * factorFuturo;
+  const ahorroFuturo = fondoActual * Math.pow(1 + tasaAcumulacion, anosAcumulacion);
+  const aportes = aportesAnuales * ((Math.pow(1 + tasaAcumulacion, anosAcumulacion) - 1) / tasaAcumulacion);
+  const montoEsperado = ahorroFuturo + aportes;
 
   const montoFaltante = necesidadFondo - montoEsperado;
-  const ahorroRequeridoAnual = montoFaltante > 0 ? montoFaltante / factorFuturo : 0;
+  const ahorroRequeridoAnual = montoFaltante > 0 ? montoFaltante * tasaAcumulacion / (Math.pow(1 + tasaAcumulacion, anosAcumulacion) - 1) : 0;
   const ahorroRequeridoMensual = ahorroRequeridoAnual / 12;
 
-  // Mostrar resultados
   document.getElementById("resG").innerHTML = `
     <h3>🅶 G. Futuro financiero</h3>
-    <table style="font-size: 0.95em; margin-top: 10px;">
-      <thead><tr><th>Indicador</th><th>Resultado</th></tr></thead>
-      <tbody>
-        <tr><td>Monto necesario al momento del retiro</td><td>$${necesidadFondo.toLocaleString(undefined, {maximumFractionDigits: 0})}</td></tr>
-        <tr><td>Monto proyectado con ahorro actual</td><td>$${montoEsperado.toLocaleString(undefined, {maximumFractionDigits: 0})}</td></tr>
-        <tr><td>Ahorro adicional anual requerido</td><td>$${ahorroRequeridoAnual.toLocaleString(undefined, {maximumFractionDigits: 0})}</td></tr>
-        <tr><td>Ahorro adicional mensual requerido</td><td>$${ahorroRequeridoMensual.toLocaleString(undefined, {maximumFractionDigits: 0})}</td></tr>
-        <tr><td>Resultado preliminar</td><td>${montoFaltante <= 0 ? '✅ Superávit' : '⚠️ Déficit'}</td></tr>
-      </tbody>
-    </table>
-
-    <p style="font-size: 0.9em; color: gray;">
-      Supuestos: inflación 3%, tasa de reemplazo 70%, rendimiento acumulación 7%, distribución 4%, expectativa de vida 100 años.<br>
-      Este resultado es una estimación. Para un análisis más detallado, consulta nuestra <a href="https://xserbia.github.io/calculadora-retiro/">calculadora avanzada de retiro</a>.
-    </p>
+    <div class="resultado-bloque">
+      <h2>🧾 Resultados calculados</h2>
+      <table>
+        <tr><td>🧱 <strong>Capital necesario:</strong></td><td>$${Number(necesidadFondo.toFixed(2)).toLocaleString()}</td></tr>
+        <tr><td>💼 <strong>Total acumulado estimado:</strong></td><td>$${Number(montoEsperado.toFixed(2)).toLocaleString()}</td></tr>
+        <tr><td>⚠️ <strong>Faltante actual (lump sum):</strong></td><td>${montoFaltante > 0 ? "$" + Number((montoFaltante / Math.pow(1 + tasaAcumulacion, anosAcumulacion)).toFixed(2)).toLocaleString() : "Meta alcanzada"}</td></tr>
+        <tr><td>💸 <strong>Aporte anual recomendado extra:</strong></td><td>${ahorroRequeridoAnual > 0 ? "$" + ahorroRequeridoAnual.toFixed(2).toLocaleString() + "/año" : "No requerido"}</td></tr>
+        <tr><td>💰 <strong>Aporte mensual recomendado extra:</strong></td><td>${ahorroRequeridoMensual > 0 ? "$" + ahorroRequeridoMensual.toFixed(2).toLocaleString() + "/mes" : "No requerido"}</td></tr>
+      </table>
+      <p style="font-size: 0.85em; color: gray; text-align: center; margin-top: 10px;">
+        ✅ Simulación preliminar basada en supuestos educativos. Consulta la sección avanzada para Monte Carlo y gráficos.
+      </p>
+    </div>
   `;
 }
 function calcularCategoriaH(data) {
