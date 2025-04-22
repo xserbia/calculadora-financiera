@@ -124,6 +124,7 @@
       <div id="navActivos" class="inactive" data-target="stepActivos">Activos</div>
       <div id="navPasivos" class="inactive" data-target="stepPasivos">Pasivos</div>
       <div id="navSeguros" class="inactive" data-target="stepSeguros">Seguros</div>
+      <div id="navRetiro" class="inactive" data-target="stepRetiro">Retiro</div>
       <div id="navPatrimonio" class="inactive" data-target="stepPatrimonio">Patrimonio</div>
     </div>
     <!-- Barra de progreso -->
@@ -331,8 +332,28 @@
     <button type="button" onclick="nextStep('stepPatrimonio')">Siguiente</button>
   </div>
 </div>
-
-    <!-- Sección 7: Patrimonio -->
+<!-- Sección 7: Retiro -->
+<div class="step" id="stepRetiro">
+  <fieldset>
+    <legend><strong>8. Información de retiro</strong></legend>
+    <label>Edad actual<br><input type="number" name="edad_retiro_actual"></label><br>
+    <label>Edad deseada de retiro<br><input type="number" name="edad_retiro_meta"></label><br>
+    <label>Expectativa de vida<br><input type="number" name="expectativa_vida"></label><br>
+    <label>Ingreso anual actual<br><input type="number" name="ingreso_actual"></label><br>
+    <label>Porcentaje de reemplazo deseado (%)<br><input type="number" name="porcentaje_reemplazo"></label><br>
+    <label>Ingreso por pensión o seguro social (anual)<br><input type="number" name="ingreso_seguro_social"></label><br>
+    <label>Ahorro inicial para retiro<br><input type="number" name="ahorro_retiro_actual"></label><br>
+    <label>Aporte anual al retiro<br><input type="number" name="aporte_retiro_anual"></label><br>
+    <label>Tasa de acumulación estimada (%)<br><input type="number" name="tasa_acumulacion"></label><br>
+    <label>Tasa estimada durante retiro (%)<br><input type="number" name="tasa_retiro"></label><br>
+    <label>Inflación estimada (%)<br><input type="number" name="inflacion_esperada"></label><br>
+  </fieldset>
+    <div class="nav-buttons">
+    <button type="button" onclick="prevStep('stepSeguros')">Anterior</button>
+    <button type="button" onclick="nextStep('stepPatrimonio')">Siguiente</button>
+  </div>
+</div>
+    <!-- Sección 8: Patrimonio -->
     <div class="step" id="stepPatrimonio">
       <fieldset>
         <legend><strong>7. Patrimonio</strong></legend>
@@ -349,30 +370,8 @@
           No tengo documentos patrimoniales actualmente
         </label>
       </fieldset>
-  <div class="nav-buttons">
-    <button type="button" onclick="prevStep('stepSeguros')">Anterior</button>
-    <button type="button" onclick="nextStep('stepResumen')">Siguiente</button>
-  </div>
-</div>
-    
-<!-- Sección 8: Retiro -->
-<div class="step" id="stepRetiro">
-  <fieldset>
-    <legend><strong>8. Información de retiro</strong></legend>
-    <label>Edad actual<br><input type="number" name="edad_retiro_actual"></label><br>
-    <label>Edad deseada de retiro<br><input type="number" name="edad_retiro_meta"></label><br>
-    <label>Expectativa de vida<br><input type="number" name="expectativa_vida"></label><br>
-    <label>Ingreso anual actual<br><input type="number" name="ingreso_actual"></label><br>
-    <label>Porcentaje de reemplazo deseado (%)<br><input type="number" name="porcentaje_reemplazo"></label><br>
-    <label>Ingreso por pensión o seguro social (anual)<br><input type="number" name="ingreso_seguro_social"></label><br>
-    <label>Ahorro inicial para retiro<br><input type="number" name="ahorro_retiro_actual"></label><br>
-    <label>Aporte anual al retiro<br><input type="number" name="aporte_retiro_anual"></label><br>
-    <label>Tasa de acumulación estimada (%)<br><input type="number" name="tasa_acumulacion"></label><br>
-    <label>Tasa estimada durante retiro (%)<br><input type="number" name="tasa_retiro"></label><br>
-    <label>Inflación estimada (%)<br><input type="number" name="inflacion_esperada"></label><br>
-  </fieldset>
       <div class="nav-buttons">
-      <button type="button" onclick="prevStep('stepSeguros')">Anterior</button>
+      <button type="button" onclick="prevStep('stepRetiro')">Anterior</button>
       <button type="submit">Calcular</button>
     </div>
     </div>
