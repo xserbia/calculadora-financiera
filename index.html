@@ -1481,6 +1481,58 @@ function calcularCategoriaH(data) {
     { nombre: "Moderado", ajusteIngreso: 0.70, ajusteActivo: 0.70 },
     { nombre: "Severo", ajusteIngreso: 0.50, ajusteActivo: 0.50 }
   ];
+  
+function calcularCategoriaH(data) {
+  // 🔹 Ingreso anual
+  const ingresoAnual = (data.salario || 0) + (data.ingreso_negocio || 0);
+
+  // 🔹 Gastos anuales esenciales
+  const gastosMensualesEsenciales = (
+    (data.supermercado || 0) +
+    (data.transporte || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.servicio_publico || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) +
+    (data.educacion || 0) +
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.seguro_social || 0) +
+    (data.hipoteca || 0) +
+    (data.linea_credito || 0) +
+    (data.prestamo_auto || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0)
+  );
+
+  const gastosAnuales = gastosMensualesEsenciales * 12;
+
+  // 🔹 Deuda total
+  const deudaAnual = (
+    (data.deuda_tarjetas || 0) +
+    (data.deuda_hipotecaria || 0) +
+    (data.deuda_vehiculos || 0) +
+    (data.deuda_estudios || 0) +
+    (data.deuda_comercial || 0) +
+    (data.deuda_otros || 0) +
+    (data.linea_credito || 0)
+  );
+
+  // 🔹 Activos no líquidos (los que se deprecian en los escenarios)
+  const activosNoLiquidos = 
+    (data.valor_vivienda || 0) +
+    (data.valor_propiedades_alquiler || 0) +
+    (data.valor_vehiculos || 0) +
+    (data.valor_otros_activos || 0) +
+    (data.valor_otros || 0);
+
+  // 🔹 Escenarios
+  const escenarios = [
+    { nombre: "Leve", ajusteIngreso: 0.90, ajusteActivo: 0.90 },
+    { nombre: "Moderado", ajusteIngreso: 0.70, ajusteActivo: 0.70 },
+    { nombre: "Severo", ajusteIngreso: 0.50, ajusteActivo: 0.50 }
+  ];
 
   let tabla = `
     <h3>🅷 H. Pruebas de estrés</h3>
