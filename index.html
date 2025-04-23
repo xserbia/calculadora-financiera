@@ -1481,8 +1481,7 @@ function calcularCategoriaH(data) {
     { nombre: "Moderado", ajusteIngreso: 0.70, ajusteActivo: 0.70 },
     { nombre: "Severo", ajusteIngreso: 0.50, ajusteActivo: 0.50 }
   ];
-  
-function calcularCategoriaH(data) {
+  function calcularCategoriaH(data) {
   // 🔹 Ingreso anual
   const ingresoAnual = (data.salario || 0) + (data.ingreso_negocio || 0);
 
@@ -1519,7 +1518,7 @@ function calcularCategoriaH(data) {
     (data.linea_credito || 0)
   );
 
-  // 🔹 Activos no líquidos (los que se deprecian en los escenarios)
+  // 🔹 Activos no líquidos
   const activosNoLiquidos = 
     (data.valor_vivienda || 0) +
     (data.valor_propiedades_alquiler || 0) +
@@ -1527,13 +1526,14 @@ function calcularCategoriaH(data) {
     (data.valor_otros_activos || 0) +
     (data.valor_otros || 0);
 
-  // 🔹 Escenarios
+  // 🔹 Escenarios simulados
   const escenarios = [
     { nombre: "Leve", ajusteIngreso: 0.90, ajusteActivo: 0.90 },
     { nombre: "Moderado", ajusteIngreso: 0.70, ajusteActivo: 0.70 },
     { nombre: "Severo", ajusteIngreso: 0.50, ajusteActivo: 0.50 }
   ];
 
+  // 🔹 Construcción tabla visual
   let tabla = `
     <h3>🅷 H. Pruebas de estrés</h3>
     <table style="font-size: 0.95em; margin-top: 10px;">
