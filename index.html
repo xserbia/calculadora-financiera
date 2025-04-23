@@ -1254,6 +1254,7 @@ function calcularCategoriaF(data) {
       ${faltan.length > 0 ? faltan.map(doc => `<li>${doc}</li>`).join('') : '<li>Todos los documentos están completos.</li>'}
     </ul>
   `;
+// ✅ SECCIÓN G: Cálculo de retiro con gráfico comparativo + tooltip para Monte Carlo
 function calcularCategoriaG(data) {
   const edadActual = data.edad;
   const edadRetiro = data.edad_retiro;
@@ -1305,21 +1306,32 @@ function calcularCategoriaG(data) {
     <div class="resultado-bloque">
       <h2>${emojiResultado} Resultados calculados</h2>
       <table>
-        <tr><td>🧱 <strong>Capital necesario:</strong></td><td>$${Number(necesidadFondo.toFixed(2)).toLocaleString()}</td></tr>
-        <tr><td>💼 <strong>Total acumulado estimado:</strong></td><td>$${Number(montoEsperado.toFixed(2)).toLocaleString()}</td></tr>
-        <tr><td>⚠️ <strong>Faltante actual:</strong></td><td>${montoFaltante > 0 ? "$" + Number(montoFaltante.toFixed(2)).toLocaleString() : "Meta alcanzada"}</td></tr>
+        <tr><td>🧱 <strong>Capital necesario:</strong></td><td>$${necesidadFondo.toLocaleString()}</td></tr>
+        <tr><td>💼 <strong>Total acumulado estimado:</strong></td><td>$${montoEsperado.toLocaleString()}</td></tr>
+        <tr><td>⚠️ <strong>Faltante actual:</strong></td><td>${montoFaltante > 0 ? "$" + montoFaltante.toLocaleString() : "Meta alcanzada"}</td></tr>
         <tr><td>💸 <strong>Aporte anual recomendado extra:</strong></td><td>${ahorroRequeridoAnual > 0 ? "$" + ahorroRequeridoAnual.toFixed(2).toLocaleString() + "/año" : "No requerido"}</td></tr>
         <tr><td>💰 <strong>Aporte mensual recomendado extra:</strong></td><td>${ahorroRequeridoMensual > 0 ? "$" + ahorroRequeridoMensual.toFixed(2).toLocaleString() + "/mes" : "No requerido"}</td></tr>
       </table>
       <canvas id="graficoRetiro" height="180" style="margin-top: 25px;"></canvas>
       <p><strong>🔍 Interpretación:</strong> ${interpretacion}</p>
-      <p style="font-size: 0.85em; color: gray; text-align: center; margin-top: 10px;">
-        📌 Simulación preliminar basada en supuestos educativos. Consulta la sección avanzada para Monte Carlo y gráficos.
-      </p>
+      <div style="margin-top: 10px;">
+        <span id="btnTooltipExplicacionMonteCarlo" style="cursor: pointer; color: #2563eb; text-decoration: underline;">
+          📘 ¿Cómo leer esto?
+        </span>
+        <div id="explicacionMonteCarlo" style="display: none; margin-top: 8px; background: #f1f5f9; padding: 10px; border-radius: 8px; font-size: 0.95em;">
+          🔵 <strong>P50</strong> representa el escenario más probable: en el <strong>50% de los casos</strong>, podrías llegar a los <strong>100 años</strong> con dinero disponible.<br>
+          🟢 <strong>P75</strong> es un escenario optimista: en el <strong>25% de los mejores casos</strong>, terminarías con más dinero.<br>
+          🟠 <strong>P25</strong> es un escenario conservador: en el <strong>25% de los peores escenarios</strong>, podrías agotar tu fondo antes de los 100 años.
+        </div>
+      </div>
     </div>
   `;
 
-  // Gráfico horizontal con etiquetas al final
+  document.getElementById("btnTooltipExplicacionMonteCarlo").onclick = () => {
+    const tooltip = document.getElementById("explicacionMonteCarlo");
+    tooltip.style.display = tooltip.style.display === "none" ? "block" : "none";
+  };
+
   const ctx = document.getElementById('graficoRetiro').getContext('2d');
   if (window.graficoRetiroInstance) window.graficoRetiroInstance.destroy();
 
