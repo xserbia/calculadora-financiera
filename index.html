@@ -1,23 +1,1535 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculadora Financiera</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Evaluación Financiera</title>
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
-    .container { max-width: 900px; margin: auto; padding: 20px; }
-    h1 { text-align: center; }
-    canvas { max-width: 100%; }
+    /* Estilos básicos para el formulario y resultados */
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    .step, .resultado-categoria {
+      display: none;
+    }
+    .active, .active-res {
+      display: block;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    #nav, #navResultados {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    #nav div, .nav-res {
+      background-color: lightgray;
+      border-radius: 5px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      width: 12%;
+      margin: 4px;
+    }
+
+    .completed {
+      background-color: green;
+      color: white;
+    }
+
+    .active {
+      background-color: yellow;
+      color: black;
+    }
+
+    .inactive {
+      background-color: lightgray;
+      color: gray;
+    }
+
+    .resultado-categoria {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: white;
+      padding: 20px;
+    }
+
+    /* Detalles ocultos inicialmente */
+    .details {
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s 0.3s, opacity 0.3s ease;
+      padding-left: 20px;
+      margin-top: 10px;
+    }
+
+    .details.show {
+      visibility: visible;
+      opacity: 1;
+      transition: visibility 0s, opacity 0.3s ease;
+    }
+
+    .toggle-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .toggle-btn:hover {
+      background-color: #0056b3;
+    }
+
+/* Barra de progreso */
+#progress-bar-container {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 12px;
+  margin-bottom: 20px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#progress-bar {
+  width: 0%;
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease-in-out;
+  border-radius: 10px 0 0 10px;
+}
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Calculadora de Evaluación Financiera</h1>
-    <!-- Aquí va el contenido del formulario y scripts -->
-    <p>Este archivo contiene todo el código base para iniciar tu calculadora financiera.</p>
+<!-- Aquí estará todo el formulario -->
+<div id="formularioContainer">
+  <form id="calculadoraFormulario">
+    <div id="nav">
+      <div id="navInfoPersonal" class="inactive" data-target="stepInfoPersonal">Información personal</div>
+      <div id="navIngresos" class="inactive" data-target="stepIngresos">Ingresos</div>
+      <div id="navGastos" class="inactive" data-target="stepGastos">Gastos</div>
+      <div id="navActivos" class="inactive" data-target="stepActivos">Activos</div>
+      <div id="navPasivos" class="inactive" data-target="stepPasivos">Pasivos</div>
+      <div id="navSeguros" class="inactive" data-target="stepSeguros">Seguros</div>
+      <div id="navRetiro" class="inactive" data-target="stepRetiro">Retiro</div>
+      <div id="navPatrimonio" class="inactive" data-target="stepPatrimonio">Patrimonio</div>
+    </div>
+    <!-- Barra de progreso -->
+    <div id="progress-bar-container">
+      <div id="progress-bar"></div>
+    </div>
+<!-- Sección 1: Información personal -->
+<div class="step active" id="stepInfoPersonal">
+  <fieldset>
+    <legend><strong>1. Información personal</strong></legend>
+    <label>Edad<br><input type="number" name="edad"></label><br><br>
+    <label>Estado civil<br><input type="text" name="estado_civil"></label><br><br>
+    <label>¿Tiene dependientes?<br><input type="text" name="tiene_dependientes"></label><br><br>
+    <label>¿A qué edad desea retirarse?<br><input type="number" name="edad_retiro"></label><br><br>
+  </fieldset>
+  <div class="nav-buttons">
+    <button type="button" onclick="nextStep('stepIngresos')">Siguiente</button>
   </div>
+</div>
+<!-- Sección 2: Ingresos y Ahorros (Anual) -->
+<div class="step" id="stepIngresos">
+  <fieldset>
+    <legend><strong>2. Ingresos y ahorros (Anual)</strong></legend>
+    <label>Salario<br><input type="number" name="salario"></label><br><br>
+    <label>Ingreso por negocio<br><input type="number" name="ingreso_negocio"></label><br><br>
+    <label>Bonos<br><input type="number" name="bonos"></label><br><br>
+    <label>Dividendos e intereses<br><input type="number" name="dividendos_intereses"></label><br><br>
+    <label>Renta<br><input type="number" name="renta"></label><br><br>
+    <label>Otros ingresos<br><input type="number" name="otros_ingresos"></label><br><br>
+    
+    <h4>Ahorros:</h4>
+    <label>Aporte anual personal al retiro<br><input type="number" name="aporte_personal_retiro"></label><br><br>
+    <label>Aporte anual del empleador al retiro<br><input type="number" name="aporte_empleador_retiro"></label><br><br>
+    <label>Otros ahorros<br><input type="number" name="otros_ahorros"></label><br><br>
+  </fieldset>
+  <div class="nav-buttons">
+    <button type="button" onclick="prevStep('stepPersonal')">Anterior</button>
+    <button type="button" onclick="nextStep('stepGastos')">Siguiente</button>
+  </div>
+</div>
+
+<!-- Sección 3: Gastos -->
+<div class="step" id="stepGastos">
+  <fieldset>
+    <legend><strong>3. Gastos</strong></legend>
+    <!-- Sección de Pago de Deuda -->
+    <div>
+      <button onclick="toggleDeudaDetails()">Abrir/Cerrar Pago de Deuda</button>
+      <div id="deudaDetails" style="display:none; padding-left: 20px;">
+        <label>Hipoteca (o renta)<br><input type="number" name="hipoteca"></label><br><br>
+        <label>Préstamo de auto<br><input type="number" name="prestamo_auto"></label><br><br>
+        <label>Préstamo educativo<br><input type="number" name="prestamo_educativo"></label><br><br>
+        <label>Préstamo personal<br><input type="number" name="prestamo_personal"></label><br><br>
+        <label>Línea de crédito<br><input type="number" name="linea_credito"></label><br><br>
+        <label>Manutención<br><input type="number" name="manutencion"></label><br><br>
+        <label>Tarjetas de crédito<br><input type="number" name="tarjetas_credito"></label><br><br>
+        <label>Otros<br><input type="number" name="otros_deuda"></label><br><br>
+      </div>
+    </div>
+
+    <!-- Sección de Gastos Diarios -->
+    <div>
+      <button onclick="toggleGastosDetails()">Abrir/Cerrar Gastos Diarios</button>
+      <div id="gastosDetails" style="display:none; padding-left: 20px;">
+        <label>Servicio público<br><input type="number" name="servicio_publico"></label><br><br>
+        <label>Cuidado de hijos<br><input type="number" name="cuidado_hijos"></label><br><br>
+        <label>Mantenimiento auto<br><input type="number" name="mantenimiento_auto"></label><br><br>
+        <label>Cuidado personal<br><input type="number" name="cuidado_personal"></label><br><br>
+        <label>Supermercado<br><input type="number" name="supermercado"></label><br><br>
+        <label>Comidas afuera<br><input type="number" name="comidas_afuera"></label><br><br>
+        <label>Ropa<br><input type="number" name="ropa"></label><br><br>
+        <label>Vacaciones<br><input type="number" name="vacaciones"></label><br><br>
+        <label>Muebles y enseres<br><input type="number" name="muebles_enseres"></label><br><br>
+        <label>Gastos Médicos y dentista<br><input type="number" name="gastos_medicos"></label><br><br>
+        <label>Telecomunicaciones<br><input type="number" name="telecomunicaciones"></label><br><br>
+        <label>Mantenimiento del hogar<br><input type="number" name="mantenimiento_hogar"></label><br><br>
+        <label>Entretenimiento<br><input type="number" name="entretenimiento"></label><br><br>
+        <label>Libros y membresía de contenido<br><input type="number" name="libros_membresia"></label><br><br>
+        <label>Regalos y mesada<br><input type="number" name="regalos_mesada"></label><br><br>
+        <label>Donaciones<br><input type="number" name="donaciones"></label><br><br>
+        <label>Fiestas<br><input type="number" name="fiestas"></label><br><br>
+        <label>Mejoras al hogar<br><input type="number" name="mejoras_hogar"></label><br><br>
+        <label>Dues<br><input type="number" name="dues"></label><br><br>
+        <label>Servicios profesionales<br><input type="number" name="servicios_profesionales"></label><br><br>
+        <label>Gastos de mascota<br><input type="number" name="gastos_mascota"></label><br><br>
+        <label>Otros<br><input type="number" name="otros_gastos_diarios"></label><br><br>
+      </div>
+    </div>
+    
+    <!-- Sección de Impuestos -->
+    <div>
+      <button onclick="toggleImpuestosDetails()">Abrir/Cerrar Impuestos</button>
+      <div id="impuestosDetails" style="display:none; padding-left: 20px;">
+        <label>Federal<br><input type="number" name="impuesto_federal"></label><br><br>
+        <label>Seguro Social<br><input type="number" name="seguro_social"></label><br><br>
+        <label>Medicare<br><input type="number" name="medicare"></label><br><br>
+        <label>Estatales y locales<br><input type="number" name="impuesto_estatal_local"></label><br><br>
+        <label>Propiedad<br><input type="number" name="impuesto_propiedad"></label><br><br>
+        <label>Auto<br><input type="number" name="impuesto_auto"></label><br><br>
+      </div>
+    </div>
+  <div class="nav-buttons">
+    <button type="button" onclick="prevStep('stepIngresos')">Anterior</button>
+    <button type="button" onclick="nextStep('stepActivos')">Siguiente</button>
+  </div>
+      </fieldset>
+    </div>
+
+    <!-- Sección 4: Activos -->
+    <div class="step" id="stepActivos">
+      <fieldset>
+        <legend><strong>4. Activos</strong></legend>
+        <label>Cuentas bancarias y de ahorro<br><input type="number" name="cuentas_bancarias"></label><br><br>
+        <label>Inversiones (no retiro)<br><input type="number" name="cuentas_inversion"></label><br><br>
+        <label>Cuentas de retiro<br><input type="number" name="cuentas_retiro"></label><br><br>
+        <label>Valor de la vivienda principal<br><input type="number" name="valor_vivienda"></label><br><br>
+        <label>Propiedades de alquiler<br><input type="number" name="valor_propiedades_alquiler"></label><br><br>
+        <label>Otras propiedades (vacacionales, etc.)<br><input type="number" name="valor_otros_activos"></label><br><br>
+        <label>Vehículos<br><input type="number" name="valor_vehiculos"></label><br><br>
+        <label>Otros activos (joyas, muebles, etc.)<br><input type="number" name="valor_otros"></label><br><br>
+      </fieldset>
+<div class="nav-buttons">
+  <button type="button" onclick="prevStep('stepGastos')">Anterior</button>
+  <button type="button" onclick="nextStep('stepPasivos')">Siguiente</button>
+</div>
+    </div>
+
+    <!-- Sección 5: Pasivos -->
+    <div class="step" id="stepPasivos">
+      <fieldset>
+        <legend><strong>5. Pasivos</strong></legend>
+        <label>Deuda de tarjetas de crédito<br><input type="number" name="deuda_tarjetas"></label><br><br>
+        <label>Hipotecas o alquiler<br><input type="number" name="deuda_hipotecaria"></label><br><br>
+        <label>Deuda comercial<br><input type="number" name="deuda_comercial"></label><br><br>
+        <label>Préstamos para vehículos<br><input type="number" name="deuda_vehiculos"></label><br><br>
+        <label>Deuda estudiantil<br><input type="number" name="deuda_estudios"></label><br><br>
+        <label>Otras deudas<br><input type="number" name="deuda_otros"></label><br><br>
+      </fieldset>
+<div class="nav-buttons">
+  <button type="button" onclick="prevStep('stepActivos')">Anterior</button>
+  <button type="button" onclick="nextStep('stepSeguros')">Siguiente</button>
+</div>
+    </div>
+    
+<!-- Sección 6: Seguros -->
+<div class="step" id="stepSeguros">
+  <fieldset>
+    <legend><strong>6. Seguros</strong></legend>
+    <p>Selecciona los seguros que tienes y su costo anual:</p>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_vida"> Seguro de vida
+      <input type="number" name="seguro_vida" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_salud"> Seguro de salud
+      <input type="number" name="seguro_medico" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_incapacidad"> Seguro de incapacidad
+      <input type="number" name="seguro_incapacidad" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_ltc"> Seguro de cuidado a largo plazo (LTC)
+      <input type="number" name="seguro_ltc" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_hogar"> Seguro del hogar
+      <input type="number" name="seguro_propiedad" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_auto"> Seguro de auto
+      <input type="number" name="seguro_auto" placeholder="Costo anual ($)" step="0.01">
+    </label><br>
+
+    <label>
+      <input type="checkbox" name="tiene_seguro_umbrella"> Seguro umbrella
+      <input type="number" name="seguro_umbrella" placeholder="Costo anual ($)" step="0.01">
+    </label><br><br>
+
+    <label>
+  <input type="checkbox" name="tiene_seguro_renta"> Seguro de renta
+  <input type="number" name="seguro_renta" placeholder="Costo anual ($)" step="0.01">
+</label><br>
+
+<label>
+  <input type="checkbox" name="tiene_seguro_propiedad_personal"> Seguro de propiedad personal
+  <input type="number" name="seguro_propiedad_personal" placeholder="Costo anual ($)" step="0.01">
+</label><br>
+
+    <label>
+      <input type="checkbox" id="ningunSeguroActivo" name="ningunSeguroActivo">
+      No tengo seguros actualmente
+    </label>
+  </fieldset>
+
+  <div class="nav-buttons">
+    <button type="button" onclick="prevStep('stepPasivos')">Anterior</button>
+    <button type="button" onclick="nextStep('stepRetiro')">Siguiente</button>
+  </div>
+</div>
+<!-- Sección 7: Retiro -->
+<div class="step" id="stepRetiro">
+  <fieldset>
+    <legend><strong>8. Información de retiro</strong></legend>
+    <label>Edad actual<br><input type="number" name="edad_retiro_actual"></label><br>
+    <label>Edad deseada de retiro<br><input type="number" name="edad_retiro_meta"></label><br>
+    <label>Expectativa de vida<br><input type="number" name="expectativa_vida"></label><br>
+    <label>Ingreso anual actual<br><input type="number" name="ingreso_actual"></label><br>
+    <label>Porcentaje de reemplazo deseado (%)<br><input type="number" name="porcentaje_reemplazo"></label><br>
+    <label>Ingreso por pensión o seguro social (anual)<br><input type="number" name="ingreso_seguro_social"></label><br>
+    <label>Ahorro inicial para retiro<br><input type="number" name="ahorro_retiro_actual"></label><br>
+    <label>Aporte anual al retiro<br><input type="number" name="aporte_retiro_anual"></label><br>
+    <label>Tasa de acumulación estimada (%)<br><input type="number" name="tasa_acumulacion"></label><br>
+    <label>Tasa estimada durante retiro (%)<br><input type="number" name="tasa_retiro"></label><br>
+    <label>Inflación estimada (%)<br><input type="number" name="inflacion_esperada"></label><br>
+  </fieldset>
+    <div class="nav-buttons">
+    <button type="button" onclick="prevStep('stepSeguros')">Anterior</button>
+    <button type="button" onclick="nextStep('stepPatrimonio')">Siguiente</button>
+  </div>
+</div>
+    <!-- Sección 8: Patrimonio -->
+    <div class="step" id="stepPatrimonio">
+      <fieldset>
+        <legend><strong>7. Patrimonio</strong></legend>
+        <label>Documentos disponibles:<br>
+          <input type="checkbox" name="trust"> Trust<br>
+          <input type="checkbox" name="will"> Testamento<br>
+          <input type="checkbox" name="advance_medical_directive"> Directiva médica anticipada<br>
+          <input type="checkbox" name="power_of_attorney"> Poder legal<br>
+          <input type="checkbox" name="beneficiary_designation"> Designación de beneficiarios<br>
+          <input type="checkbox" name="property_deeds"> Títulos de propiedad<br>
+        </label><br>
+        <label>
+          <input type="checkbox" id="ningunPatrimonioActivo" name="ningunPatrimonioActivo">
+          No tengo documentos patrimoniales actualmente
+        </label>
+      </fieldset>
+      <div class="nav-buttons">
+      <button type="button" onclick="prevStep('stepRetiro')">Anterior</button>
+      <button type="submit">Calcular</button>
+    </div>
+    </div>
+  </form>
+</div>
+  <!-- SECCIÓN DE RESULTADOS -->
+<div id="resultadosContainer" style="display:none;">
+  <h2>Resultados de tu evaluación financiera</h2>
+  <div id="navResultados">
+    <div class="nav-res inactive" onclick="mostrarResultado('resA')">A. Flujo</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resB')">B. Deuda</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resC')">C. Patrimonio</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resD')">D. Seguridad</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resE')">E. Riesgo</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resF')">F. Patrimonial</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resG')">G. Retiro</div>
+    <div class="nav-res inactive" onclick="mostrarResultado('resH')">H. Estrés</div>
+  </div>
+
+  <h3>Distribución de gastos</h3>
+  <canvas id="graficoGastos" width="100" height="100"></canvas>
+
+  <div id="resA" class="resultado-categoria active-res">[Resultados A]</div>
+  <div id="resB" class="resultado-categoria">[Resultados B]</div>
+  <div id="resC" class="resultado-categoria">[Resultados C]</div>
+  <div id="resD" class="resultado-categoria">[Resultados D]</div>
+  <div id="resE" class="resultado-categoria">[Resultados E]</div>
+  <div id="resF" class="resultado-categoria">[Resultados F]</div>
+  <div id="resG" class="resultado-categoria">[Resultados G]</div>
+  <div id="resH" class="resultado-categoria">[Resultados H]</div>
+</div>
+<script>
+  // ✅ Variable global para almacenar los datos del formulario
+  let data = {};
+
+  // ✅ Función para mostrar resultados por sección
+  function mostrarResultado(id) {
+    const canvas = document.getElementById('graficoGastos');
+    if (!canvas) {
+      console.error("El canvas para el gráfico de dona no se encuentra.");
+      return;
+    }
+
+    if (id !== 'resA') {
+      canvas.style.display = 'none';
+    } else {
+      canvas.style.display = 'block';
+      mostrarGraficoGastos(data);
+    }
+
+    document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
+    document.getElementById(id).classList.add('active-res');
+    document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
+    const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
+    if (current) current.classList.add('active');
+  }
+
+  // ✅ Función para avanzar al siguiente paso (asegura visibilidad global)
+  window.nextStep = function(stepName) {
+    const steps = document.querySelectorAll('.step');
+    steps.forEach(stepDiv => stepDiv.classList.remove('active'));
+
+    const stepToShow = document.getElementById(stepName);
+    if (stepToShow) {
+      stepToShow.classList.add('active');
+      updateNav(stepName);
+      updateProgressBar(stepName, steps.length);
+    } else {
+      console.error("Sección no encontrada: " + stepName);
+    }
+  }
+
+  // ✅ Función para retroceder al paso anterior (usa nextStep internamente)
+  window.prevStep = function(stepName) {
+    nextStep(stepName);
+  }
+
+  // ✅ Función para procesar y recolectar los datos del formulario
+  document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
+    e.preventDefault();
+    data = {}; // Reiniciamos
+
+    Array.from(this.elements).forEach(el => {
+      if (el.name) {
+        if (el.type === "checkbox") {
+          data[el.name] = el.checked;
+        } else {
+          data[el.name] = el.value;
+        }
+      }
+    });
+
+ for (let key in data) {
+  // No intentes convertir a número si es booleano
+  if (typeof data[key] === "string" && !isNaN(data[key])) {
+    data[key] = parseFloat(data[key]);
+  }
+}
+  console.log("📦 Datos capturados del formulario:", data); // 👈 Aquí el log
+    
+    mostrarGraficoGastos(data);
+    calcularResultados(data);
+    document.getElementById("resultadosContainer").style.display = "block";
+    mostrarResultado("resA");
+  });
+
+  // ✅ Función para mostrar gráfico de dona
+  function mostrarGraficoGastos(data) {
+    const canvas = document.getElementById('graficoGastos');
+    if (!canvas) {
+      console.error("El canvas para el gráfico de dona no se encuentra.");
+      return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (window.myChart) window.myChart.destroy();
+
+    const gastosData = {
+      labels: ['Pago de deuda', 'Gastos diarios', 'Seguros', 'Impuestos', 'Ahorro personal'],
+      datasets: [{
+        label: 'Distribución de gastos',
+        data: [
+          (parseFloat(data.hipoteca) || 0) +
+          (parseFloat(data.prestamo_auto) || 0) +
+          (parseFloat(data.prestamo_educativo) || 0) +
+          (parseFloat(data.prestamo_personal) || 0) +
+          (parseFloat(data.linea_credito) || 0) +
+          (parseFloat(data.manutencion) || 0) +
+          (parseFloat(data.tarjetas_credito) || 0) +
+          (parseFloat(data.otros_deuda) || 0) +
+          (parseFloat(data.deuda_vehiculos) || 0),
+
+          (parseFloat(data.servicio_publico) || 0) +
+          (parseFloat(data.cuidado_hijos) || 0) +
+          (parseFloat(data.mantenimiento_auto) || 0) +
+          (parseFloat(data.cuidado_personal) || 0) +
+          (parseFloat(data.supermercado) || 0) +
+          (parseFloat(data.comidas_afuera) || 0) +
+          (parseFloat(data.ropa) || 0) +
+          (parseFloat(data.vacaciones) || 0) +
+          (parseFloat(data.muebles_enseres) || 0) +
+          (parseFloat(data.gastos_medicos) || 0) +
+          (parseFloat(data.telecomunicaciones) || 0) +
+          (parseFloat(data.mantenimiento_hogar) || 0) +
+          (parseFloat(data.entretenimiento) || 0) +
+          (parseFloat(data.libros_membresia) || 0) +
+          (parseFloat(data.regalos_mesada) || 0) +
+          (parseFloat(data.donaciones) || 0) +
+          (parseFloat(data.fiestas) || 0) +
+          (parseFloat(data.mejoras_hogar) || 0) +
+          (parseFloat(data.dues) || 0) +
+          (parseFloat(data.servicios_profesionales) || 0) +
+          (parseFloat(data.gastos_mascota) || 0) +
+          (parseFloat(data.otros_gastos_diarios) || 0),
+
+          (parseFloat(data.seguro_vida) || 0) +
+          (parseFloat(data.seguro_medico) || 0) +
+          (parseFloat(data.seguro_propiedad) || 0) +
+          (parseFloat(data.seguro_renta) || 0) +
+          (parseFloat(data.seguro_umbrella) || 0) +
+          (parseFloat(data.seguro_incapacidad) || 0) +
+          (parseFloat(data.seguro_auto) || 0) +
+          (parseFloat(data.seguro_propiedad_personal) || 0),
+
+          (parseFloat(data.impuesto_federal) || 0) +
+          (parseFloat(data.impuesto_estatal_local) || 0) +
+          (parseFloat(data.impuesto_propiedad) || 0) +
+          (parseFloat(data.impuesto_auto) || 0) +
+          (parseFloat(data.seguro_social) || 0) +
+          (parseFloat(data.medicare) || 0),
+
+          (parseFloat(data.aporte_personal_retiro) || 0) + (parseFloat(data.otros_ahorros) || 0)
+        ],
+        backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFC300'],
+        hoverOffset: 4
+      }]
+    };
+
+  const config = {
+    type: 'doughnut',
+    data: gastosData,
+options: {
+  responsive: true,
+  plugins: {
+    legend: { position: 'top' },
+    tooltip: {
+      callbacks: {
+        label: function(context) {
+          const data = context.chart.data.datasets[0].data;
+          const total = data.reduce((acc, val) => acc + val, 0);
+          const value = context.raw;
+          const percent = total ? ((value / total) * 100).toFixed(1) : 0;
+          return `${context.label}: ${percent}%`;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    window.myChart = new Chart(ctx, config);
+  }
+
+  // ✅ Función placeholder para calcular y mostrar los resultados
+  function calcularResultados(data) {
+    document.getElementById("resA").innerHTML = `
+      Ingreso mensual neto: $${(data.ingreso_neto / 12 || 0).toFixed(2)}<br>
+      Ahorro personal anual: $${(data.aporte_personal_retiro || 0).toFixed(2)}
+    `;
+    // Puedes continuar agregando más resultados aquí para resB, resC, etc.
+  }
+
+  // ✅ Función para actualizar la barra de progreso
+function updateProgressBar(stepName, totalSteps) {
+  const steps = Array.from(document.querySelectorAll('.step'));
+  const currentIndex = steps.findIndex(step => step.id === stepName) + 1;
+  const progress = (currentIndex / totalSteps) * 100;
+  document.getElementById('progress-bar').style.width = progress + '%';
+}
+  // ✅ Actualizar navegación visual
+function updateNav(stepId) {
+  const navItems = document.querySelectorAll('#nav div');
+  navItems.forEach(item => {
+    const target = item.getAttribute("data-target");
+    if (target === stepId) {
+      item.classList.add("active");
+      item.classList.remove("inactive", "completed");
+    } else {
+      item.classList.remove("active");
+      if (document.getElementById(target).classList.contains("active")) {
+        item.classList.add("completed");
+      } else {
+        item.classList.add("inactive");
+      }
+    }
+  });
+}
+
+  // ✅ Permitir navegación directa desde la barra
+  document.querySelectorAll('#nav div').forEach((navItem, index) => {
+    navItem.addEventListener('click', function () {
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+      document.querySelectorAll('.step')[index].classList.add('active');
+      updateNav(index + 1);
+    });
+  });
+
+  // ✅ Funciones para mostrar/ocultar detalles
+  function toggleDeudaDetails() {
+    const el = document.getElementById("deudaDetails");
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  }
+
+  function toggleGastosDetails() {
+    const el = document.getElementById("gastosDetails");
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  }
+
+  function toggleSegurosDetails() {
+    const el = document.getElementById("segurosDetails");
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  }
+
+  function toggleImpuestosDetails() {
+    const el = document.getElementById("impuestosDetails");
+    el.style.display = el.style.display === "none" ? "block" : "none";
+  }
+  function calcularResultados(data) {
+    calcularCategoriaA(data);
+    calcularCategoriaB(data);
+    calcularCategoriaC(data);
+    calcularCategoriaD(data);
+    calcularCategoriaE(data);
+    calcularCategoriaF(data);
+    calcularCategoriaG(data);
+    calcularCategoriaH(data);
+  }
+// Función para mostrar los resultados (solo se muestra la dona en la sección de flujo)
+function mostrarResultado(id) {
+  // Primero, eliminamos el gráfico de dona de todas las secciones
+  const canvas = document.getElementById('graficoGastos');
+  if (!canvas) {
+    console.error("El canvas para el gráfico de dona no se encuentra.");
+    return;
+  }
+
+  if (id !== 'resA') {
+    canvas.style.display = 'none'; // Ocultamos el gráfico en otras secciones
+  } else {
+    // Si estamos en la sección de "Flujo", mostramos el gráfico de dona
+    canvas.style.display = 'block'; // Aseguramos que el gráfico se muestre en "Flujo"
+    mostrarGraficoGastos(data); // Llamamos a la función para generar el gráfico
+  }
+  // Continuamos con la lógica de la navegación de resultados
+  document.querySelectorAll('.resultado-categoria').forEach(div => div.classList.remove('active-res'));
+  document.getElementById(id).classList.add('active-res');
+  document.querySelectorAll('#navResultados .nav-res').forEach(nav => nav.classList.remove('active'));
+  const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
+  if (current) current.classList.add('active');
+}
+function calcularCategoriaA(data) {
+  // 🔹 Ingreso total
+  const ingresoAnual =
+    (data.salario || 0) +
+    (data.ingreso_negocio || 0) +
+    (data.otros_ingresos || 0) +
+    (data.bonos || 0) +
+    (data.dividendos_intereses || 0) +
+    (data.renta || 0);
+  const ingresoMensual = ingresoAnual / 12;
+
+  // 🔹 Ahorro
+  const ahorroAnual =
+    (data.aporte_personal_retiro || 0) +
+    (data.aporte_empleador_retiro || 0) +
+    (data.otros_ahorros || 0);
+  const ahorroMensual = ahorroAnual / 12;
+
+  // 🔹 Seguros
+  const segurosAnual =
+    (data.seguro_vida || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_incapacidad || 0) +
+    (data.seguro_ltc || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) +
+    (data.seguro_umbrella || 0) +
+    (data.seguro_renta || 0) +
+    (data.seguro_propiedad_personal || 0);
+  const segurosMensual = segurosAnual / 12;
+
+  // 🔹 Impuestos
+  const impuestosAnual =
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.impuesto_auto || 0) +
+    (data.impuesto_estatal_local || 0) +
+    (data.seguro_social || 0) +
+    (data.medicare || 0);
+  const impuestosMensual = impuestosAnual / 12;
+
+  // 🔹 Gastos diarios esenciales
+  const gastosEsencialesAnual =
+    (data.supermercado || 0) +
+    (data.comidas_afuera || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.servicio_publico || 0) +
+    (data.mantenimiento_auto || 0) +
+    (data.mantenimiento_hogar || 0) +
+    (data.cuidado_hijos || 0) +
+    (data.cuidado_personal || 0);
+  const gastosEsencialesMensual = gastosEsencialesAnual / 12;
+
+  // 🔹 Gastos diarios totales (todos los gastos listados en imagen)
+  const gastosTotalesAnual =
+    (data.servicio_publico || 0) +
+    (data.cuidado_hijos || 0) +
+    (data.mantenimiento_auto || 0) +
+    (data.cuidado_personal || 0) +
+    (data.supermercado || 0) +
+    (data.comidas_afuera || 0) +
+    (data.ropa || 0) +
+    (data.vacaciones || 0) +
+    (data.muebles_enseres || 0) +
+    (data.gastos_medicos || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.mantenimiento_hogar || 0) +
+    (data.entretenimiento || 0) +
+    (data.libros_membresia || 0) +
+    (data.regalos_mesada || 0) +
+    (data.donaciones || 0) +
+    (data.fiestas || 0) +
+    (data.mejoras_hogar || 0) +
+    (data.dues || 0) +
+    (data.servicios_profesionales || 0) +
+    (data.gastos_mascota || 0) +
+    (data.otros_gastos_diarios || 0);
+  const gastosTotalesMensual = gastosTotalesAnual / 12;
+
+  // 🔹 Servicio de deuda
+  const deudaAnual =
+    (data.hipoteca || 0) +
+    (data.prestamo_auto || 0) +
+    (data.prestamo_educativo || 0) +
+    (data.prestamo_personal || 0) +
+    (data.linea_credito || 0) +
+    (data.manutencion || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0);
+  const deudaMensual = deudaAnual / 12;
+
+  // 🔹 Total egresos y superávit
+  const egresosAnual = impuestosAnual + segurosAnual + gastosEsencialesAnual + deudaAnual + ahorroAnual;
+  const egresosMensual = egresosAnual / 12;
+  const superavitAnual = ingresoAnual - egresosAnual;
+  const superavitMensual = ingresoMensual - egresosMensual;
+
+  // 🔹 Indicadores de liquidez
+  const activosLiquidos = (data.cuentas_bancarias || 0) + (data.cuentas_inversion || 0);
+  const activosTotales =
+    activosLiquidos +
+    (data.cuentas_retiro || 0) +
+    (data.valor_vivienda || 0) +
+    (data.valor_propiedades_alquiler || 0) +
+    (data.valor_vehiculos || 0) +
+    (data.valor_otros_activos || 0) +
+    (data.valor_otros || 0);
+
+  const razonCorriente = activosLiquidos / ((data.deuda_tarjetas || 1));
+  const efectivoSobreActivos = ((data.cuentas_bancarias || 0) / activosTotales) * 100;
+  const mesesReserva = (data.cuentas_bancarias || 0) / (impuestosMensual + segurosMensual + gastosEsencialesMensual + deudaMensual || 1);
+
+  const emojiAhorro = ahorroAnual / ingresoAnual >= 0.3 ? "✅" : (ahorroAnual / ingresoAnual >= 0.15 ? "⚠️" : "🚨");
+  const emojiReserva = mesesReserva >= 12 ? "✅" : (mesesReserva >= 6 ? "⚠️" : "🚨");
+  const emojiCorriente = razonCorriente >= 1 ? "✅" : "🚨";
+  const emojiEfectivo = efectivoSobreActivos < 5 ? "⚠️" : (efectivoSobreActivos > 20 ? "🔁" : "✅");
+
+  const tabla = `
+  <table style="font-size: 0.95em; width: 100%; border-collapse: separate; border-spacing: 0 8px;">
+    <thead>
+      <tr style="text-align: center;">
+        <th style="text-align: left;">Indicador</th>
+        <th style="text-align: center;">Anual</th>
+        <th style="text-align: center;">Mensual</th>
+        <th style="text-align: center;">Evaluación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Ingreso total</td><td>$${ingresoAnual.toLocaleString()}</td><td>$${ingresoMensual.toFixed(2)}</td><td>–</td></tr>
+      <tr><td>Gastos diarios (solo esenciales)</td><td>$${gastosEsencialesAnual.toLocaleString()}</td><td>$${gastosEsencialesMensual.toFixed(2)}</td><td>–</td></tr>
+      <tr><td>Gastos diarios (totales)</td><td>$${gastosTotalesAnual.toLocaleString()}</td><td>$${gastosTotalesMensual.toFixed(2)}</td><td>–</td></tr>
+      <tr><td>Impuestos</td><td>$${impuestosAnual.toLocaleString()}</td><td>$${impuestosMensual.toFixed(2)}</td><td>–</td></tr>
+      <tr><td>Seguros</td><td>$${segurosAnual.toLocaleString()}</td><td>$${segurosMensual.toFixed(2)}</td><td>–</td></tr>
+      <tr><td>Servicio de deuda</td><td>$${deudaAnual.toLocaleString()}</td><td>$${deudaMensual.toFixed(2)}</td><td>–</td></tr>
+      <tr><td><strong>Total egresos (incluye ahorro)</strong></td><td><strong>$${egresosAnual.toLocaleString()}</strong></td><td><strong>$${egresosMensual.toFixed(2)}</strong></td><td>–</td></tr>
+      <tr><td>Ahorro</td><td>$${ahorroAnual.toLocaleString()}</td><td>$${ahorroMensual.toFixed(2)}</td><td>${emojiAhorro}</td></tr>
+      <tr><td>Superávit</td><td>$${superavitAnual.toLocaleString()}</td><td>$${superavitMensual.toFixed(2)}</td><td>–</td></tr>
+      <tr><td>Meses de reserva</td><td colspan="2">${mesesReserva.toFixed(1)} meses</td><td>${emojiReserva}</td></tr>
+      <tr><td>Razón corriente</td><td colspan="2">${razonCorriente.toFixed(2)}</td><td>${emojiCorriente}</td></tr>
+      <tr><td>Efectivo / activos totales</td><td colspan="2">${efectivoSobreActivos.toFixed(1)}%</td><td>${emojiEfectivo}</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size: 0.85em; color: gray; text-align: center; margin-top: 10px;">
+    ✅ Dentro del rango ideal &nbsp;&nbsp; ⚠️ Aceptable o mejorable &nbsp;&nbsp; 🚨 Riesgo o alerta &nbsp;&nbsp; 🔁 Exceso conservador
+  </p>
+  `;
+
+  document.getElementById("resA").innerHTML = `
+    <h3>🅰️ A. Flujo de efectivo y liquidez</h3>
+    ${tabla}
+  `;
+}
+
+function calcularCategoriaB(data) {
+  // 🔹 Ingresos
+  const ingresoBruto = (data.salario || 0) + (data.ingreso_negocio || 0);
+  const ingresoNeto = ingresoBruto * 0.80; // Estimación de ingreso neto
+
+  // 🔹 Gasto de vivienda (sólo componentes de vivienda)
+  const gastoVivienda = 
+    (data.hipoteca || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.seguro_propiedad || 0);
+
+  const porcentajeViviendaNeto = (gastoVivienda / ingresoNeto) * 100;
+  const porcentajeViviendaBruto = (gastoVivienda / ingresoBruto) * 100;
+
+  // 🔹 Servicio de deuda
+  const servicioDeuda = 
+    (data.hipoteca || 0) +
+    (data.prestamo_auto || 0) +
+    (data.prestamo_educativo || 0) +
+    (data.prestamo_personal || 0) +
+    (data.linea_credito || 0) +
+    (data.manutencion || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0);
+
+  const dtiNeto = (servicioDeuda / ingresoNeto) * 100;
+  const dtiBruto = (servicioDeuda / ingresoBruto) * 100;
+
+  // 🔹 Gastos esenciales anuales = Pasivos corrientes
+  const pasivosCorrientes =
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.impuesto_auto || 0) +
+    (data.impuesto_estatal_local || 0) +
+    (data.seguro_social || 0) +
+    (data.medicare || 0) +
+    (data.seguro_vida || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_incapacidad || 0) +
+    (data.seguro_ltc || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) +
+    (data.seguro_umbrella || 0) +
+    (data.seguro_renta || 0) +
+    (data.seguro_propiedad_personal || 0) +
+    (data.hipoteca || 0) +
+    (data.prestamo_auto || 0) +
+    (data.prestamo_educativo || 0) +
+    (data.prestamo_personal || 0) +
+    (data.linea_credito || 0) +
+    (data.manutencion || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0) +
+    (data.supermercado || 0) +
+    (data.comidas_afuera || 0) +
+    (data.transporte || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.servicio_publico || 0) +
+    (data.mantenimiento_auto || 0) +
+    (data.mantenimiento_hogar || 0) +
+    (data.cuidado_hijos || 0) +
+    (data.cuidado_personal || 0);
+
+  // 🔹 Total deudas (sólo saldos)
+  const deudas = 
+    (data.deuda_tarjetas || 0) +
+    (data.deuda_vehiculos || 0) +
+    (data.deuda_comercial || 0) +
+    (data.deuda_hipotecaria || 0) +
+    (data.deuda_estudios || 0) +
+    (data.deuda_otros || 0);
+
+  const pasivosTotales = deudas + pasivosCorrientes;
+
+  // 🔹 Activos totales
+  const activosTotales =
+    (data.cuentas_bancarias || 0) +
+    (data.cuentas_inversion || 0) +
+    (data.cuentas_retiro || 0) +
+    (data.valor_vivienda || 0) +
+    (data.valor_propiedades_alquiler || 0) +
+    (data.valor_vehiculos || 0) +
+    (data.valor_otros_activos || 0) +
+    (data.valor_otros || 0);
+
+  const patrimonioNeto = activosTotales - pasivosTotales;
+
+  // 🔹 Indicadores
+  const relacionPasivosCorrientes = (pasivosCorrientes / activosTotales) * 100;
+  const relacionDeudaActivos = (pasivosTotales / activosTotales) * 100;
+  const relacionDeudaPatrimonio = (pasivosTotales / patrimonioNeto) * 100;
+
+  // 🔹 Emojis evaluación
+  const emojiViviendaNeto = porcentajeViviendaNeto <= 28 ? '✅' : '🚨';
+  const emojiViviendaBruto = porcentajeViviendaBruto <= 24 ? '✅' : '🚨';
+  const emojiDTINeto = dtiNeto <= 36 ? '✅' : '🚨';
+  const emojiDTIBruto = dtiBruto <= 30 ? '✅' : '🚨';
+  const emojiPasivosCorr = relacionPasivosCorrientes <= 20 ? '✅' : '⚠️';
+  const emojiDeudaActivos = relacionDeudaActivos <= 50 ? '✅' : '⚠️';
+  const emojiDeudaPatrimonio = 
+    relacionDeudaPatrimonio <= 50 ? '✅' :
+    relacionDeudaPatrimonio <= 100 ? '⚠️' : '🚨';
+
+  // 🔹 Tabla
+  const tabla = `
+    <table style="font-size: 0.95em; width: 100%; border-collapse: separate; border-spacing: 0 8px;">
+      <thead>
+        <tr style="text-align: center;">
+          <th style="text-align: left;">Indicador</th>
+          <th style="text-align: center;">Resultado</th>
+          <th style="text-align: center;">Evaluación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Activos totales</td><td style="text-align: center;">$${activosTotales.toLocaleString()}</td><td style="text-align: center;">–</td></tr>
+        <tr><td>Pasivos totales (incluye gastos esenciales)</td><td style="text-align: center;">$${pasivosTotales.toLocaleString()}</td><td style="text-align: center;">–</td></tr>
+        <tr><td>% Vivienda / ingreso neto</td><td style="text-align: center;">${porcentajeViviendaNeto.toFixed(1)}%</td><td style="text-align: center;">${emojiViviendaNeto}</td></tr>
+        <tr><td>% Vivienda / ingreso bruto</td><td style="text-align: center;">${porcentajeViviendaBruto.toFixed(1)}%</td><td style="text-align: center;">${emojiViviendaBruto}</td></tr>
+        <tr><td>DTI / ingreso neto</td><td style="text-align: center;">${dtiNeto.toFixed(1)}%</td><td style="text-align: center;">${emojiDTINeto}</td></tr>
+        <tr><td>DTI / ingreso bruto</td><td style="text-align: center;">${dtiBruto.toFixed(1)}%</td><td style="text-align: center;">${emojiDTIBruto}</td></tr>
+        <tr><td>Pasivos corrientes / activos</td><td style="text-align: center;">${relacionPasivosCorrientes.toFixed(1)}%</td><td style="text-align: center;">${emojiPasivosCorr}</td></tr>
+        <tr><td>Deuda total / activos</td><td style="text-align: center;">${relacionDeudaActivos.toFixed(1)}%</td><td style="text-align: center;">${emojiDeudaActivos}</td></tr>
+        <tr><td>Deuda total / patrimonio neto</td><td style="text-align: center;">${relacionDeudaPatrimonio.toFixed(1)}%</td><td style="text-align: center;">${emojiDeudaPatrimonio}</td></tr>
+      </tbody>
+    </table>
+
+    <h4 style="margin-top: 20px;">📊 Benchmarks utilizados</h4>
+    <ul style="font-size: 0.9em;">
+      <li>Vivienda / ingreso neto: ≤ 28% ✅</li>
+      <li>Vivienda / ingreso bruto: ≤ 24% ✅</li>
+      <li>DTI neto: ≤ 36% ✅</li>
+      <li>DTI bruto: ≤ 30% ✅</li>
+      <li>Pasivos corrientes / activos: ≤ 20% ✅</li>
+      <li>Deuda / activos: ≤ 50% ✅</li>
+      <li>Deuda / patrimonio neto: ≤ 50% ✅ · 51–100% ⚠️ · > 100% 🚨</li>
+    </ul>
+  `;
+
+  document.getElementById("resB").innerHTML = `
+    <h3>🅱️ B. Endeudamiento</h3>
+    ${tabla}
+  `;
+}
+
+function calcularCategoriaC(data) {
+  // 🔹 Activos
+  const totalActivos =
+    (data.cuentas_bancarias || 0) +
+    (data.cuentas_inversion || 0) +
+    (data.cuentas_retiro || 0) +
+    (data.valor_vivienda || 0) +
+    (data.valor_propiedades_alquiler || 0) +
+    (data.valor_vehiculos || 0) +
+    (data.valor_otros_activos || 0) +
+    (data.valor_otros || 0);
+
+  // 🔹 Pasivos
+  const totalPasivos =
+    (data.deuda_hipotecaria || 0) +
+    (data.deuda_tarjetas || 0) +
+    (data.deuda_vehiculos || 0) +
+    (data.deuda_comercial || 0) +
+    (data.deuda_estudios || 0) +
+    (data.deuda_otros || 0) +
+    (data.linea_credito || 0);
+
+  // 🔹 Cálculo de patrimonio neto
+  const patrimonioNeto = totalActivos - totalPasivos;
+
+  // 🔹 Ratios
+  const ratioPatrimonioActivos = (patrimonioNeto / totalActivos) * 100;
+  const ratioPatrimonioPasivos = (patrimonioNeto / totalPasivos) * 100;
+
+  // 🔹 Evaluación con emojis
+  const emojiActivos = ratioPatrimonioActivos >= 70 ? '✅' :
+                       ratioPatrimonioActivos >= 50 ? '⚠️' : '🚨';
+
+  const emojiPasivos = ratioPatrimonioPasivos >= 200 ? '✅' :
+                       ratioPatrimonioPasivos >= 100 ? '⚠️' : '🚨';
+
+  // 🔹 Tabla visual con resultados
+  const tabla = `
+    <table style="font-size: 0.95em; margin-top: 10px;">
+      <thead>
+        <tr><th>Indicador</th><th>Resultado</th><th>Evaluación</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Activos totales</td><td>$${totalActivos.toLocaleString()}</td><td>–</td></tr>
+        <tr><td>Pasivos totales</td><td>$${totalPasivos.toLocaleString()}</td><td>–</td></tr>
+        <tr><td>Patrimonio neto</td><td>$${patrimonioNeto.toLocaleString()}</td><td>–</td></tr>
+        <tr><td>Relación patrimonio / activos</td><td>${ratioPatrimonioActivos.toFixed(1)}%</td><td>${emojiActivos}</td></tr>
+        <tr><td>Relación patrimonio / pasivos</td><td>${ratioPatrimonioPasivos.toFixed(1)}%</td><td>${emojiPasivos}</td></tr>
+      </tbody>
+    </table>
+
+    <h4 style="margin-top: 20px;">📊 Benchmarks utilizados</h4>
+    <ul style="font-size: 0.9em;">
+      <li><strong>Relación patrimonio / activos:</strong>
+        ≥ 70% ✅ · 50–69% ⚠️ · &lt; 50% 🚨
+      </li>
+      <li><strong>Relación patrimonio / pasivos:</strong>
+        ≥ 200% ✅ · 100–199% ⚠️ · &lt; 100% 🚨
+      </li>
+      <li><strong>Patrimonio neto absoluto:</strong>
+        Evaluado en función de edad, ingresos y metas.
+      </li>
+    </ul>
+  `;
+
+  // Mostrar resultados
+  document.getElementById("resC").innerHTML = `
+    <h3>🅲 C. Patrimonio neto</h3>
+    ${tabla}
+  `;
+}
+function calcularCategoriaD(data) {
+  // 🔹 Ingreso y ahorro
+  const ingresoAnualBruto = (data.salario || 0) + (data.ingreso_negocio || 0) + (data.otros_ingresos || 0) + (data.bonos || 0) + (data.dividendos_intereses || 0) + (data.renta || 0);
+  const ingresoMensual = ingresoAnualBruto / 12;
+  const ahorroAnual = (data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0) + (data.otros_ahorros || 0);
+  const tasaAhorro = (ahorroAnual / ingresoAnualBruto) * 100;
+
+  // 🔹 Gastos esenciales anuales
+  const gastosEsencialesAnual = 
+    (data.servicio_publico || 0) +
+    (data.mantenimiento_auto || 0) +
+    (data.cuidado_hijos || 0) +
+    (data.supermercado || 0) +
+    (data.comidas_afuera || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.mantenimiento_hogar || 0) +
+    (data.cuidado_personal || 0) +
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.impuesto_auto || 0) +
+    (data.impuesto_estatal_local || 0) +
+    (data.seguro_vida || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_incapacidad || 0) +
+    (data.seguro_ltc || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) +
+    (data.seguro_umbrella || 0) +
+    (data.seguro_renta || 0) +
+    (data.seguro_propiedad_personal || 0) +
+    (data.hipoteca || 0) +
+    (data.prestamo_auto || 0) +
+    (data.prestamo_educativo || 0) +
+    (data.prestamo_personal || 0) +
+    (data.linea_credito || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0) +
+    (data.manutencion || 0);
+
+  const gastosEsencialesMensual = gastosEsencialesAnual / 12;
+
+  // 🔹 Activos
+  const activosDeInversion = (data.cuentas_inversion || 0) + (data.cuentas_retiro || 0) + (data.valor_propiedades_alquiler || 0);
+  const activosTotales = 
+    (data.cuentas_bancarias || 0) +
+    (data.cuentas_inversion || 0) +
+    (data.cuentas_retiro || 0) +
+    (data.valor_vivienda || 0) +
+    (data.valor_propiedades_alquiler || 0) +
+    (data.valor_vehiculos || 0) +
+    (data.valor_otros_activos || 0) +
+    (data.valor_otros || 0);
+
+  const pasivosTotales =
+    (data.deuda_hipotecaria || 0) + (data.deuda_tarjetas || 0) +
+    (data.deuda_comercial || 0) + (data.deuda_vehiculos || 0) +
+    (data.deuda_estudios || 0) + (data.deuda_otros || 0) + (data.linea_credito || 0);
+
+  const patrimonioNeto = activosTotales - pasivosTotales;
+
+  // 🔹 Indicadores clave
+  const activosInversionSobreTotales = (activosDeInversion / activosTotales) * 100;
+  const activosInversionSobreIngreso = activosDeInversion / ingresoAnualBruto;
+  const activosInversionSobreGastos = activosDeInversion / gastosEsencialesMensual;
+  const patrimonioSobreIngreso = patrimonioNeto / ingresoAnualBruto;
+
+  // 🔹 Capacidad de acumulación
+  const superavit = ingresoAnualBruto - gastosEsencialesAnual - ahorroAnual;
+  const capacidadAcumulacion = (ahorroAnual + superavit) / ingresoAnualBruto * 100;
+
+  // 🔹 Benchmarks edad → 45 años → 4.5x
+  const benchmarkEdad = 4.5;
+
+  // 🔹 Emojis
+  const emojiAhorro = tasaAhorro >= 30 ? '✅' : (tasaAhorro >= 15 ? '⚠️' : '🚨');
+  const emojiCapacidad = capacidadAcumulacion >= 30 ? '✅' : (capacidadAcumulacion >= 15 ? '⚠️' : '🚨');
+  const emojiInversionTotales = activosInversionSobreTotales >= 50 ? '✅' : (activosInversionSobreTotales >= 30 ? '⚠️' : '🚨');
+  const emojiInversionIngreso = activosInversionSobreIngreso >= 1.6 ? '✅' : (activosInversionSobreIngreso >= 0.6 ? '⚠️' : '🚨');
+  const emojiInversionGastos = activosInversionSobreGastos >= 120 ? '✅' : (activosInversionSobreGastos >= 60 ? '⚠️' : '🚨');
+  const emojiPatrimonioIngreso = patrimonioSobreIngreso >= benchmarkEdad ? '✅' : (patrimonioSobreIngreso >= benchmarkEdad * 0.8 ? '⚠️' : '🚨');
+
+  // 🔹 Tabla visual
+  const tabla = `
+    <table style="font-size: 0.95em; margin-top: 10px;">
+      <thead>
+        <tr><th>Indicador</th><th>Resultado</th><th>Evaluación</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Tasa de ahorro (retirement)</td><td>${tasaAhorro.toFixed(1)}%</td><td>${emojiAhorro}</td></tr>
+        <tr><td>Capacidad de acumulación</td><td>${capacidadAcumulacion.toFixed(1)}%</td><td>${emojiCapacidad}</td></tr>
+        <tr><td>Activos de inversión / activos totales</td><td>${activosInversionSobreTotales.toFixed(1)}%</td><td>${emojiInversionTotales}</td></tr>
+        <tr><td>Activos de inversión / ingreso bruto anual</td><td>${activosInversionSobreIngreso.toFixed(2)}x</td><td>${emojiInversionIngreso}</td></tr>
+        <tr><td>Activos de inversión / gastos esenciales</td><td>${activosInversionSobreGastos.toFixed(0)} meses</td><td>${emojiInversionGastos}</td></tr>
+        <tr><td>Patrimonio neto / ingreso bruto anual</td><td>${patrimonioSobreIngreso.toFixed(2)}x</td><td>${emojiPatrimonioIngreso}</td></tr>
+      </tbody>
+    </table>
+
+    <h4 style="margin-top: 20px;">📊 Benchmarks utilizados</h4>
+    <ul style="font-size: 0.9em;">
+      <li>Tasa de ahorro: ≥ 30% ✅ · 15–29% ⚠️ · < 15% 🚨</li>
+      <li>Capacidad de acumulación: ≥ 30% ✅ · 15–29% ⚠️ · < 15% 🚨</li>
+      <li>Activos de inversión / activos totales: ≥ 50% ✅ · 30–49% ⚠️ · < 30% 🚨</li>
+      <li>Activos de inversión / ingreso bruto anual: ≥ 1.6x ✅ · 0.6–1.59x ⚠️ · < 0.6x 🚨</li>
+      <li>Activos de inversión / gastos esenciales mensuales: ≥ 120 meses ✅ · 60–119 ⚠️ · < 60 🚨</li>
+      <li>Patrimonio neto / ingreso bruto anual: ≥ ${benchmarkEdad}x ✅ · ≥ ${(benchmarkEdad * 0.8).toFixed(1)}x ⚠️</li>
+    </ul>
+  `;
+
+  document.getElementById("resD").innerHTML = `
+    <h3>🅳 D. Seguridad financiera</h3>
+    ${tabla}
+  `;
+}
+
+function calcularCategoriaE(data) {
+  // 🔹 Gastos mensuales esenciales
+  const gastosEsencialesMensuales = (
+    (data.supermercado || 0) +
+    (data.transporte || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.servicio_publico || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) +
+    (data.educacion || 0) +
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.seguro_social || 0) +
+    (data.hipoteca || 0) +
+    (data.linea_credito || 0) +
+    (data.prestamo_auto || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0)
+  ) / 12;
+
+  // 🔹 Cálculo de activos con descuentos por liquidez
+  const cuentasLiquidas = (data.cuentas_bancarias || 0) + (data.cuentas_inversion || 0); // 100%
+  const activosReales = ((data.valor_vivienda || 0) + (data.valor_propiedades_alquiler || 0) + (data.valor_otros_activos || 0)) * 0.8;
+  const activosMenosLiquidos = ((data.valor_vehiculos || 0) + (data.valor_otros || 0)) * 0.5;
+  const cuentasRetiro = (data.cuentas_retiro || 0); // 100%, pero solo en total
+
+  // 🔹 Cálculo de meses por tipo
+  const mesesLiquidos = cuentasLiquidas / gastosEsencialesMensuales;
+  const mesesReales = activosReales / gastosEsencialesMensuales;
+  const mesesMenosLiquidos = activosMenosLiquidos / gastosEsencialesMensuales;
+  const mesesRetiro = cuentasRetiro / gastosEsencialesMensuales;
+
+  const totalSinRetiro = mesesLiquidos + mesesReales + mesesMenosLiquidos;
+  const totalConRetiro = totalSinRetiro + mesesRetiro;
+
+  // 🔹 Checklist
+  const checklist = {
+    'Seguro médico': data.seguro_medico ? '✅ Sí' : '❌ No',
+    'Seguro de vida': data.seguro_vida ? '✅ Sí' : '❌ No',
+    'Seguros clave (discapacidad, hogar, auto, umbrella)': (
+      data.seguro_incapacidad || data.seguro_hogar || data.seguro_auto || data.seguro_umbrella
+    ) ? '✅ Sí' : '❌ No',
+    'Fondos de contingencia alternativos': data.fondos_contingencia_alternativos ? '✅ Sí' : '❌ No',
+    'Diversificación de ingresos': data.diversificacion_ingresos ? '✅ Sí' : '❌ No',
+    'Provisión para eventos inesperados': data.provision_eventos ? '✅ Sí' : '❌ No'
+  };
+
+  // 🔹 Output visual
+  const barras = `
+    <div style="background-color:#007bff;height:20px;width:${(mesesLiquidos / totalConRetiro * 100).toFixed(1)}%"></div>
+    <p>Cuentas líquidas (100%): ${mesesLiquidos.toFixed(1)} meses</p>
+    <div style="background-color:#00bfae;height:20px;width:${(mesesReales / totalConRetiro * 100).toFixed(1)}%"></div>
+    <p>Activos reales (80%): ${mesesReales.toFixed(1)} meses</p>
+    <div style="background-color:#ffdd57;height:20px;width:${(mesesMenosLiquidos / totalConRetiro * 100).toFixed(1)}%"></div>
+    <p>Activos menos líquidos (50%): ${mesesMenosLiquidos.toFixed(1)} meses</p>
+    <div style="background-color:#6c757d;height:20px;width:${(mesesRetiro / totalConRetiro * 100).toFixed(1)}%"></div>
+    <p>Cuentas de retiro: ${mesesRetiro.toFixed(1)} meses</p>
+  `;
+
+  const checklistHTML = Object.entries(checklist)
+    .map(([key, val]) => `<li><strong>${key}:</strong> ${val}</li>`)
+    .join('');
+
+  document.getElementById("resE").innerHTML = `
+    <h3>🅴 E. Manejo de riesgo</h3>
+    <p><strong>Fondos de contingencia inmediatos (sin retiro):</strong> ${totalSinRetiro.toFixed(1)} meses</p>
+    <p><strong>Fondos totales incluyendo cuentas de retiro:</strong> ${totalConRetiro.toFixed(1)} meses</p>
+
+    <h4>Barras de cobertura por tipo de activo</h4>
+    ${barras}
+
+    <h4 style="margin-top: 20px;">📋 Checklist de cobertura y resiliencia</h4>
+    <ul style="font-size: 0.9em;">${checklistHTML}</ul>
+  `;
+}
+
+function calcularCategoriaF(data) {
+  // Lista de documentos
+  const documentos = [
+    { nombre: "Trust", tiene: data.trust },
+    { nombre: "Testamento", tiene: data.will },
+    { nombre: "Directiva médica anticipada", tiene: data.advance_medical_directive },
+    { nombre: "Poder legal", tiene: data.power_of_attorney },
+    { nombre: "Designación de beneficiarios", tiene: data.beneficiary_designation },
+    { nombre: "Títulos de propiedad", tiene: data.property_deeds }
+  ];
+
+  // Separar documentos en los que tiene y los que faltan
+  const tiene = documentos.filter(doc => doc.tiene).map(doc => doc.nombre);
+  const faltan = documentos.filter(doc => !doc.tiene).map(doc => doc.nombre);
+
+  // Mostrar los resultados
+  document.getElementById("resF").innerHTML = `
+    <h3>🅵 F. Planificación patrimonial</h3>
+
+    <h4>✅ Documentos que tiene</h4>
+    <ul style="font-size: 0.9em;">
+      ${tiene.length > 0 ? tiene.map(doc => `<li>${doc}</li>`).join('') : '<li>No tiene documentos registrados.</li>'}
+    </ul>
+
+    <h4>❌ Documentos que faltan</h4>
+    <ul style="font-size: 0.9em;">
+      ${faltan.length > 0 ? faltan.map(doc => `<li>${doc}</li>`).join('') : '<li>Todos los documentos están completos.</li>'}
+    </ul>
+  `;
+// ✅ SECCIÓN G: Cálculo de retiro con gráfico comparativo + simulación Monte Carlo + tooltip
+function calcularCategoriaG(data) {
+  const edadActual = data.edad;
+  const edadRetiro = data.edad_retiro;
+  const anosAcumulacion = edadRetiro - edadActual;
+  const anosDistribucion = 100 - edadRetiro;
+
+  const salarioBase = data.salario + (data.ingreso_negocio || 0);
+  const ingresoDeseadoBase = salarioBase * 0.7;
+  const ingresoSeguro = data.seguro_social || 0;
+  const ingresoDeseadoNeto = Math.max(ingresoDeseadoBase - ingresoSeguro, 0);
+  const ingresoRequerido = ingresoDeseadoNeto * Math.pow(1 + 0.03, anosAcumulacion);
+
+  const tasaInflacion = 0.03;
+  const tasaAcumulacionNominal = 0.07;
+  const tasaDistribucionNominal = 0.04;
+
+  const tasaRealDistribucion = (1 + tasaDistribucionNominal) / (1 + tasaInflacion) - 1;
+  const tasaRealAcumulacion = (1 + tasaAcumulacionNominal) / (1 + tasaInflacion) - 1;
+
+  const factorOrdinario = (1 - Math.pow(1 + tasaRealDistribucion, -anosDistribucion)) / tasaRealDistribucion;
+  const factorAnticipado = factorOrdinario * (1 + tasaRealDistribucion);
+  const necesidadFondo = ingresoRequerido * factorAnticipado;
+
+  const fondoActual = data.cuentas_retiro || 0;
+  const aportesAnuales = (data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0);
+  const ahorroFuturo = fondoActual * Math.pow(1 + tasaRealAcumulacion, anosAcumulacion);
+  const aportesFuturos = aportesAnuales * ((Math.pow(1 + tasaRealAcumulacion, anosAcumulacion) - 1) / tasaRealAcumulacion);
+  const montoEsperado = ahorroFuturo + aportesFuturos;
+
+  const montoFaltante = necesidadFondo - montoEsperado;
+  const ahorroRequeridoAnual = montoFaltante > 0
+    ? montoFaltante * tasaRealAcumulacion / ((1 + tasaRealAcumulacion) ** anosAcumulacion - 1)
+    : 0;
+  const ahorroRequeridoMensual = ahorroRequeridoAnual / 12;
+
+  let emojiResultado = "✅";
+  if (montoEsperado / necesidadFondo < 0.7) emojiResultado = "🚨";
+  else if (montoEsperado / necesidadFondo < 0.9) emojiResultado = "⚠️";
+
+  const interpretacion =
+    emojiResultado === "✅"
+      ? "Estás en buen camino hacia un retiro sólido."
+      : emojiResultado === "⚠️"
+      ? "Tu retiro muestra brechas importantes. Considera aumentar tus ahorros."
+      : "Tu retiro está en riesgo. Se requieren ajustes importantes.";
+
+  document.getElementById("resG").innerHTML = `
+    <h3>🅶 G. Futuro financiero</h3>
+    <div class="resultado-bloque">
+      <h2>${emojiResultado} Resultados calculados</h2>
+      <table>
+        <tr><td>🧱 <strong>Capital necesario:</strong></td><td>$${necesidadFondo.toLocaleString()}</td></tr>
+        <tr><td>💼 <strong>Total acumulado estimado:</strong></td><td>$${montoEsperado.toLocaleString()}</td></tr>
+        <tr><td>⚠️ <strong>Faltante actual:</strong></td><td>${montoFaltante > 0 ? "$" + montoFaltante.toLocaleString() : "Meta alcanzada"}</td></tr>
+        <tr><td>💸 <strong>Aporte anual recomendado extra:</strong></td><td>${ahorroRequeridoAnual > 0 ? "$" + ahorroRequeridoAnual.toFixed(2).toLocaleString() + "/año" : "No requerido"}</td></tr>
+        <tr><td>💰 <strong>Aporte mensual recomendado extra:</strong></td><td>${ahorroRequeridoMensual > 0 ? "$" + ahorroRequeridoMensual.toFixed(2).toLocaleString() + "/mes" : "No requerido"}</td></tr>
+      </table>
+      <canvas id="graficoRetiro" height="180" style="margin-top: 25px;"></canvas>
+      <p><strong>🔍 Interpretación:</strong> ${interpretacion}</p>
+      <div style="margin-top: 10px;">
+        <span id="btnTooltipExplicacionMonteCarlo" style="cursor: pointer; color: #2563eb; text-decoration: underline;">
+          📘 ¿Cómo leer esto?
+        </span>
+        <div id="explicacionMonteCarlo" style="display: none; margin-top: 8px; background: #f1f5f9; padding: 10px; border-radius: 8px; font-size: 0.95em;">
+          🔵 <strong>P50</strong> representa el escenario más probable: en el <strong>50% de los casos</strong>, podrías llegar a los <strong>100 años</strong> con dinero disponible.<br>
+          🟢 <strong>P75</strong> es un escenario optimista: en el <strong>25% de los mejores casos</strong>, terminarías con más dinero.<br>
+          🟠 <strong>P25</strong> es un escenario conservador: en el <strong>25% de los peores escenarios</strong>, podrías agotar tu fondo antes de los 100 años.
+        </div>
+      </div>
+      <canvas id="graficoMonteCarlo" width="800" height="400" style="margin-top:20px;"></canvas>
+    </div>
+  `;
+
+  document.getElementById("btnTooltipExplicacionMonteCarlo").onclick = () => {
+    const tooltip = document.getElementById("explicacionMonteCarlo");
+    tooltip.style.display = tooltip.style.display === "none" ? "block" : "none";
+  };
+
+  const ctx = document.getElementById('graficoRetiro').getContext('2d');
+  if (window.graficoRetiroInstance) window.graficoRetiroInstance.destroy();
+
+  window.graficoRetiroInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['🧱 Capital necesario', '💼 Capital acumulado'],
+      datasets: [{
+        data: [necesidadFondo, montoEsperado],
+        backgroundColor: ['#ef4444', '#10b981']
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        datalabels: {
+          anchor: 'end',
+          align: 'right',
+          formatter: value => `$${Number(value.toFixed(0)).toLocaleString()}`,
+          color: '#111827',
+          font: { weight: 'bold' }
+        },
+        tooltip: {
+          callbacks: {
+            label: context => `$${context.raw.toLocaleString()}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          ticks: {
+            callback: value => `$${value.toLocaleString()}`
+          }
+        }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+
+  // ➕ Monte Carlo: generar y graficar trayectorias
+  const trayectorias = generarTrayectoriasMonteCarlo(10000, anosDistribucion, montoEsperado, ingresoRequerido);
+  dibujarGraficoMonteCarlo(trayectorias, edadRetiro);
+}
+
+// Generador de trayectorias de retiro Monte Carlo
+function generarTrayectoriasMonteCarlo(nSimulaciones, años, capitalInicial, retiroAnual, retornoMedio = 0.04, desviacion = 0.12) {
+  const trayectorias = [];
+  for (let i = 0; i < nSimulaciones; i++) {
+    let capital = capitalInicial;
+    const trayectoria = [];
+    for (let j = 0; j < años; j++) {
+      const rendimiento = (Math.random() * desviacion * 2 - desviacion) + retornoMedio;
+      capital = capital * (1 + rendimiento) - retiroAnual;
+      trayectoria.push(Math.max(capital, 0));
+      if (capital <= 0) break;
+    }
+    while (trayectoria.length < años) trayectoria.push(0);
+    trayectorias.push(trayectoria);
+  }
+  return trayectorias;
+}
+
+// Dibuja el gráfico tipo abanico de trayectorias
+function dibujarGraficoMonteCarlo(trayectorias, edadInicio = 65) {
+  const ctx = document.getElementById("graficoMonteCarlo").getContext("2d");
+  const datasets = trayectorias.slice(0, 300).map(tray => ({
+    data: tray.map((y, i) => ({ x: edadInicio + i, y })),
+    borderColor: 'rgba(59,130,246,0.08)',
+    borderWidth: 1,
+    pointRadius: 0,
+    fill: false,
+    tension: 0.1
+  }));
+  new Chart(ctx, {
+    type: "line",
+    data: { datasets },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'Edad' },
+          ticks: { stepSize: 5 }
+        },
+        y: {
+          title: { display: true, text: 'Capital restante ($)' },
+          ticks: { callback: value => `$${value.toLocaleString()}` }
+        }
+      }
+    }
+  });
+}
+  
+function calcularCategoriaH(data) {
+  // 🔹 Ingreso anual
+  const ingresoAnual = (data.salario || 0) + (data.ingreso_negocio || 0);
+
+  // 🔹 Gastos anuales esenciales
+  const gastosMensualesEsenciales = (
+    (data.supermercado || 0) +
+    (data.transporte || 0) +
+    (data.telecomunicaciones || 0) +
+    (data.servicio_publico || 0) +
+    (data.seguro_medico || 0) +
+    (data.seguro_propiedad || 0) +
+    (data.seguro_auto || 0) +
+    (data.educacion || 0) +
+    (data.impuesto_federal || 0) +
+    (data.impuesto_propiedad || 0) +
+    (data.seguro_social || 0) +
+    (data.hipoteca || 0) +
+    (data.linea_credito || 0) +
+    (data.prestamo_auto || 0) +
+    (data.tarjetas_credito || 0) +
+    (data.otros_deuda || 0)
+  );
+
+  const gastosAnuales = gastosMensualesEsenciales * 12;
+
+  // 🔹 Deuda total
+  const deudaAnual = (
+    (data.deuda_tarjetas || 0) +
+    (data.deuda_hipotecaria || 0) +
+    (data.deuda_vehiculos || 0) +
+    (data.deuda_estudios || 0) +
+    (data.deuda_comercial || 0) +
+    (data.deuda_otros || 0) +
+    (data.linea_credito || 0)
+  );
+
+  // 🔹 Activos no líquidos (los que se deprecian en los escenarios)
+  const activosNoLiquidos = 
+    (data.valor_vivienda || 0) +
+    (data.valor_propiedades_alquiler || 0) +
+    (data.valor_vehiculos || 0) +
+    (data.valor_otros_activos || 0) +
+    (data.valor_otros || 0);
+
+  // 🔹 Escenarios
+  const escenarios = [
+    { nombre: "Leve", ajusteIngreso: 0.90, ajusteActivo: 0.90 },
+    { nombre: "Moderado", ajusteIngreso: 0.70, ajusteActivo: 0.70 },
+    { nombre: "Severo", ajusteIngreso: 0.50, ajusteActivo: 0.50 }
+  ];
+
+  let tabla = `
+    <h3>🅷 H. Pruebas de estrés</h3>
+    <table style="font-size: 0.95em; margin-top: 10px;">
+      <thead><tr>
+        <th>Escenario</th>
+        <th>¿Cubre gastos?</th>
+        <th>¿Cubre deudas?</th>
+        <th>¿Sigue ahorrando?</th>
+      </tr></thead><tbody>
+  `;
+
+  escenarios.forEach(esc => {
+    const ingresoAjustado = ingresoAnual * esc.ajusteIngreso;
+    const activosAjustados = activosNoLiquidos * esc.ajusteActivo;
+    const ingresoTotalDisponible = ingresoAjustado + activosAjustados;
+
+    const puedeCubrirGastos = ingresoTotalDisponible >= gastosAnuales;
+    const puedeCubrirDeudas = ingresoTotalDisponible >= (gastosAnuales + deudaAnual);
+    const puedeAhorrar = ingresoTotalDisponible > (gastosAnuales + deudaAnual);
+
+    tabla += `
+      <tr>
+        <td>${esc.nombre}</td>
+        <td>${puedeCubrirGastos ? '✅' : '🚨'}</td>
+        <td>${puedeCubrirDeudas ? '✅' : '🚨'}</td>
+        <td>${puedeAhorrar ? '✅' : (puedeCubrirDeudas ? '⚠️' : '🚨')}</td>
+      </tr>
+    `;
+  });
+
+  tabla += `
+    </tbody></table>
+    <p style="font-size: 0.9em;">
+      Simulación basada en caídas del 10%, 30% y 50% en ingresos y activos no líquidos.<br>
+      Efectivo y equivalentes no se afectan.
+    </p>
+  `;
+
+  document.getElementById("resH").innerHTML = tabla;
+}
+/script>
+  
 </body>
 </html>
+
