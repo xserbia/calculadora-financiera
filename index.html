@@ -404,8 +404,16 @@
   <div id="resH" class="resultado-categoria">[Resultados H]</div>
 </div>
 <script>
-  // ✅ Variable global para almacenar los datos del formulario
+  // ✅ Variable global
   let data = {};
+
+  // ✅ Esta función debe contener lo que compartiste
+  function mostrarResultado(id) {
+    const canvas = document.getElementById('graficoGastos');
+    if (!canvas) {
+      console.error("El canvas para el gráfico de dona no se encuentra.");
+      return;
+    }
 
     if (id !== 'resA') {
       canvas.style.display = 'none';
@@ -420,7 +428,6 @@
     const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
     if (current) current.classList.add('active');
   }
-
   // ✅ Función para avanzar al siguiente paso (asegura visibilidad global)
   window.nextStep = function(stepName) {
     const steps = document.querySelectorAll('.step');
