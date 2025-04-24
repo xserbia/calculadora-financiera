@@ -606,10 +606,6 @@ function updateProgressBar(stepName, totalSteps) {
     console.error("Sección no encontrada: " + stepName);
   }
 }
-  function prevStep(stepName) {
-    nextStep(stepName);
-  }
-
   // ✅ Actualizar navegación visual
 function updateNav(stepId) {
   const navItems = document.querySelectorAll('#nav div');
