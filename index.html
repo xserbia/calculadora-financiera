@@ -504,35 +504,6 @@
     if (current) current.classList.add('active');
   }
 
-  // ✅ Función para procesar y recolectar los datos del formulario
-  document.getElementById("calculadoraFormulario").addEventListener("submit", function(e) {
-    e.preventDefault();
-    data = {}; // Reiniciamos
-
-    Array.from(this.elements).forEach(el => {
-      if (el.name) {
-        if (el.type === "checkbox") {
-          data[el.name] = el.checked;
-        } else {
-          data[el.name] = el.value;
-        }
-      }
-    });
-
- for (let key in data) {
-  // No intentes convertir a número si es booleano
-  if (typeof data[key] === "string" && !isNaN(data[key])) {
-    data[key] = parseFloat(data[key]);
-  }
-}
-  console.log("📦 Datos capturados del formulario:", data); // 👈 Aquí el log
-    
-    mostrarGraficoGastos(data);
-    calcularResultados(data);
-    document.getElementById("resultadosContainer").style.display = "block";
-    mostrarResultado("resA");
-  });
-
   // ✅ Función para mostrar gráfico de dona
   function mostrarGraficoGastos(data) {
     const canvas = document.getElementById('graficoGastos');
