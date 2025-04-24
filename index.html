@@ -404,6 +404,24 @@
   <div id="resH" class="resultado-categoria">[Resultados H]</div>
 </div>
 <script>
+  
+    window.nextStep = function(stepName) {
+    const steps = document.querySelectorAll('.step');
+    steps.forEach(step => step.classList.remove('active'));
+
+    const stepToShow = document.getElementById(stepName);
+    if (stepToShow) {
+      stepToShow.classList.add('active');
+      updateNav(stepName);
+      updateProgressBar(stepName, steps.length);
+    } else {
+      console.error("Sección no encontrada: " + stepName);
+    }
+  };
+
+  window.prevStep = function(stepName) {
+    nextStep(stepName);
+  };
   // ✅ Variable global
   let data = {};
 
@@ -428,21 +446,7 @@
     const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
     if (current) current.classList.add('active');
   }
-  // ✅ Función para avanzar al siguiente paso (asegura visibilidad global)
-  window.nextStep = function(stepName) {
-    const steps = document.querySelectorAll('.step');
-    steps.forEach(stepDiv => stepDiv.classList.remove('active'));
-
-    const stepToShow = document.getElementById(stepName);
-    if (stepToShow) {
-      stepToShow.classList.add('active');
-      updateNav(stepName);
-      updateProgressBar(stepName, steps.length);
-    } else {
-      console.error("Sección no encontrada: " + stepName);
-    }
-  }
-
+  
   // ✅ Función para retroceder al paso anterior (usa nextStep internamente)
   window.prevStep = function(stepName) {
     nextStep(stepName);
