@@ -591,20 +591,6 @@ function updateProgressBar(stepName, totalSteps) {
   const progress = (currentIndex / totalSteps) * 100;
   document.getElementById('progress-bar').style.width = progress + '%';
 }
-
-  // ✅ Funciones para avanzar y retroceder entre pasos
-  const steps = document.querySelectorAll('.step');
-  steps.forEach(stepDiv => stepDiv.classList.remove('active'));
-
-  const stepToShow = document.getElementById(stepName);
-  if (stepToShow) {
-    stepToShow.classList.add('active');
-    updateNav(stepName);
-    updateProgressBar(stepName, steps.length); // ✅ Muy importante
-  } else {
-    console.error("Sección no encontrada: " + stepName);
-  }
-}
   // ✅ Actualizar navegación visual
 function updateNav(stepId) {
   const navItems = document.querySelectorAll('#nav div');
