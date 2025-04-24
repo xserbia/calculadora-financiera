@@ -6,113 +6,138 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Evaluación Financiera</title>
-  <style>
-    /* Estilos básicos para el formulario y resultados */
-    body {
-      font-family: sans-serif;
-      margin: 20px;
-      padding: 0;
-      background-color: #f9f9f9;
-    }
+<style>
+  /* Estilos básicos para el formulario y resultados */
+  body {
+    font-family: sans-serif;
+    margin: 20px;
+    padding: 0;
+    background-color: #f9f9f9;
+  }
 
-    .step, .resultado-categoria {
-      display: none;
-    }
-    .active, .active-res {
-      display: block;
-    }
+  .step, .resultado-categoria {
+    display: none;
+  }
+  .active, .active-res {
+    display: block;
+  }
 
-    .nav-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
 
-    #nav, #navResultados {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
+  #nav, #navResultados {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
 
-    #nav div, .nav-res {
-      background-color: lightgray;
-      border-radius: 5px;
-      padding: 10px;
-      text-align: center;
-      cursor: pointer;
-      width: 12%;
-      margin: 4px;
-    }
+  #nav div, .nav-res {
+    background-color: lightgray;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    width: 12%;
+    margin: 4px;
+  }
 
-    .completed {
-      background-color: green;
-      color: white;
-    }
+  .completed {
+    background-color: green;
+    color: white;
+  }
 
-    .active {
-      background-color: yellow;
-      color: black;
-    }
+  .active {
+    background-color: yellow;
+    color: black;
+  }
 
-    .inactive {
-      background-color: lightgray;
-      color: gray;
-    }
+  .inactive {
+    background-color: lightgray;
+    color: gray;
+  }
 
-    .resultado-categoria {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      background: white;
-      padding: 20px;
-    }
+  .resultado-categoria {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: white;
+    padding: 20px;
+  }
 
-    /* Detalles ocultos inicialmente */
-    .details {
-      visibility: hidden;
-      opacity: 0;
-      transition: visibility 0s 0.3s, opacity 0.3s ease;
-      padding-left: 20px;
-      margin-top: 10px;
-    }
+  /* Detalles ocultos inicialmente */
+  .details {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 0.3s, opacity 0.3s ease;
+    padding-left: 20px;
+    margin-top: 10px;
+  }
 
-    .details.show {
-      visibility: visible;
-      opacity: 1;
-      transition: visibility 0s, opacity 0.3s ease;
-    }
+  .details.show {
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s, opacity 0.3s ease;
+  }
 
-    .toggle-btn {
-      background-color: #007bff;
-      color: white;
-      padding: 5px 10px;
-      border: none;
-      cursor: pointer;
-    }
+  .toggle-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+  }
 
-    .toggle-btn:hover {
-      background-color: #0056b3;
-    }
+  .toggle-btn:hover {
+    background-color: #0056b3;
+  }
 
-/* Barra de progreso */
-#progress-bar-container {
-  width: 100%;
-  background-color: #e0e0e0;
-  border-radius: 10px;
-  overflow: hidden;
-  height: 12px;
-  margin-bottom: 20px;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-}
+  /* Barra de progreso */
+  #progress-bar-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 12px;
+    margin-bottom: 20px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
 
-#progress-bar {
-  width: 0%;
-  height: 100%;
-  background-color: #4caf50;
-  transition: width 0.3s ease-in-out;
-  border-radius: 10px 0 0 10px;
-}
-  </style>
+  #progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #4caf50;
+    transition: width 0.3s ease-in-out;
+    border-radius: 10px 0 0 10px;
+  }
+
+  /* ✅ Validación visual de inputs y selects */
+  input:invalid, select:invalid {
+    border: 2px solid #dc2626;
+    background-color: #ffe4e4;
+  }
+
+  input:valid, select:valid {
+    border: 2px solid #16a34a;
+    background-color: #e7fbe7;
+  }
+
+  label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+  }
+
+  /* ❗ Estilo para mensajes de error (opcional si agregas <span class="error">) */
+  .error {
+    color: #dc2626;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    display: block;
+  }
+</style>
 </head>
 <body>
 <!-- Aquí estará todo el formulario -->
