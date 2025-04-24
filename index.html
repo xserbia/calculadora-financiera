@@ -407,14 +407,6 @@
   // ✅ Variable global para almacenar los datos del formulario
   let data = {};
 
-  // ✅ Función para mostrar resultados por sección
-  function mostrarResultado(id) {
-    const canvas = document.getElementById('graficoGastos');
-    if (!canvas) {
-      console.error("El canvas para el gráfico de dona no se encuentra.");
-      return;
-    }
-
     if (id !== 'resA') {
       canvas.style.display = 'none';
     } else {
