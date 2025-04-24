@@ -1254,51 +1254,183 @@ function calcularCategoriaF(data) {
     </ul>
   `;
 }
+
+// ✅ SECCIÓN G: Cálculo de retiro con gráfico comparativo + simulación Monte Carlo + tooltip
 function calcularCategoriaG(data) {
   const edadActual = data.edad;
   const edadRetiro = data.edad_retiro;
   const anosAcumulacion = edadRetiro - edadActual;
   const anosDistribucion = 100 - edadRetiro;
 
-  const ingresoDeseadoAnual = (data.salario + (data.ingreso_negocio || 0)) * 0.7;
-  const ingresoSeguro = (data.seguro_social || 0);
-  const ingresoRequerido = Math.max(ingresoDeseadoAnual - ingresoSeguro, 0);
+  const salarioBase = data.salario + (data.ingreso_negocio || 0);
+  const ingresoDeseadoBase = salarioBase * 0.7;
+  const ingresoSeguro = data.seguro_social || 0;
+  const ingresoDeseadoNeto = Math.max(ingresoDeseadoBase - ingresoSeguro, 0);
+  const ingresoRequerido = ingresoDeseadoNeto * Math.pow(1 + 0.03, anosAcumulacion);
 
-  const tasaAcumulacion = 0.07;
-  const tasaDistribucion = 0.04;
+  const tasaInflacion = 0.03;
+  const tasaAcumulacionNominal = 0.07;
+  const tasaDistribucionNominal = 0.04;
 
-  const tasaReal = (1 + tasaDistribucion) / (1 + 0.03) - 1;
-  const factorOrdinario = (1 - Math.pow(1 + tasaReal, -anosDistribucion)) / tasaReal;
-  const factorAnticipado = factorOrdinario * (1 + tasaReal);
-  const necesidadFondo = ingresoRequerido * Math.pow(1 + 0.03, anosAcumulacion) * factorAnticipado;
+  const tasaRealDistribucion = (1 + tasaDistribucionNominal) / (1 + tasaInflacion) - 1;
+  const tasaRealAcumulacion = (1 + tasaAcumulacionNominal) / (1 + tasaInflacion) - 1;
+
+  const factorOrdinario = (1 - Math.pow(1 + tasaRealDistribucion, -anosDistribucion)) / tasaRealDistribucion;
+  const factorAnticipado = factorOrdinario * (1 + tasaRealDistribucion);
+  const necesidadFondo = ingresoRequerido * factorAnticipado;
 
   const fondoActual = data.cuentas_retiro || 0;
   const aportesAnuales = (data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0);
-  const ahorroFuturo = fondoActual * Math.pow(1 + tasaAcumulacion, anosAcumulacion);
-  const aportes = aportesAnuales * ((Math.pow(1 + tasaAcumulacion, anosAcumulacion) - 1) / tasaAcumulacion);
-  const montoEsperado = ahorroFuturo + aportes;
+  const ahorroFuturo = fondoActual * Math.pow(1 + tasaRealAcumulacion, anosAcumulacion);
+  const aportesFuturos = aportesAnuales * ((Math.pow(1 + tasaRealAcumulacion, anosAcumulacion) - 1) / tasaRealAcumulacion);
+  const montoEsperado = ahorroFuturo + aportesFuturos;
 
   const montoFaltante = necesidadFondo - montoEsperado;
-  const ahorroRequeridoAnual = montoFaltante > 0 ? montoFaltante * tasaAcumulacion / (Math.pow(1 + tasaAcumulacion, anosAcumulacion) - 1) : 0;
+  const ahorroRequeridoAnual = montoFaltante > 0
+    ? montoFaltante * tasaRealAcumulacion / ((1 + tasaRealAcumulacion) ** anosAcumulacion - 1)
+    : 0;
   const ahorroRequeridoMensual = ahorroRequeridoAnual / 12;
+
+  let emojiResultado = "✅";
+  if (montoEsperado / necesidadFondo < 0.7) emojiResultado = "🚨";
+  else if (montoEsperado / necesidadFondo < 0.9) emojiResultado = "⚠️";
+
+  const interpretacion =
+    emojiResultado === "✅"
+      ? "Estás en buen camino hacia un retiro sólido."
+      : emojiResultado === "⚠️"
+      ? "Tu retiro muestra brechas importantes. Considera aumentar tus ahorros."
+      : "Tu retiro está en riesgo. Se requieren ajustes importantes.";
 
   document.getElementById("resG").innerHTML = `
     <h3>🅶 G. Futuro financiero</h3>
     <div class="resultado-bloque">
-      <h2>🧾 Resultados calculados</h2>
+      <h2>${emojiResultado} Resultados calculados</h2>
       <table>
-        <tr><td>🧱 <strong>Capital necesario:</strong></td><td>$${Number(necesidadFondo.toFixed(2)).toLocaleString()}</td></tr>
-        <tr><td>💼 <strong>Total acumulado estimado:</strong></td><td>$${Number(montoEsperado.toFixed(2)).toLocaleString()}</td></tr>
-        <tr><td>⚠️ <strong>Faltante actual (lump sum):</strong></td><td>${montoFaltante > 0 ? "$" + Number((montoFaltante / Math.pow(1 + tasaAcumulacion, anosAcumulacion)).toFixed(2)).toLocaleString() : "Meta alcanzada"}</td></tr>
+        <tr><td>🧱 <strong>Capital necesario:</strong></td><td>$${necesidadFondo.toLocaleString()}</td></tr>
+        <tr><td>💼 <strong>Total acumulado estimado:</strong></td><td>$${montoEsperado.toLocaleString()}</td></tr>
+        <tr><td>⚠️ <strong>Faltante actual:</strong></td><td>${montoFaltante > 0 ? "$" + montoFaltante.toLocaleString() : "Meta alcanzada"}</td></tr>
         <tr><td>💸 <strong>Aporte anual recomendado extra:</strong></td><td>${ahorroRequeridoAnual > 0 ? "$" + ahorroRequeridoAnual.toFixed(2).toLocaleString() + "/año" : "No requerido"}</td></tr>
         <tr><td>💰 <strong>Aporte mensual recomendado extra:</strong></td><td>${ahorroRequeridoMensual > 0 ? "$" + ahorroRequeridoMensual.toFixed(2).toLocaleString() + "/mes" : "No requerido"}</td></tr>
       </table>
-      <p style="font-size: 0.85em; color: gray; text-align: center; margin-top: 10px;">
-        ✅ Simulación preliminar basada en supuestos educativos. Consulta la sección avanzada para Monte Carlo y gráficos.
-      </p>
+      <canvas id="graficoRetiro" height="180" style="margin-top: 25px;"></canvas>
+      <p><strong>🔍 Interpretación:</strong> ${interpretacion}</p>
+      <div style="margin-top: 10px;">
+        <span id="btnTooltipExplicacionMonteCarlo" style="cursor: pointer; color: #2563eb; text-decoration: underline;">
+          📘 ¿Cómo leer esto?
+        </span>
+        <div id="explicacionMonteCarlo" style="display: none; margin-top: 8px; background: #f1f5f9; padding: 10px; border-radius: 8px; font-size: 0.95em;">
+          🔵 <strong>P50</strong> representa el escenario más probable: en el <strong>50% de los casos</strong>, podrías llegar a los <strong>100 años</strong> con dinero disponible.<br>
+          🟢 <strong>P75</strong> es un escenario optimista: en el <strong>25% de los mejores casos</strong>, terminarías con más dinero.<br>
+          🟠 <strong>P25</strong> es un escenario conservador: en el <strong>25% de los peores escenarios</strong>, podrías agotar tu fondo antes de los 100 años.
+        </div>
+      </div>
+      <canvas id="graficoMonteCarlo" width="800" height="400" style="margin-top:20px;"></canvas>
     </div>
   `;
+
+  document.getElementById("btnTooltipExplicacionMonteCarlo").onclick = () => {
+    const tooltip = document.getElementById("explicacionMonteCarlo");
+    tooltip.style.display = tooltip.style.display === "none" ? "block" : "none";
+  };
+
+  const ctx = document.getElementById('graficoRetiro').getContext('2d');
+  if (window.graficoRetiroInstance) window.graficoRetiroInstance.destroy();
+
+  window.graficoRetiroInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['🧱 Capital necesario', '💼 Capital acumulado'],
+      datasets: [{
+        data: [necesidadFondo, montoEsperado],
+        backgroundColor: ['#ef4444', '#10b981']
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        datalabels: {
+          anchor: 'end',
+          align: 'right',
+          formatter: value => `$${Number(value.toFixed(0)).toLocaleString()}`,
+          color: '#111827',
+          font: { weight: 'bold' }
+        },
+        tooltip: {
+          callbacks: {
+            label: context => `$${context.raw.toLocaleString()}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          ticks: {
+            callback: value => `$${value.toLocaleString()}`
+          }
+        }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+
+  // ➕ Monte Carlo: generar y graficar trayectorias
+  const trayectorias = generarTrayectoriasMonteCarlo(10000, anosDistribucion, montoEsperado, ingresoRequerido);
+  dibujarGraficoMonteCarlo(trayectorias, edadRetiro);
 }
+
+// Generador de trayectorias de retiro Monte Carlo
+function generarTrayectoriasMonteCarlo(nSimulaciones, años, capitalInicial, retiroAnual, retornoMedio = 0.04, desviacion = 0.12) {
+  const trayectorias = [];
+  for (let i = 0; i < nSimulaciones; i++) {
+    let capital = capitalInicial;
+    const trayectoria = [];
+    for (let j = 0; j < años; j++) {
+      const rendimiento = (Math.random() * desviacion * 2 - desviacion) + retornoMedio;
+      capital = capital * (1 + rendimiento) - retiroAnual;
+      trayectoria.push(Math.max(capital, 0));
+      if (capital <= 0) break;
+    }
+    while (trayectoria.length < años) trayectoria.push(0);
+    trayectorias.push(trayectoria);
+  }
+  return trayectorias;
+}
+
+// Dibuja el gráfico tipo abanico de trayectorias
+function dibujarGraficoMonteCarlo(trayectorias, edadInicio = 65) {
+  const ctx = document.getElementById("graficoMonteCarlo").getContext("2d");
+  const datasets = trayectorias.slice(0, 300).map(tray => ({
+    data: tray.map((y, i) => ({ x: edadInicio + i, y })),
+    borderColor: 'rgba(59,130,246,0.08)',
+    borderWidth: 1,
+    pointRadius: 0,
+    fill: false,
+    tension: 0.1
+  }));
+  new Chart(ctx, {
+    type: "line",
+    data: { datasets },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'Edad' },
+          ticks: { stepSize: 5 }
+        },
+        y: {
+          title: { display: true, text: 'Capital restante ($)' },
+          ticks: { callback: value => `$${value.toLocaleString()}` }
+        }
+      }
+    }
+  });
+}
+
 function calcularCategoriaH(data) {
   // 🔹 Ingreso anual
   const ingresoAnual = (data.salario || 0) + (data.ingreso_negocio || 0);
