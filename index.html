@@ -447,7 +447,7 @@
       </fieldset>
       <div class="nav-buttons">
       <button type="button" onclick="prevStep('stepRetiro')">Anterior</button>
-      <button type="submit">Calcular</button>
+      <button type="button" onclick="procesarResultados()">Calcular</button>
     </div>
     </div>
   </form>
@@ -740,6 +740,38 @@ function mostrarResultado(id) {
   const current = Array.from(document.querySelectorAll('#navResultados .nav-res')).find(nav => nav.textContent.includes(id.replace('res', '')));
   if (current) current.classList.add('active');
 }
+  function obtenerDatosFormulario() {
+  const form = document.getElementById("calculadoraFormulario");
+  const data = {};
+
+  Array.from(form.elements).forEach(el => {
+    if (el.name && el.offsetParent !== null) { // solo campos visibles
+      if (el.type === "checkbox") {
+        data[el.name] = el.checked;
+      } else {
+        data[el.name] = el.value;
+      }
+
+      // Convierte a número si aplica
+      if (typeof data[el.name] === "string" && !isNaN(data[el.name]) && data[el.name].trim() !== "") {
+        data[el.name] = parseFloat(data[el.name]);
+      }
+    }
+  });
+
+  return data;
+}
+
+function procesarResultados() {
+  data = obtenerDatosFormulario();
+  console.log("✅ Datos recopilados:", data);
+
+  mostrarGraficoGastos(data);
+  calcularResultados(data);
+  document.getElementById("resultadosContainer").style.display = "block";
+  mostrarResultado("resA");
+}
+
 function calcularCategoriaA(data) {
   // 🔹 Ingreso total
   const ingresoAnual =
