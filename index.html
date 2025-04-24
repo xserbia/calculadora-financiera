@@ -574,16 +574,6 @@ options: {
 
     window.myChart = new Chart(ctx, config);
   }
-
-  // ✅ Función placeholder para calcular y mostrar los resultados
-  function calcularResultados(data) {
-    document.getElementById("resA").innerHTML = `
-      Ingreso mensual neto: $${(data.ingreso_neto / 12 || 0).toFixed(2)}<br>
-      Ahorro personal anual: $${(data.aporte_personal_retiro || 0).toFixed(2)}
-    `;
-    // Puedes continuar agregando más resultados aquí para resB, resC, etc.
-  }
-
   // ✅ Función para actualizar la barra de progreso
 function updateProgressBar(stepName, totalSteps) {
   const steps = Array.from(document.querySelectorAll('.step'));
