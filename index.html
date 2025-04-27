@@ -421,14 +421,15 @@
     <hr>
 
     <!-- Inputs que debe llenar el usuario, respetando tus nombres -->
-    <label>Edad actual<br><input type="number" name="edad_retiro_actual" id="edad_retiro_actual"></label><br>
-    <label>Edad deseada de retiro<br><input type="number" name="edad_retiro_meta" id="edad_retiro_meta"></label><br>
+    <label>Edad actual<br><input type="number" name="edad" id="edad"></label><br>
+    <label>Edad deseada de retiro<br><input type="number" name="edad_retiro" id="edad_retiro"></label><br>
     <label>Expectativa de vida<br><input type="number" name="expectativa_vida" id="expectativa_vida" value="100"></label><br>
     <label>Porcentaje de reemplazo deseado (%)<br><input type="number" name="porcentaje_reemplazo" id="porcentaje_reemplazo" value="70"></label><br>
     <label>Ingreso por pensión o seguro social (anual)<br><input type="number" name="ingreso_seguro_social" id="ingreso_seguro_social"></label><br>
-    <label>Tasa de acumulación estimada (%)<br><input type="number" name="tasa_acumulacion" id="tasa_acumulacion" value="7" step="0.01"></label><br>
-    <label>Tasa estimada durante retiro (%)<br><input type="number" name="tasa_retiro" id="tasa_retiro" value="4" step="0.01"></label><br>
-    <label>Inflación estimada (%)<br><input type="number" name="inflacion_esperada" id="inflacion_esperada" value="3" step="0.01"></label><br>
+    <label>Tasa de acumulación estimada (%)<br><input type="number" name="tasa_acumulacion" id="tasa_acumulacion" step="0.01"></label><br>
+    <label>Tasa estimada durante retiro (%)<br><input type="number" name="tasa_retiro" id="tasa_retiro" step="0.01"></label><br>
+    <label>Inflación estimada (%)<br><input type="number" name="inflacion_esperada" id="inflacion_esperada" step="0.01"></label><br>
+
   </fieldset>
 
   <div class="nav-buttons">
@@ -636,7 +637,13 @@ function nextStep(stepName) {
   if (stepToShow) {
     stepToShow.classList.add('active');
     updateNav(stepName);
-    updateProgressBar(stepName, steps.length); // ✅ Muy importante
+    updateProgressBar(stepName, steps.length);
+    
+    // 🔵 Llenar campos de retiro automáticamente si es la sección de retiro
+    if (stepName === 'stepRetiro') {
+      llenarCamposRetiro(data);
+    }
+    // ✅ Muy importante
   } else {
     console.error("Sección no encontrada: " + stepName);
   }
@@ -740,6 +747,28 @@ function mostrarResultado(id) {
   });
 
   return data;
+}
+// ✅ Función para llenar los campos mostrados en stepRetiro
+function llenarCamposRetiro(data) {
+  // 🔵 Salario mostrado = suma de todos los ingresos
+  const salarioTotal = 
+    (data.salario || 0) +
+    (data.ingreso_negocio || 0) +
+    (data.bonos || 0) +
+    (data.dividendos_intereses || 0) +
+    (data.renta || 0) +
+    (data.otros_ingresos || 0);
+  document.getElementById('salario_mostrado').value = salarioTotal;
+
+  // 🔵 Ahorro acumulado para retiro (cuentas de retiro)
+  document.getElementById('ahorro_retiro_mostrado').value = data.cuentas_retiro || 0;
+
+  // 🔵 Aporte anual personal mostrado = suma de aportes de retiro
+  const aporteTotal = (data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0);
+  document.getElementById('aporte_personal_mostrado').value = aporteTotal;
+
+  // 🔵 (opcional) Mostrar el aporte del empleador aparte si quieres, pero ya lo estás sumando aquí
+  document.getElementById('aporte_empleador_mostrado').value = data.aporte_empleador_retiro || 0;
 }
 
 function procesarResultados() {
@@ -1349,15 +1378,22 @@ function calcularCategoriaG(data) {
   const anosAcumulacion = edadRetiro - edadActual;
   const anosDistribucion = 100 - edadRetiro;
 
-  const salarioBase = data.salario + (data.ingreso_negocio || 0);
-  const ingresoDeseadoBase = salarioBase * 0.7;
-  const ingresoSeguro = data.seguro_social || 0;
+  const salarioBase = 
+  (data.salario || 0) +
+  (data.ingreso_negocio || 0) +
+  (data.bonos || 0) +
+  (data.dividendos_intereses || 0) +
+  (data.renta || 0) +
+  (data.otros_ingresos || 0);
+  const porcentajeReemplazo = (data.porcentaje_reemplazo || 70) / 100;
+  const ingresoDeseadoBase = salarioBase * porcentajeReemplazo;
+  const ingresoSeguro = data.ingreso_seguro_social || 0;
   const ingresoDeseadoNeto = Math.max(ingresoDeseadoBase - ingresoSeguro, 0);
-  const ingresoRequerido = ingresoDeseadoNeto * Math.pow(1 + 0.03, anosAcumulacion);
+  const ingresoRequerido = ingresoDeseadoNeto * Math.pow(1 + (data.inflacion_esperada || 0) / 100, anosAcumulacion);
 
-  const tasaInflacion = 0.03;
-  const tasaAcumulacionNominal = 0.07;
-  const tasaDistribucionNominal = 0.04;
+  const tasaInflacion = (data.inflacion_esperada || 0) / 100;
+  const tasaAcumulacionNominal = (data.tasa_acumulacion || 0) / 100;
+  const tasaDistribucionNominal = (data.tasa_retiro || 0) / 100;
 
   const tasaRealDistribucion = (1 + tasaDistribucionNominal) / (1 + tasaInflacion) - 1;
   const tasaRealAcumulacion = (1 + tasaAcumulacionNominal) / (1 + tasaInflacion) - 1;
