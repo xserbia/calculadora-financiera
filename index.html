@@ -825,14 +825,34 @@ function calcularCategoriaA(data) {
 
   // 🔹 Gastos diarios esenciales
   const gastosEsencialesAnual =
-    (data.supermercado || 0) +
-    (data.comidas_afuera || 0) +
-    (data.telecomunicaciones || 0) +
-    (data.servicio_publico || 0) +
-    (data.mantenimiento_auto || 0) +
-    (data.mantenimiento_hogar || 0) +
-    (data.cuidado_hijos || 0) +
-    (data.cuidado_personal || 0);
+    (parseFloat(data.supermercado) || 0) +
+    (parseFloat(data.servicio_publico) || 0) +
+    (parseFloat(data.telecomunicaciones) || 0) +
+    (parseFloat(data.cuidado_hijos) || 0) +
+    (parseFloat(data.mantenimiento_hogar) || 0) +
+    (parseFloat(data.mantenimiento_auto) || 0) +
+    (parseFloat(data.gastos_medicos) || 0) +
+    (
+      (parseFloat(data.seguro_vida) || 0) +
+      (parseFloat(data.seguro_medico) || 0) +
+      (parseFloat(data.seguro_incapacidad) || 0) +
+      (parseFloat(data.seguro_ltc) || 0) +
+      (parseFloat(data.seguro_propiedad) || 0) +
+      (parseFloat(data.seguro_auto) || 0) +
+      (parseFloat(data.seguro_renta) || 0) +
+      (parseFloat(data.seguro_propiedad_personal) || 0) +
+      (parseFloat(data.seguro_umbrella) || 0)
+    ) +
+    (
+      (parseFloat(data.hipoteca) || 0) +
+      (parseFloat(data.prestamo_auto) || 0) +
+      (parseFloat(data.prestamo_educativo) || 0) +
+      (parseFloat(data.prestamo_personal) || 0) +
+      (parseFloat(data.linea_credito) || 0) +
+      (parseFloat(data.manutencion) || 0) +
+      (parseFloat(data.tarjetas_credito) || 0) +
+      (parseFloat(data.otros_deuda) || 0)
+    );
   const gastosEsencialesMensual = gastosEsencialesAnual / 12;
 
   // 🔹 Gastos diarios totales (todos los gastos listados en imagen)
