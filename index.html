@@ -216,7 +216,7 @@
   <input type="email" name="email" id="email" required><br>
 </fieldset>
   <div class="nav-buttons">
-    <button type="button" onclick="nextStep('stepIngresos')">Siguiente</button>
+    <button type="button" onclick="guardarDatosYAvanzar('stepIngresos')">Siguiente</button>
   </div>
 </div>
 
@@ -237,8 +237,8 @@
     <label>Otros ahorros<br><input type="number" name="otros_ahorros"></label><br><br>
   </fieldset>
   <div class="nav-buttons">
-    <button type="button" onclick="guardarDatosYAvanzar('stepGastos')">Siguiente</button>
-    <button type="button" onclick="nextStep('stepGastos')">Siguiente</button>
+<button type="button" onclick="prevStep('stepPersonal')">Anterior</button>
+<button type="button" onclick="guardarDatosYAvanzar('stepGastos')">Siguiente</button>
   </div>
 </div>
 
@@ -303,8 +303,8 @@
       </div>
     </div>
   <div class="nav-buttons">
-    <button type="button" onclick="prevStep('stepIngresos')">Anterior</button>
-    <button type="button" onclick="nextStep('stepActivos')">Siguiente</button>
+<button type="button" onclick="prevStep('stepIngresos')">Anterior</button>
+<button type="button" onclick="guardarDatosYAvanzar('stepActivos')">Siguiente</button>
   </div>
       </fieldset>
     </div>
@@ -323,8 +323,8 @@
         <label>Otros activos (joyas, muebles, etc.)<br><input type="number" name="valor_otros"></label><br><br>
       </fieldset>
 <div class="nav-buttons">
-  <button type="button" onclick="guardarDatosYAvanzar('stepPasivos')">Siguiente</button>
-  <button type="button" onclick="nextStep('stepPasivos')">Siguiente</button>
+<button type="button" onclick="prevStep('stepGastos')">Anterior</button>
+<button type="button" onclick="guardarDatosYAvanzar('stepPasivos')">Siguiente</button>
 </div>
     </div>
 
@@ -340,8 +340,8 @@
         <label>Otras deudas<br><input type="number" name="deuda_otros"></label><br><br>
       </fieldset>
 <div class="nav-buttons">
-  <button type="button" onclick="prevStep('stepActivos')">Anterior</button>
-  <button type="button" onclick="nextStep('stepSeguros')">Siguiente</button>
+<button type="button" onclick="prevStep('stepActivos')">Anterior</button>
+<button type="button" onclick="guardarDatosYAvanzar('stepSeguros')">Siguiente</button>
 </div>
     </div>
     
@@ -403,8 +403,8 @@
   </fieldset>
 
   <div class="nav-buttons">
-    <button type="button" onclick="prevStep('stepPasivos')">Anterior</button>
-    <button type="button" onclick="nextStep('stepRetiro')">Siguiente</button>
+<button type="button" onclick="prevStep('stepPasivos')">Anterior</button>
+<button type="button" onclick="guardarDatosYAvanzar('stepRetiro')">Siguiente</button>
   </div>
 </div>
 <!-- Sección 7: Retiro -->
@@ -433,8 +433,8 @@
   </fieldset>
 
   <div class="nav-buttons">
-    <button type="button" onclick="prevStep('stepSeguros')">Anterior</button>
-    <button type="button" onclick="nextStep('stepPatrimonio')">Siguiente</button>
+<button type="button" onclick="prevStep('stepSeguros')">Anterior</button>
+<button type="button" onclick="guardarDatosYAvanzar('stepPatrimonio')">Siguiente</button>
   </div>
 </div>
 
@@ -456,8 +456,8 @@
         </label>
       </fieldset>
       <div class="nav-buttons">
-      <button type="button" onclick="prevStep('stepRetiro')">Anterior</button>
-      <button type="button" onclick="procesarResultados()">Calcular</button>
+<button type="button" onclick="prevStep('stepRetiro')">Anterior</button>
+<button type="button" onclick="procesarResultados()">Calcular</button>
     </div>
     </div>
   </form>
