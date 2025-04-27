@@ -1441,10 +1441,15 @@ function calcularCategoriaG(data) {
   const montoEsperado = ahorroFuturo + aportesFuturos;
 
   const montoFaltante = necesidadFondo - montoEsperado;
-  const ahorroRequeridoAnual = montoFaltante > 0
-    ? montoFaltante * tasaRealAcumulacion / ((1 + tasaRealAcumulacion) ** anosAcumulacion - 1)
+  
+  const mesesAcumulacion = anosAcumulacion * 12;
+  const tasaMensualAcumulacion = tasaRealAcumulacion / 12;
+  
+  const ahorroRequeridoMensual = montoFaltante > 0
+    ? (montoFaltante * tasaMensualAcumulacion) / (Math.pow(1 + tasaMensualAcumulacion, mesesAcumulacion) - 1)
     : 0;
-  const ahorroRequeridoMensual = ahorroRequeridoAnual / 12;
+  
+  const ahorroRequeridoAnual = ahorroRequeridoMensual * 12;
 
   let emojiResultado = "✅";
   if (montoEsperado / necesidadFondo < 0.7) emojiResultado = "🚨";
