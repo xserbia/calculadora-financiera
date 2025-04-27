@@ -638,17 +638,17 @@ function nextStep(stepName) {
     stepToShow.classList.add('active');
     updateNav(stepName);
     updateProgressBar(stepName, steps.length);
-    
-    // 🔵 Llenar campos de retiro automáticamente si es la sección de retiro
+
+    // 🔵 MUY IMPORTANTE: actualizar data ANTES de llenar campos
+    data = obtenerDatosFormulario();
+
     if (stepName === 'stepRetiro') {
       llenarCamposRetiro(data);
     }
-    // ✅ Muy importante
   } else {
     console.error("Sección no encontrada: " + stepName);
   }
 }
-
 
   function prevStep(stepName) {
     nextStep(stepName);
