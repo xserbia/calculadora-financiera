@@ -411,23 +411,32 @@
 <div class="step" id="stepRetiro">
   <fieldset>
     <legend><strong>8. Información de retiro</strong></legend>
-    <label>Edad actual<br><input type="number" name="edad_retiro_actual"></label><br>
-    <label>Edad deseada de retiro<br><input type="number" name="edad_retiro_meta"></label><br>
-    <label>Expectativa de vida<br><input type="number" name="expectativa_vida"></label><br>
-    <label>Ingreso anual actual<br><input type="number" name="ingreso_actual"></label><br>
-    <label>Porcentaje de reemplazo deseado (%)<br><input type="number" name="porcentaje_reemplazo"></label><br>
-    <label>Ingreso por pensión o seguro social (anual)<br><input type="number" name="ingreso_seguro_social"></label><br>
-    <label>Ahorro inicial para retiro<br><input type="number" name="ahorro_retiro_actual"></label><br>
-    <label>Aporte anual al retiro<br><input type="number" name="aporte_retiro_anual"></label><br>
-    <label>Tasa de acumulación estimada (%)<br><input type="number" name="tasa_acumulacion"></label><br>
-    <label>Tasa estimada durante retiro (%)<br><input type="number" name="tasa_retiro"></label><br>
-    <label>Inflación estimada (%)<br><input type="number" name="inflacion_esperada"></label><br>
+
+    <!-- Mostrar datos ya capturados -->
+    <label>Salario anual considerado<br><input type="number" id="salario_mostrado" name="salario_mostrado" readonly></label><br>
+    <label>Ahorro acumulado para retiro<br><input type="number" id="ahorro_retiro_mostrado" name="ahorro_retiro_mostrado" readonly></label><br>
+    <label>Aporte anual personal<br><input type="number" id="aporte_personal_mostrado" name="aporte_personal_mostrado" readonly></label><br>
+    <label>Aporte anual empleador<br><input type="number" id="aporte_empleador_mostrado" name="aporte_empleador_mostrado" readonly></label><br>
+
+    <hr>
+
+    <!-- Inputs que debe llenar el usuario, respetando tus nombres -->
+    <label>Edad actual<br><input type="number" name="edad_retiro_actual" id="edad_retiro_actual"></label><br>
+    <label>Edad deseada de retiro<br><input type="number" name="edad_retiro_meta" id="edad_retiro_meta"></label><br>
+    <label>Expectativa de vida<br><input type="number" name="expectativa_vida" id="expectativa_vida" value="100"></label><br>
+    <label>Porcentaje de reemplazo deseado (%)<br><input type="number" name="porcentaje_reemplazo" id="porcentaje_reemplazo" value="70"></label><br>
+    <label>Ingreso por pensión o seguro social (anual)<br><input type="number" name="ingreso_seguro_social" id="ingreso_seguro_social"></label><br>
+    <label>Tasa de acumulación estimada (%)<br><input type="number" name="tasa_acumulacion" id="tasa_acumulacion" value="7" step="0.01"></label><br>
+    <label>Tasa estimada durante retiro (%)<br><input type="number" name="tasa_retiro" id="tasa_retiro" value="4" step="0.01"></label><br>
+    <label>Inflación estimada (%)<br><input type="number" name="inflacion_esperada" id="inflacion_esperada" value="3" step="0.01"></label><br>
   </fieldset>
-    <div class="nav-buttons">
+
+  <div class="nav-buttons">
     <button type="button" onclick="prevStep('stepSeguros')">Anterior</button>
     <button type="button" onclick="nextStep('stepPatrimonio')">Siguiente</button>
   </div>
 </div>
+
     <!-- Sección 8: Patrimonio -->
     <div class="step" id="stepPatrimonio">
       <fieldset>
