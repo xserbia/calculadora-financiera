@@ -750,6 +750,8 @@ function mostrarResultado(id) {
 }
 // ✅ Función para llenar los campos mostrados en stepRetiro
 function llenarCamposRetiro(data) {
+  console.log("📦 Datos recibidos para llenar sección Retiro:", data); // 👈 Aquí vemos el objeto completo en consola
+
   // 🔵 Salario mostrado = suma de todos los ingresos
   const salarioTotal = 
     (data.salario || 0) +
@@ -758,6 +760,7 @@ function llenarCamposRetiro(data) {
     (data.dividendos_intereses || 0) +
     (data.renta || 0) +
     (data.otros_ingresos || 0);
+
   document.getElementById('salario_mostrado').value = salarioTotal;
 
   // 🔵 Ahorro acumulado para retiro (cuentas de retiro)
@@ -766,7 +769,7 @@ function llenarCamposRetiro(data) {
   // 🔵 Aporte anual personal mostrado = solo aporte personal
   document.getElementById('aporte_personal_mostrado').value = data.aporte_personal_retiro || 0;
 
-  // 🔵 Aporte anual empleador mostrado
+  // 🔵 Aporte anual empleador mostrado = solo aporte empleador
   document.getElementById('aporte_empleador_mostrado').value = data.aporte_empleador_retiro || 0;
 }
 function procesarResultados() {
