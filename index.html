@@ -639,17 +639,18 @@ function nextStep(stepName) {
     updateNav(stepName);
     updateProgressBar(stepName, steps.length);
 
-    // 🔵 MUY IMPORTANTE: actualizar data ANTES de llenar campos
+    // 🔵 ACTUALIZA data SIEMPRE al moverse de step
     data = obtenerDatosFormulario();
+    console.log("📦 Data actualizada en nextStep:", data); // <<<<<<<<
 
     if (stepName === 'stepRetiro') {
+      console.log("➡️ Llegando a stepRetiro");
       llenarCamposRetiro(data);
     }
   } else {
     console.error("Sección no encontrada: " + stepName);
   }
 }
-
   function prevStep(stepName) {
     nextStep(stepName);
   }
@@ -750,9 +751,8 @@ function obtenerDatosFormulario() {
 }
 // ✅ Función para llenar los campos mostrados en stepRetiro
 function llenarCamposRetiro(data) {
-  console.log("📦 Datos recibidos para llenar sección Retiro:", data); // 👈 Aquí vemos el objeto completo en consola
+  console.log("✏️ Llenando campos de retiro con data:", data);
 
-  // 🔵 Salario mostrado = suma de todos los ingresos
   const salarioTotal = 
     (data.salario || 0) +
     (data.ingreso_negocio || 0) +
@@ -763,13 +763,8 @@ function llenarCamposRetiro(data) {
 
   document.getElementById('salario_mostrado').value = salarioTotal;
 
-  // 🔵 Ahorro acumulado para retiro (cuentas de retiro)
   document.getElementById('ahorro_retiro_mostrado').value = data.cuentas_retiro || 0;
-
-  // 🔵 Aporte anual personal mostrado = solo aporte personal
   document.getElementById('aporte_personal_mostrado').value = data.aporte_personal_retiro || 0;
-
-  // 🔵 Aporte anual empleador mostrado = solo aporte empleador
   document.getElementById('aporte_empleador_mostrado').value = data.aporte_empleador_retiro || 0;
 }
 function procesarResultados() {
