@@ -763,14 +763,12 @@ function llenarCamposRetiro(data) {
   // 🔵 Ahorro acumulado para retiro (cuentas de retiro)
   document.getElementById('ahorro_retiro_mostrado').value = data.cuentas_retiro || 0;
 
-  // 🔵 Aporte anual personal mostrado = suma de aportes de retiro
-  const aporteTotal = (data.aporte_personal_retiro || 0) + (data.aporte_empleador_retiro || 0);
-  document.getElementById('aporte_personal_mostrado').value = aporteTotal;
+  // 🔵 Aporte anual personal mostrado = solo aporte personal
+  document.getElementById('aporte_personal_mostrado').value = data.aporte_personal_retiro || 0;
 
-  // 🔵 (opcional) Mostrar el aporte del empleador aparte si quieres, pero ya lo estás sumando aquí
+  // 🔵 Aporte anual empleador mostrado
   document.getElementById('aporte_empleador_mostrado').value = data.aporte_empleador_retiro || 0;
 }
-
 function procesarResultados() {
   data = obtenerDatosFormulario();
   console.log("✅ Datos recopilados:", data);
