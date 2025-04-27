@@ -159,62 +159,63 @@
     </div>
 <!-- Sección 1: Información personal -->
 <div class="step active" id="stepPersonal">
-<fieldset>
-  <legend><strong>1. Información personal</strong></legend>
+  <fieldset>
+    <legend><strong>1. Información personal</strong></legend>
 
-  <label for="nombre_completo">Nombre completo</label>
-  <input type="text" name="nombre_completo" id="nombre_completo" required><br>
+    <label for="nombre_completo">Nombre completo</label>
+    <input type="text" name="nombre_completo" id="nombre_completo"><br>
 
-  <label for="ciudad">Ciudad</label>
-  <input type="text" name="ciudad" id="ciudad" required><br>
+    <label for="ciudad">Ciudad</label>
+    <input type="text" name="ciudad" id="ciudad"><br>
 
-<label for="zipcode">Código postal (Zipcode)</label>
-<input type="text" name="zipcode" id="zipcode" required><br>
+    <label for="zipcode">Código postal (Zipcode)</label>
+    <input type="text" name="zipcode" id="zipcode"><br>
 
-  <label for="pais_residencia">País de residencia</label>
-  <select name="pais_residencia" id="pais_residencia" required>
-    <option value="">Selecciona un país</option>
-    <option value="Estados Unidos">Estados Unidos</option>
-    <option value="México">México</option>
-    <option value="Argentina">Argentina</option>
-    <option value="Colombia">Colombia</option>
-    <option value="Chile">Chile</option>
-    <option value="España">España</option>
-    <option value="Perú">Perú</option>
-    <option value="Venezuela">Venezuela</option>
-    <option value="Ecuador">Ecuador</option>
-    <option value="Guatemala">Guatemala</option>
-    <option value="Honduras">Honduras</option>
-    <option value="El Salvador">El Salvador</option>
-    <option value="Costa Rica">Costa Rica</option>
-    <option value="Panamá">Panamá</option>
-    <option value="Uruguay">Uruguay</option>
-    <option value="Paraguay">Paraguay</option>
-    <option value="República Dominicana">República Dominicana</option>
-    <option value="Bolivia">Bolivia</option>
-    <option value="Cuba">Cuba</option>
-    <option value="Nicaragua">Nicaragua</option>
-    <option value="Canadá">Canadá</option>
-    <option value="Brasil">Brasil</option>
-    <option value="Otro">Otro</option>
-  </select><br>
+    <label for="pais_residencia">País de residencia</label>
+    <select name="pais_residencia" id="pais_residencia">
+      <option value="">Selecciona un país</option>
+      <option value="Estados Unidos">Estados Unidos</option>
+      <option value="México">México</option>
+      <option value="Argentina">Argentina</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Chile">Chile</option>
+      <option value="España">España</option>
+      <option value="Perú">Perú</option>
+      <option value="Venezuela">Venezuela</option>
+      <option value="Ecuador">Ecuador</option>
+      <option value="Guatemala">Guatemala</option>
+      <option value="Honduras">Honduras</option>
+      <option value="El Salvador">El Salvador</option>
+      <option value="Costa Rica">Costa Rica</option>
+      <option value="Panamá">Panamá</option>
+      <option value="Uruguay">Uruguay</option>
+      <option value="Paraguay">Paraguay</option>
+      <option value="República Dominicana">República Dominicana</option>
+      <option value="Bolivia">Bolivia</option>
+      <option value="Cuba">Cuba</option>
+      <option value="Nicaragua">Nicaragua</option>
+      <option value="Canadá">Canadá</option>
+      <option value="Brasil">Brasil</option>
+      <option value="Otro">Otro</option>
+    </select><br>
 
-  <label for="estado_civil">Estado civil</label>
-  <select name="estado_civil" id="estado_civil" required>
-    <option value="">Selecciona una opción</option>
-    <option value="soltero">Soltero(a)</option>
-    <option value="casado">Casado(a)</option>
-    <option value="union_libre">Unión libre</option>
-    <option value="divorciado">Divorciado(a)</option>
-    <option value="viudo">Viudo(a)</option>
-  </select><br>
+    <label for="estado_civil">Estado civil</label>
+    <select name="estado_civil" id="estado_civil">
+      <option value="">Selecciona una opción</option>
+      <option value="soltero">Soltero(a)</option>
+      <option value="casado">Casado(a)</option>
+      <option value="union_libre">Unión libre</option>
+      <option value="divorciado">Divorciado(a)</option>
+      <option value="viudo">Viudo(a)</option>
+    </select><br>
 
-  <label for="numero_dependientes">Número de dependientes</label>
-  <input type="number" name="numero_dependientes" id="numero_dependientes" min="0" required><br>
+    <label for="numero_dependientes">Número de dependientes</label>
+    <input type="number" name="numero_dependientes" id="numero_dependientes" min="0"><br>
 
-  <label for="email">Correo electrónico</label>
-  <input type="email" name="email" id="email" required><br>
-</fieldset>
+    <label for="email">Correo electrónico</label>
+    <input type="email" name="email" id="email"><br>
+  </fieldset>
+
   <div class="nav-buttons">
     <button type="button" onclick="guardarDatosYAvanzar('stepIngresos')">Siguiente</button>
   </div>
