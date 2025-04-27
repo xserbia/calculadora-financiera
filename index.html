@@ -311,23 +311,35 @@
     </div>
 
     <!-- Sección 4: Activos -->
-    <div class="step" id="stepActivos">
-      <fieldset>
-        <legend><strong>4. Activos</strong></legend>
-        <label>Cuentas bancarias y de ahorro<br><input type="number" name="cuentas_bancarias"></label><br><br>
-        <label>Inversiones (no retiro)<br><input type="number" name="cuentas_inversion"></label><br><br>
-        <label>Cuentas de retiro<br><input type="number" name="cuentas_retiro"></label><br><br>
-        <label>Valor de la vivienda principal<br><input type="number" name="valor_vivienda"></label><br><br>
-        <label>Propiedades de alquiler<br><input type="number" name="valor_propiedades_alquiler"></label><br><br>
-        <label>Otras propiedades (vacacionales, etc.)<br><input type="number" name="valor_otros_activos"></label><br><br>
-        <label>Vehículos<br><input type="number" name="valor_vehiculos"></label><br><br>
-        <label>Otros activos (joyas, muebles, etc.)<br><input type="number" name="valor_otros"></label><br><br>
-      </fieldset>
-<div class="nav-buttons">
-<button type="button" onclick="prevStep('stepGastos')">Anterior</button>
-<button type="button" onclick="guardarDatosYAvanzar('stepPasivos')">Siguiente</button>
+<!-- Sección 5: Pasivos -->
+<div class="step" id="stepPasivos">
+  <fieldset>
+    <legend><strong>5. Pasivos</strong></legend>
+
+    <h4>Pasivos de corto plazo (calculados automáticamente)</h4>
+    <p><strong>Estos provienen de tus gastos esenciales anuales.</strong></p>
+
+    <label>Pasivos corrientes (gastos esenciales anuales)</label><br>
+    <input type="number" id="pasivos_corrientes_mostrado" name="pasivos_corrientes_mostrado" readonly><br><br>
+
+    <hr>
+
+    <h4>Pasivos de largo plazo (completar manualmente)</h4>
+
+    <label>Deuda de tarjetas de crédito (saldo total actual)<br><input type="number" name="deuda_tarjetas"></label><br><br>
+    <label>Hipoteca o préstamo de vivienda (saldo total actual)<br><input type="number" name="deuda_hipotecaria"></label><br><br>
+    <label>Deuda comercial (saldo total actual)<br><input type="number" name="deuda_comercial"></label><br><br>
+    <label>Préstamos de vehículos (saldo total actual)<br><input type="number" name="deuda_vehiculos"></label><br><br>
+    <label>Deuda estudiantil (saldo total actual)<br><input type="number" name="deuda_estudios"></label><br><br>
+    <label>Otras deudas a largo plazo<br><input type="number" name="deuda_otros"></label><br><br>
+
+  </fieldset>
+
+  <div class="nav-buttons">
+    <button type="button" onclick="guardarDatosYAvanzar('stepActivos')">Anterior</button>
+    <button type="button" onclick="guardarDatosYAvanzar('stepSeguros')">Siguiente</button>
+  </div>
 </div>
-    </div>
 
     <!-- Sección 5: Pasivos -->
     <div class="step" id="stepPasivos">
@@ -1009,14 +1021,13 @@ function calcularCategoriaB(data) {
     (data.tarjetas_credito || 0) +
     (data.otros_deuda || 0) +
     (data.supermercado || 0) +
-    (data.comidas_afuera || 0) +
     (data.transporte || 0) +
+    (data.gastos_medicos) || 0) +
     (data.telecomunicaciones || 0) +
     (data.servicio_publico || 0) +
     (data.mantenimiento_auto || 0) +
     (data.mantenimiento_hogar || 0) +
-    (data.cuidado_hijos || 0) +
-    (data.cuidado_personal || 0);
+    (data.cuidado_hijos || 0);
 
   // 🔹 Total deudas (sólo saldos)
   const deudas = 
