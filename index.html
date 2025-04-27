@@ -1294,82 +1294,94 @@ function calcularCategoriaD(data) {
     ${tabla}
   `;
 }
-
 function calcularCategoriaE(data) {
   // 🔹 Gastos mensuales esenciales
   const gastosEsencialesMensuales = (
-    (data.supermercado || 0) +
-    (data.transporte || 0) +
-    (data.telecomunicaciones || 0) +
-    (data.servicio_publico || 0) +
-    (data.seguro_medico || 0) +
-    (data.seguro_propiedad || 0) +
-    (data.seguro_auto || 0) +
-    (data.educacion || 0) +
-    (data.impuesto_federal || 0) +
-    (data.impuesto_propiedad || 0) +
-    (data.seguro_social || 0) +
-    (data.hipoteca || 0) +
-    (data.linea_credito || 0) +
-    (data.prestamo_auto || 0) +
-    (data.tarjetas_credito || 0) +
-    (data.otros_deuda || 0)
+    (parseFloat(data.supermercado) || 0) +
+    (parseFloat(data.transporte) || 0) +
+    (parseFloat(data.telecomunicaciones) || 0) +
+    (parseFloat(data.servicio_publico) || 0) +
+    (parseFloat(data.seguro_medico) || 0) +
+    (parseFloat(data.seguro_propiedad) || 0) +
+    (parseFloat(data.seguro_auto) || 0) +
+    (parseFloat(data.educacion) || 0) +
+    (parseFloat(data.impuesto_federal) || 0) +
+    (parseFloat(data.impuesto_propiedad) || 0) +
+    (parseFloat(data.seguro_social) || 0) +
+    (parseFloat(data.hipoteca) || 0) +
+    (parseFloat(data.linea_credito) || 0) +
+    (parseFloat(data.prestamo_auto) || 0) +
+    (parseFloat(data.tarjetas_credito) || 0) +
+    (parseFloat(data.otros_deuda) || 0)
   ) / 12;
 
-  // 🔹 Cálculo de activos con descuentos por liquidez
-  const cuentasLiquidas = (data.cuentas_bancarias || 0) + (data.cuentas_inversion || 0); // 100%
-  const activosReales = ((data.valor_vivienda || 0) + (data.valor_propiedades_alquiler || 0) + (data.valor_otros_activos || 0)) * 0.8;
-  const activosMenosLiquidos = ((data.valor_vehiculos || 0) + (data.valor_otros || 0)) * 0.5;
-  const cuentasRetiro = (data.cuentas_retiro || 0); // 100%, pero solo en total
+  // 🔹 Activos clasificados
+  const cuentasBancarias = parseFloat(data.cuentas_bancarias) || 0;
+  const inversionesNoRetiro = parseFloat(data.cuentas_inversion) || 0;
+  const cuentasRetiro = parseFloat(data.cuentas_retiro) || 0;
+  const propiedades = (parseFloat(data.valor_vivienda) || 0) + (parseFloat(data.valor_propiedades_alquiler) || 0);
+  const otrosActivos = (parseFloat(data.valor_vehiculos) || 0) + (parseFloat(data.valor_otros) || 0) * 0.5;
 
-  // 🔹 Cálculo de meses por tipo
-  const mesesLiquidos = cuentasLiquidas / gastosEsencialesMensuales;
-  const mesesReales = activosReales / gastosEsencialesMensuales;
-  const mesesMenosLiquidos = activosMenosLiquidos / gastosEsencialesMensuales;
-  const mesesRetiro = cuentasRetiro / gastosEsencialesMensuales;
+  // 🔹 Fondos
+  const fondosInmediatos = cuentasBancarias;
+  const fondosConInversiones = cuentasBancarias + inversionesNoRetiro;
+  const fondosConRetiro = fondosConInversiones + cuentasRetiro;
+  const fondosConPropiedades = fondosConRetiro + propiedades;
+  const fondosTotales = fondosConPropiedades + otrosActivos;
 
-  const totalSinRetiro = mesesLiquidos + mesesReales + mesesMenosLiquidos;
-  const totalConRetiro = totalSinRetiro + mesesRetiro;
+  // 🔹 Meses de cobertura
+  const mesesInmediatos = fondosInmediatos / gastosEsencialesMensuales;
+  const mesesConInversiones = fondosConInversiones / gastosEsencialesMensuales;
+  const mesesConRetiro = fondosConRetiro / gastosEsencialesMensuales;
+  const mesesConPropiedades = fondosConPropiedades / gastosEsencialesMensuales;
+  const mesesTotales = fondosTotales / gastosEsencialesMensuales;
 
-  // 🔹 Checklist
-  const checklist = {
-    'Seguro médico': data.seguro_medico ? '✅ Sí' : '❌ No',
-    'Seguro de vida': data.seguro_vida ? '✅ Sí' : '❌ No',
-    'Seguros clave (discapacidad, hogar, auto, umbrella)': (
-      data.seguro_incapacidad || data.seguro_hogar || data.seguro_auto || data.seguro_umbrella
-    ) ? '✅ Sí' : '❌ No',
-    'Fondos de contingencia alternativos': data.fondos_contingencia_alternativos ? '✅ Sí' : '❌ No',
-    'Diversificación de ingresos': data.diversificacion_ingresos ? '✅ Sí' : '❌ No',
-    'Provisión para eventos inesperados': data.provision_eventos ? '✅ Sí' : '❌ No'
-  };
-
-  // 🔹 Output visual
-  const barras = `
-    <div style="background-color:#007bff;height:20px;width:${(mesesLiquidos / totalConRetiro * 100).toFixed(1)}%"></div>
-    <p>Cuentas líquidas (100%): ${mesesLiquidos.toFixed(1)} meses</p>
-    <div style="background-color:#00bfae;height:20px;width:${(mesesReales / totalConRetiro * 100).toFixed(1)}%"></div>
-    <p>Activos reales (80%): ${mesesReales.toFixed(1)} meses</p>
-    <div style="background-color:#ffdd57;height:20px;width:${(mesesMenosLiquidos / totalConRetiro * 100).toFixed(1)}%"></div>
-    <p>Activos menos líquidos (50%): ${mesesMenosLiquidos.toFixed(1)} meses</p>
-    <div style="background-color:#6c757d;height:20px;width:${(mesesRetiro / totalConRetiro * 100).toFixed(1)}%"></div>
-    <p>Cuentas de retiro: ${mesesRetiro.toFixed(1)} meses</p>
-  `;
-
-  const checklistHTML = Object.entries(checklist)
-    .map(([key, val]) => `<li><strong>${key}:</strong> ${val}</li>`)
-    .join('');
-
-  document.getElementById("resE").innerHTML = `
+  // 🔹 Construcción de tabla
+  let tabla = `
     <h3>🅴 E. Manejo de riesgo</h3>
-    <p><strong>Fondos de contingencia inmediatos (sin retiro):</strong> ${totalSinRetiro.toFixed(1)} meses</p>
-    <p><strong>Fondos totales incluyendo cuentas de retiro:</strong> ${totalConRetiro.toFixed(1)} meses</p>
-
-    <h4>Barras de cobertura por tipo de activo</h4>
-    ${barras}
-
-    <h4 style="margin-top: 20px;">📋 Checklist de cobertura y resiliencia</h4>
-    <ul style="font-size: 0.9em;">${checklistHTML}</ul>
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.95em; margin-top: 10px;">
+      <thead style="background-color: #f1f5f9;">
+        <tr>
+          <th style="padding: 8px; border: 1px solid #ccc;">Fondo</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">Monto total</th>
+          <th style="padding: 8px; border: 1px solid #ccc;">Meses de cobertura</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ccc;">🟦 Fondos inmediatos (bancos)</td>
+          <td style="padding: 8px; border: 1px solid #ccc;">$${fondosInmediatos.toLocaleString()}</td>
+          <td style="padding: 8px; border: 1px solid #ccc;">${mesesInmediatos.toFixed(1)} meses</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ccc;">🟨 Fondos con inversiones</td>
+          <td style="padding: 8px; border: 1px solid #ccc;">$${fondosConInversiones.toLocaleString()}</td>
+          <td style="padding: 8px; border: 1px solid #ccc;">${mesesConInversiones.toFixed(1)} meses</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ccc;">🟩 Fondos con retiro</td>
+          <td style="padding: 8px; border: 1px solid #ccc;">$${fondosConRetiro.toLocaleString()}</td>
+          <td style="padding: 8px; border: 1px solid #ccc;">${mesesConRetiro.toFixed(1)} meses</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ccc;">🟧 Fondos con propiedades</td>
+          <td style="padding: 8px; border: 1px solid #ccc;">$${fondosConPropiedades.toLocaleString()}</td>
+          <td style="padding: 8px; border: 1px solid #ccc;">${mesesConPropiedades.toFixed(1)} meses</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ccc;">🟥 Fondos totales (incluye otros activos)</td>
+          <td style="padding: 8px; border: 1px solid #ccc;">$${fondosTotales.toLocaleString()}</td>
+          <td style="padding: 8px; border: 1px solid #ccc;">${mesesTotales.toFixed(1)} meses</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size: 0.9em; margin-top: 10px;">
+      🔵 Solo las cuentas bancarias y de inversión son consideradas 100% líquidas.<br>
+      🔵 Las propiedades se consideran al 100%, y los otros activos físicos (vehículos, joyas, etc.) solo al 50% de su valor.
+    </p>
   `;
+
+  document.getElementById("resE").innerHTML = tabla;
 }
 
 function calcularCategoriaF(data) {
