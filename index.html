@@ -730,24 +730,28 @@ function mostrarResultado(id) {
 }
 function obtenerDatosFormulario() {
   const form = document.getElementById("calculadoraFormulario");
-  const data = {};
+  const formData = {}; // 🔵 usamos otro nombre para no confundir con data global
 
   Array.from(form.elements).forEach(el => {
-    if (el.name) { // 👈 Quitamos el filtro de "visible"
-      if (el.type === "checkbox") {
-        data[el.name] = el.checked;
-      } else {
-        data[el.name] = el.value;
+    if (el.name) {
+      let value = (el.type === "checkbox") ? el.checked : el.value;
+
+      if (typeof value === "string" && value.trim() !== "" && !isNaN(value)) {
+        value = parseFloat(value);
       }
 
-      // Convierte a número si aplica
-      if (typeof data[el.name] === "string" && !isNaN(data[el.name]) && data[el.name].trim() !== "") {
-        data[el.name] = parseFloat(data[el.name]);
-      }
+      formData[el.name] = value;
     }
   });
 
-  return data;
+  return formData;
+}
+
+// ✅ Función para guardar la data y avanzar al siguiente paso
+function guardarDatosYAvanzar(nextStepName) {
+  data = obtenerDatosFormulario(); // 🔵 actualizamos data global
+  console.log("✅ Data capturada:", data); // 🔍 vemos en consola para asegurar
+  nextStep(nextStepName); // 🔵 avanzamos al siguiente paso
 }
 // ✅ Función para llenar los campos mostrados en stepRetiro
 function llenarCamposRetiro(data) {
