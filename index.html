@@ -758,18 +758,18 @@ function llenarCamposRetiro(data) {
   console.log("✏️ Llenando campos de retiro con data:", data);
 
   const salarioTotal = 
-    (data.salario || 0) +
-    (data.ingreso_negocio || 0) +
-    (data.bonos || 0) +
-    (data.dividendos_intereses || 0) +
-    (data.renta || 0) +
-    (data.otros_ingresos || 0);
+    (parseFloat(data.salario) || 0) +
+    (parseFloat(data.ingreso_negocio) || 0) +
+    (parseFloat(data.bonos) || 0) +
+    (parseFloat(data.dividendos_intereses) || 0) +
+    (parseFloat(data.renta) || 0) +
+    (parseFloat(data.otros_ingresos) || 0);
 
-  document.getElementById('salario_mostrado').value = salarioTotal;
-
-  document.getElementById('ahorro_retiro_mostrado').value = data.cuentas_retiro || 0;
-  document.getElementById('aporte_personal_mostrado').value = data.aporte_personal_retiro || 0;
-  document.getElementById('aporte_empleador_mostrado').value = data.aporte_empleador_retiro || 0;
+  // ✅ Aquí sí rellenamos correctamente los campos mostrados
+  document.getElementById('salario_mostrado').value = salarioTotal.toFixed(2);
+  document.getElementById('ahorro_retiro_mostrado').value = (parseFloat(data.cuentas_retiro) || 0).toFixed(2);
+  document.getElementById('aporte_personal_mostrado').value = (parseFloat(data.aporte_personal_retiro) || 0).toFixed(2);
+  document.getElementById('aporte_empleador_mostrado').value = (parseFloat(data.aporte_empleador_retiro) || 0).toFixed(2);
 }
 function procesarResultados() {
   data = obtenerDatosFormulario();
