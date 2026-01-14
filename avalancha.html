@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calculadora Avalancha (Debt Avalanche)</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#0f1a33; --soft:#14224a; --text:#e8eefc; --muted:#9fb0d0;
+      --border:rgba(255,255,255,.12); --good:#33d17a; --warn:#ffb020; --bad:#ff4d4f;
+      --btn:#2d5bff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:radial-gradient(1200px 600px at 20% 0%, #1a2c66 0%, var(--bg) 55%);
+      color:var(--text);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:22px}
+    .header{display:flex;gap:14px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap}
+    h1{margin:0;font-size:22px;letter-spacing:.2px}
+    .sub{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:16px}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+    }
+    .card h2{margin:0 0 10px;font-size:16px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+    input{
+      width:100%;
+      background:rgba(0,0,0,.18);
+      border:1px solid var(--border);
+      color:var(--text);
+      padding:10px 10px;
+      border-radius:10px;
+      outline:none;
+    }
+    input:focus{border-color:rgba(45,91,255,.75); box-shadow:0 0 0 3px rgba(45,91,255,.15)}
+    .w-2{flex:1 1 170px}
+    .w-3{flex:1 1 220px}
+    .btnbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{
+      appearance:none;border:none;cursor:pointer;
+      background:var(--btn); color:white;
+      padding:10px 12px;border-radius:10px;
+      font-weight:600;
+    }
+    button.secondary{background:rgba(255,255,255,.10); border:1px solid var(--border)}
+    button.danger{background:rgba(255,77,79,.15); border:1px solid rgba(255,77,79,.35); color:#ffd4d4}
+    button:disabled{opacity:.55; cursor:not-allowed}
+    table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px;overflow:hidden;border-radius:12px}
+    th,td{font-size:12px;padding:10px;border-bottom:1px solid var(--border);vertical-align:top}
+    th{color:#cfe0ff;background:rgba(255,255,255,.06);text-align:left}
+    tr:last-child td{border-bottom:none}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;border:1px solid var(--border);background:rgba(0,0,0,.12)}
+    .kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media (max-width: 560px){ .kpi{grid-template-columns:1fr} }
+    .k{
+      padding:12px;border:1px solid var(--border);border-radius:12px;background:rgba(0,0,0,.12)
+    }
+    .k .t{font-size:12px;color:var(--muted)}
+    .k .v{font-size:18px;font-weight:800;margin-top:4px}
+    .note{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.4}
+    .alert{margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,176,32,.35);background:rgba(255,176,32,.10);color:#ffe6b8;font-size:12px}
+    .alert.bad{border-color:rgba(255,77,79,.35);background:rgba(255,77,79,.10);color:#ffd4d4}
+    .mini{font-size:11px;color:var(--muted)}
+    .right{display:flex;justify-content:flex-end}
+    .nowrap{white-space:nowrap}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1>Calculadora de Deudas – Método Avalancha</h1>
+        <div class="sub">Paga mínimos en todas las deudas y dirige el pago extra a la deuda con APR más alto (rolling).</div>
+      </div>
+      <div class="pill">
+        <span class="mini">Tip:</span>
+        <span class="mini">Ordena por APR (alto → bajo) y evita atrasos.</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- IZQ: Deudas -->
+      <div class="card">
+        <h2>1) Tus deudas</h2>
+
+        <div class="row">
+          <div class="w-3">
+            <label>Pago extra mensual (además de los mínimos)</label>
+            <input id="extraPayment" inputmode="decimal" placeholder="Ej: 150" value="150" />
+          </div>
+          <div class="w-3">
+            <label>Máx. meses a simular (seguridad)</label>
+            <input id="maxMonths" inputmode="numeric" placeholder="Ej: 600" value="600" />
+          </div>
+        </div>
+
+        <div class="btnbar">
+          <button id="addDebtBtn" class="secondary">+ Añadir deuda</button>
+          <button id="calcBtn">Calcular avalancha</button>
+          <button id="resetBtn" class="danger">Reset</button>
+        </div>
+
+        <div id="debtsTableWrap"></div>
+
+        <div class="note">
+          <b>Campos:</b> Balance, APR anual (%), Mínimo mensual. <br/>
+          <span class="mini">Nota: esta calculadora asume intereses mensuales = APR/12. No incluye comisiones ni cambios de tasa.</span>
+        </div>
+      </div>
+
+      <!-- DER: Resultados -->
+      <div class="card">
+        <h2>2) Resultados</h2>
+
+        <div class="kpi">
+          <div class="k">
+            <div class="t">Tiempo estimado para pagar todo</div>
+            <div class="v" id="kpiMonths">—</div>
+          </div>
+          <div class="k">
+            <div class="t">Interés total pagado</div>
+            <div class="v" id="kpiInterest">—</div>
+          </div>
+          <div class="k">
+            <div class="t">Pago mensual promedio</div>
+            <div class="v" id="kpiAvgPay">—</div>
+          </div>
+          <div class="k">
+            <div class="t">Total pagado (principal + interés)</div>
+            <div class="v" id="kpiTotalPaid">—</div>
+          </div>
+        </div>
+
+        <div id="alerts"></div>
+
+        <h2 style="margin-top:14px">3) Tabla mensual (resumen)</h2>
+        <div class="mini">Muestra cómo se reparte el pago bajo la estrategia de avalancha.</div>
+        <div id="scheduleWrap"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/** -----------------------------
+ * Utilidades de formato y parseo
+ * ----------------------------- */
+function toNumber(value){
+  if (value == null) return 0;
+  const cleaned = String(value).replace(/[^0-9.\-]/g,'');
+  const n = Number(cleaned);
+  return Number.isFinite(n) ? n : 0;
+}
+function fmtMoney(n){
+  const x = Number(n);
+  if (!Number.isFinite(x)) return "—";
+  return x.toLocaleString("en-US", {style:"currency", currency:"USD", maximumFractionDigits:2});
+}
+function fmtPct(n){
+  const x = Number(n);
+  if (!Number.isFinite(x)) return "—";
+  return x.toFixed(2) + "%";
+}
+function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+
+/** -----------------------------
+ * Estado de deudas
+ * ----------------------------- */
+const debtsState = {
+  debts: [
+    { name:"Tarjeta A", balance: 3200, apr: 27.99, minPay: 95 },
+    { name:"Tarjeta B", balance: 1800, apr: 21.99, minPay: 55 },
+    { name:"Préstamo",  balance: 6500, apr: 11.50, minPay: 145 }
+  ]
+};
+
+const debtsTableWrap = document.getElementById("debtsTableWrap");
+const scheduleWrap = document.getElementById("scheduleWrap");
+const alertsWrap = document.getElementById("alerts");
+
+function renderDebtsTable(){
+  const rows = debtsState.debts.map((d, idx) => {
+    return `
+      <tr>
+        <td>
+          <input data-field="name" data-idx="${idx}" value="${escapeHtml(d.name)}" placeholder="Nombre" />
+        </td>
+        <td class="nowrap">
+          <input data-field="balance" data-idx="${idx}" inputmode="decimal" value="${d.balance}" placeholder="Balance" />
+        </td>
+        <td class="nowrap">
+          <input data-field="apr" data-idx="${idx}" inputmode="decimal" value="${d.apr}" placeholder="APR %" />
+        </td>
+        <td class="nowrap">
+          <input data-field="minPay" data-idx="${idx}" inputmode="decimal" value="${d.minPay}" placeholder="Mínimo" />
+        </td>
+        <td class="right">
+          <button class="danger" data-remove="${idx}" title="Eliminar">Eliminar</button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  debtsTableWrap.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Deuda</th>
+          <th>Balance ($)</th>
+          <th>APR anual (%)</th>
+          <th>Mínimo mensual ($)</th>
+          <th class="right">Acción</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+
+  // listeners inputs
+  debtsTableWrap.querySelectorAll("input[data-field]").forEach(inp=>{
+    inp.addEventListener("input", (e)=>{
+      const idx = Number(e.target.dataset.idx);
+      const field = e.target.dataset.field;
+      const val = e.target.value;
+
+      if (field === "name") debtsState.debts[idx].name = val;
+      if (field === "balance") debtsState.debts[idx].balance = toNumber(val);
+      if (field === "apr") debtsState.debts[idx].apr = toNumber(val);
+      if (field === "minPay") debtsState.debts[idx].minPay = toNumber(val);
+    });
+  });
+
+  // remove
+  debtsTableWrap.querySelectorAll("button[data-remove]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const idx = Number(btn.dataset.remove);
+      debtsState.debts.splice(idx,1);
+      renderDebtsTable();
+    });
+  });
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/** -----------------------------
+ * Lógica avalancha
+ * ----------------------------- */
+function simulateAvalanche(inputDebts, extraPayment, maxMonths){
+  // Copia profunda y sanitiza
+  const debts = inputDebts
+    .map(d => ({
+      name: d.name?.trim() || "Deuda",
+      balance: Math.max(0, Number(d.balance) || 0),
+      apr: Math.max(0, Number(d.apr) || 0),
+      minPay: Math.max(0, Number(d.minPay) || 0),
+      paidOffMonth: null
+    }))
+    .filter(d => d.balance > 0);
+
+  const errors = [];
+
+  if (debts.length === 0){
+    return { ok:false, errors:["Agrega al menos una deuda con balance mayor a 0."] };
+  }
+
+  extraPayment = Math.max(0, Number(extraPayment) || 0);
+  maxMonths = clamp(Math.floor(Number(maxMonths)||600), 1, 1200);
+
+  // Verificación: mínimos sumados vs intereses (para no amortizar negativo)
+  // Esta verificación exacta depende de balances, pero damos alerta si la suma de mínimos
+  // es <= interés mensual inicial de TODAS.
+  let initMonthlyInterest = 0;
+  for (const d of debts){
+    const r = (d.apr/100)/12;
+    initMonthlyInterest += d.balance * r;
+  }
+  const sumMins = debts.reduce((a,b)=>a + b.minPay, 0);
+  const sumBalances = debts.reduce((a,b)=>a + b.balance, 0);
+
+  const schedule = [];
+  let totalInterest = 0;
+  let totalPaid = 0;
+  let month = 0;
+
+  while (month < maxMonths){
+    const remaining = debts.filter(d => d.balance > 0);
+    if (remaining.length === 0) break;
+
+    month++;
+
+    // 1) intereses del mes
+    let monthInterest = 0;
+    remaining.forEach(d=>{
+      const r = (d.apr/100)/12;
+      const interest = d.balance * r;
+      d.balance += interest;
+      monthInterest += interest;
+    });
+
+    totalInterest += monthInterest;
+
+    // 2) pagos: mínimos a todos
+    let paymentPool = remaining.reduce((a,b)=>a + b.minPay, 0) + extraPayment;
+    // Si el pool es 0, no se pagará nada nunca.
+    if (paymentPool <= 0){
+      errors.push("Con pago extra 0 y mínimos 0, la deuda no se pagará.");
+      break;
+    }
+
+    const paymentsThisMonth = [];
+    // paga mínimos primero
+    remaining.forEach(d=>{
+      const pay = Math.min(d.minPay, d.balance);
+      d.balance -= pay;
+      paymentPool -= pay;
+      totalPaid += pay;
+      paymentsThisMonth.push({ name:d.name, pay });
+      if (d.balance <= 1e-8 && d.paidOffMonth == null){
+        d.balance = 0;
+        d.paidOffMonth = month;
+      }
+    });
+
+    // 3) avalancha: el resto del pool al APR más alto, iterando por si se paga una y sobra
+    let safety = 0;
+    while (paymentPool > 1e-8){
+      safety++;
+      if (safety > 1000) { errors.push("Error interno: bucle de pago."); break; }
+
+      const target = debts
+        .filter(d => d.balance > 0)
+        .sort((a,b)=> b.apr - a.apr || b.balance - a.balance)[0];
+
+      if (!target) break;
+
+      const pay = Math.min(paymentPool, target.balance);
+      target.balance -= pay;
+      paymentPool -= pay;
+      totalPaid += pay;
+
+      // acumula en paymentsThisMonth
+      const existing = paymentsThisMonth.find(p=>p.name===target.name);
+      if (existing) existing.pay += pay;
+      else paymentsThisMonth.push({ name: target.name, pay });
+
+      if (target.balance <= 1e-8 && target.paidOffMonth == null){
+        target.balance = 0;
+        target.paidOffMonth = month;
+      }
+    }
+
+    const remainingBalance = debts.reduce((a,b)=>a + b.balance, 0);
+
+    schedule.push({
+      month,
+      monthInterest,
+      paidTotal: paymentsThisMonth.reduce((a,b)=>a + b.pay, 0),
+      remainingBalance,
+      paymentsByDebt: paymentsThisMonth.sort((a,b)=>b.pay-a.pay)
+    });
+
+    // Si la deuda crece (no usual) durante varios meses, alerta
+    if (month === 1 && sumMins <= initMonthlyInterest){
+      // no rompemos; solo alertamos en UI
+    }
+  }
+
+  const monthsToPayoff = debts.every(d=>d.balance===0) ? month : null;
+  const avgPay = schedule.length ? (schedule.reduce((a,b)=>a+b.paidTotal,0)/schedule.length) : 0;
+
+  return {
+    ok:true,
+    debtsFinal: debts,
+    schedule,
+    monthsToPayoff,
+    totalInterest,
+    totalPaid,
+    avgPay,
+    initMonthlyInterest,
+    sumMins,
+    sumBalances,
+    maxMonths,
+    errors
+  };
+}
+
+/** -----------------------------
+ * Render resultados
+ * ----------------------------- */
+function renderScheduleTable(schedule){
+  if (!schedule.length){
+    scheduleWrap.innerHTML = `<div class="mini" style="margin-top:10px">No hay datos para mostrar.</div>`;
+    return;
+  }
+
+  const rows = schedule.slice(0, 240).map(m=>{
+    const topPayments = m.paymentsByDebt
+      .slice(0, 3)
+      .map(p=>`${escapeHtml(p.name)}: ${fmtMoney(p.pay)}`)
+      .join("<br/>") + (m.paymentsByDebt.length > 3 ? `<br/><span class="mini">+${m.paymentsByDebt.length-3} más…</span>` : "");
+
+    return `
+      <tr>
+        <td class="nowrap">${m.month}</td>
+        <td class="nowrap">${fmtMoney(m.monthInterest)}</td>
+        <td class="nowrap">${fmtMoney(m.paidTotal)}</td>
+        <td>${topPayments || "—"}</td>
+        <td class="nowrap">${fmtMoney(m.remainingBalance)}</td>
+      </tr>
+    `;
+  }).join("");
+
+  const truncated = schedule.length > 240
+    ? `<div class="mini" style="margin-top:8px">Mostrando primeros 240 meses. Reduce balances o aumenta pagos para ver menos meses.</div>`
+    : "";
+
+  scheduleWrap.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Mes</th>
+          <th>Interés</th>
+          <th>Pago total</th>
+          <th>Pagos principales</th>
+          <th>Balance restante</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    ${truncated}
+  `;
+}
+
+function setKpi(id, value){ document.getElementById(id).textContent = value; }
+
+function renderAlerts(result){
+  const items = [];
+
+  if (result.sumMins <= result.initMonthlyInterest + 0.01){
+    items.push(`<div class="alert bad">
+      ⚠️ <b>Alerta:</b> La suma de tus mínimos (${fmtMoney(result.sumMins)}) es menor o muy cercana al interés mensual inicial (~${fmtMoney(result.initMonthlyInterest)}).
+      Esto puede hacer que avances muy lento o que la deuda crezca si hay comisiones/tasas variables.
+      Considera aumentar pagos o renegociar tasas.
+    </div>`);
+  }
+
+  if (result.monthsToPayoff == null){
+    items.push(`<div class="alert">
+      ⏳ No se logró pagar todo dentro del límite de ${result.maxMonths} meses.  
+      Aumenta el pago extra o revisa mínimos/tasas.
+    </div>`);
+  }
+
+  if (result.errors && result.errors.length){
+    items.push(`<div class="alert">${result.errors.map(e=>`• ${escapeHtml(e)}`).join("<br/>")}</div>`);
+  }
+
+  alertsWrap.innerHTML = items.join("");
+}
+
+/** -----------------------------
+ * Acciones UI
+ * ----------------------------- */
+document.getElementById("addDebtBtn").addEventListener("click", ()=>{
+  debtsState.debts.push({ name:"Nueva deuda", balance: 1000, apr: 24.99, minPay: 35 });
+  renderDebtsTable();
+});
+
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  debtsState.debts = [
+    { name:"Tarjeta A", balance: 3200, apr: 27.99, minPay: 95 },
+    { name:"Tarjeta B", balance: 1800, apr: 21.99, minPay: 55 },
+    { name:"Préstamo",  balance: 6500, apr: 11.50, minPay: 145 }
+  ];
+  document.getElementById("extraPayment").value = "150";
+  document.getElementById("maxMonths").value = "600";
+  renderDebtsTable();
+  scheduleWrap.innerHTML = "";
+  alertsWrap.innerHTML = "";
+  setKpi("kpiMonths","—");
+  setKpi("kpiInterest","—");
+  setKpi("kpiAvgPay","—");
+  setKpi("kpiTotalPaid","—");
+});
+
+document.getElementById("calcBtn").addEventListener("click", ()=>{
+  const extra = toNumber(document.getElementById("extraPayment").value);
+  const maxMonths = toNumber(document.getElementById("maxMonths").value);
+
+  const result = simulateAvalanche(debtsState.debts, extra, maxMonths);
+
+  if (!result.ok){
+    alertsWrap.innerHTML = `<div class="alert bad">❌ ${escapeHtml(result.errors.join(" "))}</div>`;
+    return;
+  }
+
+  renderAlerts(result);
+
+  const monthsTxt = result.monthsToPayoff == null ? "—" : `${result.monthsToPayoff} meses`;
+  setKpi("kpiMonths", monthsTxt);
+  setKpi("kpiInterest", fmtMoney(result.totalInterest));
+  setKpi("kpiAvgPay", fmtMoney(result.avgPay));
+  setKpi("kpiTotalPaid", fmtMoney(result.totalPaid));
+
+  renderScheduleTable(result.schedule);
+});
+
+// Inicial
+renderDebtsTable();
+</script>
+</body>
+</html>
