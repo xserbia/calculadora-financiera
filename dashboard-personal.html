@@ -1882,7 +1882,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales }) {
                       {isFinite(ratios.mesesReserva) ? ratios.mesesReserva.toFixed(1) + ' m' : '—'}
                     </div>
                     <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.mesesReserva >= 6 ? 'var(--success)' : ratios.mesesReserva >= 3 ? 'var(--warning)' : 'var(--danger)'}}>
-                      {ratios.mesesReserva >= 6 ? '✅' : ratios.mesesReserva >= 3 ? '⚠️' : '🚨'}
+                      {ratios.mesesReserva >= 6 ? '✅' : ratios.mesesReserva > 6 ? '⚠️' : '🚨'}
                     </div>
                     <div style={{fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4'}}>Meta: &gt;6 meses ✅</div>
                   </div>
