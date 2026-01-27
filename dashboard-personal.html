@@ -1,1 +1,2651 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Financiero Personal</title>
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800;9..144,900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --primary: #3956E8;
+  --emerald: #10b981;
+  --emerald-dark: #059669;
+  --amber: #f59e0b;
+  --charcoal: #18181b;
+  --slate: #475569;
+  --slate-light: #cbd5e1;
+  --bg: #fafafa;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.app-header {
+  background: linear-gradient(135deg, var(--primary) 0%, #2845d9 100%);
+  color: white;
+  padding: 2rem 2rem 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.app-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fff 0%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.app-subtitle {
+  color: var(--slate-light);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  font-weight: 400;
+}
+
+.demo-badge {
+  display: inline-block;
+  background: var(--amber);
+  color: var(--charcoal);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+/* Tabs */
+.tabs-container {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tabs-container::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-button {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 1rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.tab-button:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-button.active {
+  color: white;
+  border-bottom-color: var(--emerald);
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.card-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.card-subtitle {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--emerald);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+select.form-input {
+  cursor: pointer;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'DM Sans', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #2845d9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(57, 86, 232, 0.3);
+}
+
+.btn-secondary {
+  background: var(--charcoal);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #27272a;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--border);
+  color: var(--text);
+}
+
+.btn-outline:hover {
+  border-color: var(--emerald);
+  color: var(--emerald);
+}
+
+.btn-danger {
+  background: #fecaca;
+  color: #991b1b;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.btn-danger:hover {
+  background: #fca5a5;
+  color: #7f1d1d;
+  transform: translateY(-1px);
+}
+
+.btn-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald-dark) 100%);
+  padding: 1.5rem;
+  border-radius: 12px;
+  color: white;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Table */
+.table-container {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+thead {
+  background: var(--bg);
+}
+
+th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--border);
+}
+
+td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+tbody tr:hover {
+  background: var(--bg);
+}
+
+/* Grid Layouts */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+/* Status Pills */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+.status-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning);
+}
+
+.status-danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+}
+
+/* Category Sections */
+.category-section {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.category-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--charcoal);
+}
+
+/* Summary Cards */
+.summary-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 2rem;
+  border-radius: 16px;
+  margin-top: 2rem;
+}
+
+.summary-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--charcoal);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--charcoal);
+}
+
+.summary-row-label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.summary-row-value {
+  font-family: 'Fraunces', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.summary-row:last-child .summary-row-value {
+  font-size: 1.75rem;
+  color: var(--emerald);
+}
+
+/* Chart Container */
+.chart-container {
+  position: relative;
+  height: 300px;
+  margin: 1.5rem 0;
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+}
+
+/* Export Footer */
+.export-footer {
+  background: var(--card);
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--border);
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+.export-footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.export-info {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.export-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 1.5rem 1rem 0;
+  }
+
+  .main-content {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .tab-button {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .export-footer-content {
+    flex-direction: column;
+  }
+
+  .export-actions {
+    width: 100%;
+  }
+
+  .export-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--slate-light);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--slate);
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--emerald);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: help;
+  margin-left: 0.5rem;
+}
+
+/* Number Formatting */
+.currency {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-feature-settings: 'tnum';
+}
+
+/* Utility Classes */
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger { color: var(--danger); }
+.text-muted { color: var(--text-muted); }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.mb-0 { margin-bottom: 0; }
+.mt-2 { margin-top: 2rem; }
+.font-bold { font-weight: 700; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useMemo } = React;
+
+// ============= UTILITY FUNCTIONS =============
+const formatCurrency = (value, currencyCode = 'USD') => {
+  if (value === null || value === undefined || value === '') {
+    const symbols = {
+      'USD': '$', 'EUR': '€', 'GBP': '£', 'MXN': '$', 
+      'COP': '$', 'ARS': '$', 'CLP': '$', 'PEN': 'S/', 
+      'BRL': 'R$', 'CAD': 'C$'
+    };
+    return `${symbols[currencyCode] || '$'}0`;
+  }
+  const num = typeof value === 'string' ? parseFloat(value.replace(/,/g, '')) : value;
+  if (isNaN(num)) {
+    const symbols = {
+      'USD': '$', 'EUR': '€', 'GBP': '£', 'MXN': '$', 
+      'COP': '$', 'ARS': '$', 'CLP': '$', 'PEN': 'S/', 
+      'BRL': 'R$', 'CAD': 'C$'
+    };
+    return `${symbols[currencyCode] || '$'}0`;
+  }
+  
+  const locales = {
+    'USD': 'en-US', 'EUR': 'de-DE', 'GBP': 'en-GB',
+    'MXN': 'es-MX', 'COP': 'es-CO', 'ARS': 'es-AR',
+    'CLP': 'es-CL', 'PEN': 'es-PE', 'BRL': 'pt-BR',
+    'CAD': 'en-CA'
+  };
+  
+  return new Intl.NumberFormat(locales[currencyCode] || 'en-US', {
+    style: 'currency',
+    currency: currencyCode,
+    maximumFractionDigits: 0
+  }).format(num);
+};
+
+const parseNumber = (value) => {
+  if (value === null || value === undefined || value === '') return 0;
+  const num = typeof value === 'string' ? parseFloat(value.replace(/,/g, '')) : value;
+  return isNaN(num) ? 0 : num;
+};
+
+// ============= DUMMY DATA =============
+// ============= MAIN APP COMPONENT =============
+function App() {
+  const [activeTab, setActiveTab] = useState('activos');
+  const [currency, setCurrency] = useState('USD');
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  
+  // ===== SHARED STATE WITH DUMMY DATA =====
+  const [activos, setActivos] = useState({
+    efectivo: [],
+    inversiones: [],
+    retiro: [],
+    bienesRaices: [],
+    bienesPersonales: []
+  });
+  const [deudas, setDeudas] = useState({
+    tarjetas: [],
+    lineaPersonal: [],
+    lineaPropiedad: [],
+    casa: [],
+    auto: [],
+    educacion: [],
+    otros: []
+  });
+  const [ingresos, setIngresos] = useState([]);
+  const [gastos, setGastos] = useState({
+    diarios: [],
+    deuda: [],
+    ahorro: [],
+    impuestos: [],
+    seguros: []
+  });
+  const [modoCalculo, setModoCalculo] = useState('mensual');
+  const [ratiosData, setRatiosData] = useState({
+    edad: '',
+    ingresoBruto: 0,
+    ingresoNeto: 0,
+    ahorroAnual: 0,
+    impuestosAnual: 0,
+    segurosAnual: 0,
+    deudaAnual: 0,
+    gastosAnual: 0,
+    pagoDeudaMensual: 0,
+    gastosEsencialesMensuales: 0,
+    reserva: 0,
+    pasivosCorrientes: 0
+  });
+
+  // ===== COMPUTED VALUES =====
+  const totales = useMemo(() => {
+    // Activos
+    const totalEfectivo = Object.values(activos.efectivo).reduce((sum, item) => sum + parseNumber(item.valor), 0);
+    const totalInversiones = Object.values(activos.inversiones).reduce((sum, item) => sum + parseNumber(item.valor), 0);
+    const totalRetiro = Object.values(activos.retiro).reduce((sum, item) => sum + parseNumber(item.valor), 0);
+    const totalBienesRaices = Object.values(activos.bienesRaices).reduce((sum, item) => sum + parseNumber(item.valor), 0);
+    const totalBienesPersonales = Object.values(activos.bienesPersonales).reduce((sum, item) => sum + parseNumber(item.valor), 0);
+    const activosTotales = totalEfectivo + totalInversiones + totalRetiro + totalBienesRaices + totalBienesPersonales;
+    
+    // Pasivos
+    const totalTarjetas = Object.values(deudas.tarjetas).reduce((sum, item) => sum + parseNumber(item.balance), 0);
+    const totalLineaPersonal = Object.values(deudas.lineaPersonal).reduce((sum, item) => sum + parseNumber(item.balance), 0);
+    const totalLineaPropiedad = Object.values(deudas.lineaPropiedad).reduce((sum, item) => sum + parseNumber(item.balance), 0);
+    const totalCasa = Object.values(deudas.casa).reduce((sum, item) => sum + parseNumber(item.balance), 0);
+    const totalAuto = Object.values(deudas.auto).reduce((sum, item) => sum + parseNumber(item.balance), 0);
+    const totalEducacion = Object.values(deudas.educacion).reduce((sum, item) => sum + parseNumber(item.balance), 0);
+    const totalOtros = Object.values(deudas.otros).reduce((sum, item) => sum + parseNumber(item.balance), 0);
+    const pasivosTotales = totalTarjetas + totalLineaPersonal + totalLineaPropiedad + totalCasa + totalAuto + totalEducacion + totalOtros;
+    
+    // Patrimonio
+    const patrimonioNeto = activosTotales - pasivosTotales;
+    
+    // Ingresos/Gastos
+    const mult = modoCalculo === 'anual' ? 12 : 1;
+    const totalIngresos = ingresos.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalAhorro = gastos.ahorro.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalDeudaGastos = gastos.deuda.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalDiarios = gastos.diarios.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalSeguros = gastos.seguros.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalImpuestos = gastos.impuestos.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalGastos = totalAhorro + totalDeudaGastos + totalDiarios + totalSeguros + totalImpuestos;
+    const superavit = totalIngresos - totalGastos;
+
+    return {
+      activosTotales,
+      pasivosTotales,
+      patrimonioNeto,
+      totalIngresos,
+      totalGastos,
+      superavit,
+      totalEfectivo,
+      totalInversiones,
+      totalRetiro,
+      totalBienesRaices,
+      totalBienesPersonales,
+      activosLiquidos: totalEfectivo,
+      inversiones: totalInversiones + totalRetiro
+    };
+  }, [activos, deudas, ingresos, gastos, modoCalculo]);
+
+  return (
+    <div className="app-container">
+      <header className="app-header">
+        <div className="header-content">
+          <h1 className="app-title">💰 Dashboard Financiero Personal</h1>
+          <p className="app-subtitle">Gestiona tus finanzas personales de forma inteligente</p>
+          
+          <div style={{display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+              <label style={{color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', fontWeight: '600'}}>Moneda:</label>
+              <select 
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                style={{
+                  padding: '0.5rem 1rem',
+                  borderRadius: '8px',
+                  border: '2px solid rgba(255,255,255,0.2)',
+                  background: 'rgba(255,255,255,0.1)',
+                  color: 'white',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+              >
+                <option value="USD" style={{background: '#2845d9', color: 'white'}}>🇺🇸 USD - Dólar</option>
+                <option value="EUR" style={{background: '#2845d9', color: 'white'}}>🇪🇺 EUR - Euro</option>
+                <option value="GBP" style={{background: '#2845d9', color: 'white'}}>🇬🇧 GBP - Libra</option>
+                <option value="MXN" style={{background: '#2845d9', color: 'white'}}>🇲🇽 MXN - Peso Mexicano</option>
+                <option value="COP" style={{background: '#2845d9', color: 'white'}}>🇨🇴 COP - Peso Colombiano</option>
+                <option value="ARS" style={{background: '#2845d9', color: 'white'}}>🇦🇷 ARS - Peso Argentino</option>
+                <option value="CLP" style={{background: '#2845d9', color: 'white'}}>🇨🇱 CLP - Peso Chileno</option>
+                <option value="PEN" style={{background: '#2845d9', color: 'white'}}>🇵🇪 PEN - Sol Peruano</option>
+                <option value="BRL" style={{background: '#2845d9', color: 'white'}}>🇧🇷 BRL - Real Brasileño</option>
+                <option value="CAD" style={{background: '#2845d9', color: 'white'}}>🇨🇦 CAD - Dólar Canadiense</option>
+              </select>
+            </div>
+            
+            <button
+              onClick={() => setShowHelpModal(true)}
+              style={{
+                padding: '0.5rem 1.25rem',
+                borderRadius: '8px',
+                border: '2px solid rgba(255,255,255,0.3)',
+                background: 'rgba(255,255,255,0.15)',
+                color: 'white',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              ❓ Cómo usar esta calculadora
+            </button>
+          </div>
+          
+          <div className="tabs-container">
+            <button 
+              className={`tab-button ${activeTab === 'activos' ? 'active' : ''}`}
+              onClick={() => setActiveTab('activos')}
+            >
+              📋 Inventario de Activos
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'deudas' ? 'active' : ''}`}
+              onClick={() => setActiveTab('deudas')}
+            >
+              📒 Inventario de Deudas
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'balance' ? 'active' : ''}`}
+              onClick={() => setActiveTab('balance')}
+            >
+              ⚖️ Hoja de Balance
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'ingresos' ? 'active' : ''}`}
+              onClick={() => setActiveTab('ingresos')}
+            >
+              💵 Ingresos y Gastos
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'ratios' ? 'active' : ''}`}
+              onClick={() => setActiveTab('ratios')}
+            >
+              📊 Ratios Financieros
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="main-content fade-in">
+        {activeTab === 'activos' && (
+          <InventarioActivos activos={activos} setActivos={setActivos} totales={totales} currency={currency} />
+        )}
+        {activeTab === 'deudas' && (
+          <InventarioDeudas deudas={deudas} setDeudas={setDeudas} currency={currency} />
+        )}
+        {activeTab === 'balance' && (
+          <HojaBalance activos={activos} deudas={deudas} totales={totales} currency={currency} />
+        )}
+        {activeTab === 'ingresos' && (
+          <IngresosGastos 
+            ingresos={ingresos} 
+            setIngresos={setIngresos}
+            gastos={gastos}
+            setGastos={setGastos}
+            modoCalculo={modoCalculo}
+            setModoCalculo={setModoCalculo}
+            currency={currency}
+          />
+        )}
+        {activeTab === 'ratios' && (
+          <RatiosFinancieros 
+            ratiosData={ratiosData}
+            setRatiosData={setRatiosData}
+            totales={totales}
+            currency={currency}
+            ingresos={ingresos}
+            gastos={gastos}
+            setActiveTab={setActiveTab}
+          />
+        )}
+      </main>
+
+      {/* Help Modal */}
+      {showHelpModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.7)',
+          zIndex: 2000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          backdropFilter: 'blur(8px)'
+        }} onClick={() => setShowHelpModal(false)}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '20px',
+            maxWidth: '800px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 70px rgba(0,0,0,0.5)'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{padding: '24px 28px', background: 'var(--primary)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <div style={{fontSize: '24px', fontWeight: '800', color: 'white'}}>💡 Cómo usar esta Calculadora</div>
+              <button onClick={() => setShowHelpModal(false)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', fontSize: '22px', cursor: 'pointer', color: 'white'}}>×</button>
+            </div>
+            <div style={{padding: '32px', overflowY: 'auto', lineHeight: '1.7'}}>
+              <h3 style={{margin: '0 0 16px', fontSize: '20px', fontWeight: '700', color: 'var(--primary)'}}>
+                🎯 Objetivo
+              </h3>
+              <p style={{marginBottom: '24px', fontSize: '15px', color: 'var(--text)'}}>
+                Esta calculadora te ayuda a <strong>obtener una foto completa de tu salud financiera</strong> calculando ratios clave que te indican si estás en buen camino hacia tus metas financieras. Podrás ver:
+              </p>
+              <ul style={{marginBottom: '32px', paddingLeft: '24px', fontSize: '15px', color: 'var(--text)'}}>
+                <li style={{marginBottom: '12px'}}><strong>Tu patrimonio neto</strong> (lo que realmente tienes vs. lo que debes)</li>
+                <li style={{marginBottom: '12px'}}><strong>Tu capacidad de ahorro</strong> (cuánto guardas del dinero que ganas)</li>
+                <li style={{marginBottom: '12px'}}><strong>Tu nivel de deuda</strong> (si tus deudas están bajo control)</li>
+                <li style={{marginBottom: '12px'}}><strong>Tu preparación para el retiro</strong> (si estás ahorrando suficiente para tu edad)</li>
+              </ul>
+
+              <h3 style={{margin: '32px 0 16px', fontSize: '20px', fontWeight: '700', color: 'var(--primary)'}}>
+                📝 Cómo usar el dashboard
+              </h3>
+              
+              <div style={{background: '#f0f9ff', padding: '20px', borderRadius: '12px', marginBottom: '20px', borderLeft: '4px solid var(--primary)'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 1: Inventario de Activos</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  Lista todo lo que <strong>posees</strong>: cuentas bancarias, inversiones, casa, autos, etc. Usa valores actuales de mercado.
+                </p>
+              </div>
+
+              <div style={{background: '#fef3f2', padding: '20px', borderRadius: '12px', marginBottom: '20px', borderLeft: '4px solid var(--danger)'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 2: Inventario de Deudas</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  Lista todo lo que <strong>debes</strong>: hipoteca, préstamos de auto, tarjetas de crédito, préstamos estudiantiles, etc.
+                </p>
+              </div>
+
+              <div style={{background: '#f0fdf4', padding: '20px', borderRadius: '12px', marginBottom: '20px', borderLeft: '4px solid var(--success)'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 3: Hoja de Balance</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  Aquí verás tu <strong>patrimonio neto</strong> calculado automáticamente (Activos - Pasivos). Esta es la cifra más importante.
+                </p>
+              </div>
+
+              <div style={{background: '#fffbeb', padding: '20px', borderRadius: '12px', marginBottom: '20px', borderLeft: '4px solid var(--amber)'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 4: Ingresos y Gastos</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  Registra tus ingresos mensuales y todos tus gastos por categoría (ahorro, deuda, gastos diarios, seguros, impuestos).
+                </p>
+              </div>
+
+              <div style={{background: '#faf5ff', padding: '20px', borderRadius: '12px', marginBottom: '24px', borderLeft: '4px solid #9333ea'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 5: Ratios Financieros</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  Completa datos adicionales y haz clic en <strong>"Ver Análisis Completo"</strong> para obtener tus ratios financieros comparados con benchmarks según tu edad y situación.
+                </p>
+              </div>
+
+              <div style={{background: '#fff7ed', padding: '20px', borderRadius: '12px', borderLeft: '4px solid #ea580c'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>💡 Consejo Pro</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  <strong>Sé honesto y completo.</strong> Los datos más precisos te darán el análisis más útil. Esta herramienta te ayuda a tomar decisiones informadas sobre tu futuro financiero.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <ExportFooter totales={totales} currency={currency} />
+    </div>
+  );
+}
+
+// ============= COMPONENT IMPLEMENTATIONS (same as before) =============
+// [Previous component code remains exactly the same - InventarioActivos, InventarioDeudas, HojaBalance, IngresosGastos, RatiosFinancieros, ExportFooter]
+
+function InventarioActivos({ activos, setActivos, totales, currency }) {
+  const categorias = [
+    { key: 'efectivo', nombre: 'Efectivo y Equivalentes', items: ['Cuentas de cheque', 'Cuentas de ahorro', 'Efectivo a mano', 'Fondos de mercado'] },
+    { key: 'inversiones', nombre: 'Inversiones', items: ['Acciones', 'Bonos', 'Fondos mutuos', 'ETFs', 'Otros'] },
+    { key: 'retiro', nombre: 'Cuentas de Retiro', items: ['401(k)', 'IRA', 'Roth IRA', 'Pensión', 'Otros'] },
+    { key: 'bienesRaices', nombre: 'Bienes Raíces', items: ['Primera residencia', 'Segunda residencia', 'Propiedad de inversión', 'Terrenos'] },
+    { key: 'bienesPersonales', nombre: 'Bienes Personales', items: ['Autos', 'Joyas', 'Arte', 'Coleccionables', 'Otros'] }
+  ];
+
+  const addItem = (categoria) => {
+    setActivos(prev => ({
+      ...prev,
+      [categoria]: [...prev[categoria], { tipo: '', ubicacion: '', valor: '' }]
+    }));
+  };
+
+  const updateItem = (categoria, index, field, value) => {
+    setActivos(prev => ({
+      ...prev,
+      [categoria]: prev[categoria].map((item, i) => 
+        i === index ? { ...item, [field]: value } : item
+      )
+    }));
+  };
+
+  const removeItem = (categoria, index) => {
+    setActivos(prev => ({
+      ...prev,
+      [categoria]: prev[categoria].filter((_, i) => i !== index)
+    }));
+  };
+
+  return (
+    <div>
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-label">Total Activos</div>
+          <div className="stat-value">{formatCurrency(totales.activosTotales, currency)}</div>
+        </div>
+        <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--amber) 0%, #d97706 100%)'}}>
+          <div className="stat-label">Efectivo y Equivalentes</div>
+          <div className="stat-value">{formatCurrency(totales.totalEfectivo, currency)}</div>
+        </div>
+        <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--charcoal) 0%, #3f3f46 100%)'}}>
+          <div className="stat-label">Inversiones</div>
+          <div className="stat-value">{formatCurrency(totales.totalInversiones, currency)}</div>
+        </div>
+      </div>
+
+      {categorias.map(cat => (
+        <div key={cat.key} className="category-section">
+          <div className="category-header">
+            <h3 className="category-title">{cat.nombre}</h3>
+            <button className="btn btn-primary btn-small" onClick={() => addItem(cat.key)}>
+              + Añadir activo
+            </button>
+          </div>
+
+          {activos[cat.key].length === 0 ? (
+            <p className="text-muted">No hay activos registrados en esta categoría</p>
+          ) : (
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo de Activo</th>
+                    <th>Ubicación / Institución</th>
+                    <th>Valor</th>
+                    <th style={{width: '100px'}}>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activos[cat.key].map((item, index) => (
+                    <tr key={index}>
+                      <td>
+                        <select
+                          className="form-input"
+                          value={item.tipo}
+                          onChange={(e) => updateItem(cat.key, index, 'tipo', e.target.value)}
+                        >
+                          <option value="">Seleccionar...</option>
+                          {cat.items.map(tipo => (
+                            <option key={tipo} value={tipo}>{tipo}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          className="form-input"
+                          placeholder="Nombre del banco, broker, etc."
+                          value={item.ubicacion}
+                          onChange={(e) => updateItem(cat.key, index, 'ubicacion', e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          className="form-input"
+                          placeholder="$0"
+                          value={item.valor}
+                          onChange={(e) => updateItem(cat.key, index, 'valor', e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <button 
+                          className="btn btn-danger btn-small" 
+                          onClick={() => removeItem(cat.key, index)}
+                        >
+                          🗑️
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function InventarioDeudas({ deudas, setDeudas, currency }) {
+  const categorias = [
+    { key: 'tarjetas', nombre: 'Tarjetas de Crédito' },
+    { key: 'lineaPersonal', nombre: 'Línea de Crédito Personal' },
+    { key: 'lineaPropiedad', nombre: 'Línea de Crédito de Propiedad' },
+    { key: 'casa', nombre: 'Hipoteca/Casa' },
+    { key: 'auto', nombre: 'Préstamo de Auto' },
+    { key: 'educacion', nombre: 'Préstamos Educativos' },
+    { key: 'otros', nombre: 'Otros Préstamos' }
+  ];
+
+  const addDeuda = (categoria) => {
+    setDeudas(prev => ({
+      ...prev,
+      [categoria]: [...prev[categoria], { compania: '', apr: '', meses: '', mensual: '', balance: '' }]
+    }));
+  };
+
+  const updateDeuda = (categoria, index, field, value) => {
+    setDeudas(prev => ({
+      ...prev,
+      [categoria]: prev[categoria].map((item, i) => 
+        i === index ? { ...item, [field]: value } : item
+      )
+    }));
+  };
+
+  const removeDeuda = (categoria, index) => {
+    setDeudas(prev => ({
+      ...prev,
+      [categoria]: prev[categoria].filter((_, i) => i !== index)
+    }));
+  };
+
+  const totalBalance = Object.values(deudas).flat().reduce((sum, d) => sum + parseNumber(d.balance), 0);
+  const totalMensual = Object.values(deudas).flat().reduce((sum, d) => sum + parseNumber(d.mensual), 0);
+  const totalCuentas = Object.values(deudas).flat().filter(d => d.compania || parseNumber(d.balance) > 0).length;
+
+  return (
+    <div>
+      <div className="stats-grid">
+        <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)'}}>
+          <div className="stat-label">Balance Total</div>
+          <div className="stat-value">{formatCurrency(totalBalance, currency)}</div>
+        </div>
+        <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--amber) 0%, #d97706 100%)'}}>
+          <div className="stat-label">Pago Mensual Total</div>
+          <div className="stat-value">{formatCurrency(totalMensual, currency)}</div>
+        </div>
+        <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--charcoal) 0%, #3f3f46 100%)'}}>
+          <div className="stat-label">Número de Cuentas</div>
+          <div className="stat-value">{totalCuentas}</div>
+        </div>
+      </div>
+
+      {categorias.map(cat => (
+        <div key={cat.key} className="category-section">
+          <div className="category-header">
+            <h3 className="category-title">{cat.nombre}</h3>
+            <button className="btn btn-primary btn-small" onClick={() => addDeuda(cat.key)}>
+              + Añadir deuda
+            </button>
+          </div>
+
+          {deudas[cat.key].length === 0 ? (
+            <p className="text-muted">No hay deudas registradas en esta categoría</p>
+          ) : (
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Compañía</th>
+                    <th>APR (%)</th>
+                    <th>Meses Restantes</th>
+                    <th>Pago Mensual</th>
+                    <th>Balance</th>
+                    <th style={{width: '100px'}}>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {deudas[cat.key].map((deuda, index) => (
+                    <tr key={index}>
+                      <td>
+                        <input
+                          type="text"
+                          className="form-input"
+                          placeholder="Nombre de la compañía"
+                          value={deuda.compania}
+                          onChange={(e) => updateDeuda(cat.key, index, 'compania', e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          className="form-input"
+                          placeholder="19.99"
+                          step="0.01"
+                          value={deuda.apr}
+                          onChange={(e) => updateDeuda(cat.key, index, 'apr', e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          className="form-input"
+                          placeholder="24"
+                          value={deuda.meses}
+                          onChange={(e) => updateDeuda(cat.key, index, 'meses', e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          className="form-input"
+                          placeholder="$150"
+                          step="0.01"
+                          value={deuda.mensual}
+                          onChange={(e) => updateDeuda(cat.key, index, 'mensual', e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          className="form-input"
+                          placeholder="$3,500"
+                          step="0.01"
+                          value={deuda.balance}
+                          onChange={(e) => updateDeuda(cat.key, index, 'balance', e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <button 
+                          className="btn btn-danger btn-small" 
+                          onClick={() => removeDeuda(cat.key, index)}
+                        >
+                          🗑️
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function HojaBalance({ activos, deudas, totales, currency }) {
+  return (
+    <div>
+      <div className="card">
+        <div className="card-header">
+          <div>
+            <h2 className="card-title">Balance General</h2>
+            <p className="card-subtitle">Resumen consolidado de tu situación financiera</p>
+          </div>
+        </div>
+
+        <div className="grid-2">
+          <div>
+            <h3 className="font-bold mb-0" style={{fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--primary)'}}>ACTIVOS</h3>
+            
+            <div className="summary-row">
+              <span className="summary-row-label">Efectivo y Equivalentes</span>
+              <span className="currency">{formatCurrency(totales.totalEfectivo, currency)}</span>
+            </div>
+            <div className="summary-row">
+              <span className="summary-row-label">Inversiones</span>
+              <span className="currency">{formatCurrency(totales.totalInversiones, currency)}</span>
+            </div>
+            <div className="summary-row">
+              <span className="summary-row-label">Cuentas de Retiro</span>
+              <span className="currency">{formatCurrency(totales.totalRetiro, currency)}</span>
+            </div>
+            <div className="summary-row">
+              <span className="summary-row-label">Bienes Raíces</span>
+              <span className="currency">{formatCurrency(totales.totalBienesRaices, currency)}</span>
+            </div>
+            <div className="summary-row">
+              <span className="summary-row-label">Bienes Personales</span>
+              <span className="currency">{formatCurrency(totales.totalBienesPersonales, currency)}</span>
+            </div>
+            <div className="summary-row">
+              <span className="summary-row-label font-bold">Total Activos (I)</span>
+              <span className="summary-row-value">{formatCurrency(totales.activosTotales, currency)}</span>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-bold mb-0" style={{fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--danger)'}}>PASIVOS</h3>
+            
+            {Object.entries(deudas).map(([key, items]) => {
+              const total = items.reduce((sum, item) => sum + parseNumber(item.balance), 0);
+              if (total === 0) return null;
+              
+              const nombres = {
+                tarjetas: 'Tarjetas de Crédito',
+                lineaPersonal: 'Línea de Crédito Personal',
+                lineaPropiedad: 'Línea de Crédito de Propiedad',
+                casa: 'Hipoteca/Casa',
+                auto: 'Préstamo de Auto',
+                educacion: 'Préstamos Educativos',
+                otros: 'Otros Préstamos'
+              };
+              
+              return (
+                <div className="summary-row" key={key}>
+                  <span className="summary-row-label">{nombres[key]}</span>
+                  <span className="currency">{formatCurrency(total, currency)}</span>
+                </div>
+              );
+            })}
+            
+            <div className="summary-row">
+              <span className="summary-row-label font-bold">Total Pasivos (II)</span>
+              <span className="summary-row-value">{formatCurrency(totales.pasivosTotales, currency)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="summary-card mt-2">
+          <div style={{textAlign: 'center'}}>
+            <h3 className="summary-title">Patrimonio Neto (I - II)</h3>
+            <div style={{fontSize: '3rem'}} className="currency">
+              <span className={totales.patrimonioNeto >= 0 ? 'text-success' : 'text-danger'}>
+                {formatCurrency(totales.patrimonioNeto, currency)}
+              </span>
+            </div>
+            <p className="text-muted" style={{marginTop: '1rem'}}>
+              {totales.patrimonioNeto >= 0 ? '✅ Patrimonio positivo' : '⚠️ Patrimonio negativo - Considera reducir deudas'}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function IngresosGastos({ ingresos, setIngresos, gastos, setGastos, modoCalculo, setModoCalculo, currency }) {
+  const categoriasIngresos = ['Salario', 'Negocio/Side Hustle', 'Bonos', 'Intereses', 'Renta', 'Otros'];
+  
+  const categoriasGastos = {
+    ahorro: { nombre: 'Ahorro', items: ['Cuenta de ahorro', 'Inversiones', '401(k)', 'IRA', 'Otros'] },
+    deuda: { nombre: 'Pago de Deuda', items: ['Hipoteca/Renta', 'Auto', 'Préstamos estudiantiles', 'Tarjetas de crédito', 'Otros'] },
+    diarios: { nombre: 'Gastos Diarios', items: ['Supermercado', 'Comidas afuera', 'Transporte', 'Servicios', 'Entretenimiento', 'Otros'] },
+    seguros: { nombre: 'Seguros', items: ['Vida', 'Médico', 'Auto', 'Propiedad', 'Otros'] },
+    impuestos: { nombre: 'Impuestos', items: ['Federal', 'Estatal', 'Seguro Social', 'Medicare', 'Propiedad', 'Otros'] }
+  };
+
+  const addIngreso = () => {
+    setIngresos([...ingresos, { categoria: 'Salario', nombre: '', monto: '' }]);
+  };
+
+  const updateIngreso = (index, field, value) => {
+    setIngresos(ingresos.map((item, i) => i === index ? { ...item, [field]: value } : item));
+  };
+
+  const removeIngreso = (index) => {
+    setIngresos(ingresos.filter((_, i) => i !== index));
+  };
+
+  const addGasto = (categoria) => {
+    setGastos(prev => ({
+      ...prev,
+      [categoria]: [...prev[categoria], { categoria: categoriasGastos[categoria].items[0], nombre: '', monto: '' }]
+    }));
+  };
+
+  const updateGasto = (categoria, index, field, value) => {
+    setGastos(prev => ({
+      ...prev,
+      [categoria]: prev[categoria].map((item, i) => i === index ? { ...item, [field]: value } : item)
+    }));
+  };
+
+  const removeGasto = (categoria, index) => {
+    setGastos(prev => ({
+      ...prev,
+      [categoria]: prev[categoria].filter((_, i) => i !== index)
+    }));
+  };
+
+  const mult = modoCalculo === 'anual' ? 12 : 1;
+  const totalIngresos = ingresos.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+  const totalAhorro = gastos.ahorro.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+  const totalDeuda = gastos.deuda.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+  const totalDiarios = gastos.diarios.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+  const totalSeguros = gastos.seguros.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+  const totalImpuestos = gastos.impuestos.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+  const totalGastos = totalAhorro + totalDeuda + totalDiarios + totalSeguros + totalImpuestos;
+  const balance = totalIngresos - totalGastos;
+
+  return (
+    <div>
+      <div className="card">
+        <div className="card-header">
+          <div>
+            <h2 className="card-title">Modo de Cálculo</h2>
+          </div>
+          <select 
+            className="form-input" 
+            style={{width: 'auto'}}
+            value={modoCalculo}
+            onChange={(e) => setModoCalculo(e.target.value)}
+          >
+            <option value="mensual">Mensual</option>
+            <option value="anual">Anual</option>
+          </select>
+        </div>
+
+        <div className="stats-grid">
+          <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--emerald) 0%, var(--emerald-dark) 100%)'}}>
+            <div className="stat-label">Total Ingresos ({modoCalculo})</div>
+            <div className="stat-value">{formatCurrency(totalIngresos, currency)}</div>
+          </div>
+          <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)'}}>
+            <div className="stat-label">Total Gastos ({modoCalculo})</div>
+            <div className="stat-value">{formatCurrency(totalGastos, currency)}</div>
+          </div>
+          <div className="stat-card" style={{background: balance >= 0 ? 'linear-gradient(135deg, var(--emerald) 0%, var(--emerald-dark) 100%)' : 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)'}}>
+            <div className="stat-label">{balance >= 0 ? 'Superávit' : 'Déficit'}</div>
+            <div className="stat-value">{formatCurrency(Math.abs(balance), currency)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid-2">
+        <div className="card">
+          <div className="card-header">
+            <h2 className="card-title">💰 Ingresos</h2>
+            <button className="btn btn-primary btn-small" onClick={addIngreso}>+ Añadir</button>
+          </div>
+
+          {ingresos.length === 0 ? (
+            <p className="text-muted">No hay ingresos registrados</p>
+          ) : (
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Categoría</th>
+                    <th>Descripción</th>
+                    <th>Monto ({modoCalculo})</th>
+                    <th style={{width: '80px'}}>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ingresos.map((item, index) => (
+                    <tr key={index}>
+                      <td>
+                        <select
+                          className="form-input"
+                          value={item.categoria}
+                          onChange={(e) => updateIngreso(index, 'categoria', e.target.value)}
+                        >
+                          {categoriasIngresos.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          className="form-input"
+                          placeholder="Descripción opcional"
+                          value={item.nombre}
+                          onChange={(e) => updateIngreso(index, 'nombre', e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          className="form-input"
+                          placeholder="$0"
+                          step="0.01"
+                          value={item.monto}
+                          onChange={(e) => updateIngreso(index, 'monto', e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <button className="btn btn-danger btn-small" onClick={() => removeIngreso(index)}>🗑️</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="card">
+          <div className="card-header">
+            <h2 className="card-title">🧾 Resumen de Gastos</h2>
+          </div>
+
+          <div className="summary-row">
+            <span>Ahorro</span>
+            <span className="currency">{formatCurrency(totalAhorro, currency)}</span>
+          </div>
+          <div className="summary-row">
+            <span>Deuda</span>
+            <span className="currency">{formatCurrency(totalDeuda, currency)}</span>
+          </div>
+          <div className="summary-row">
+            <span>Gastos Diarios</span>
+            <span className="currency">{formatCurrency(totalDiarios, currency)}</span>
+          </div>
+          <div className="summary-row">
+            <span>Seguros</span>
+            <span className="currency">{formatCurrency(totalSeguros, currency)}</span>
+          </div>
+          <div className="summary-row">
+            <span>Impuestos</span>
+            <span className="currency">{formatCurrency(totalImpuestos, currency)}</span>
+          </div>
+        </div>
+      </div>
+
+      {Object.entries(categoriasGastos).map(([key, config]) => (
+        <div key={key} className="category-section">
+          <div className="category-header">
+            <h3 className="category-title">{config.nombre}</h3>
+            <button className="btn btn-primary btn-small" onClick={() => addGasto(key)}>+ Añadir</button>
+          </div>
+
+          {gastos[key].length === 0 ? (
+            <p className="text-muted">No hay gastos registrados</p>
+          ) : (
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Categoría</th>
+                    <th>Descripción</th>
+                    <th>Monto ({modoCalculo})</th>
+                    <th style={{width: '80px'}}>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {gastos[key].map((item, index) => (
+                    <tr key={index}>
+                      <td>
+                        <select
+                          className="form-input"
+                          value={item.categoria}
+                          onChange={(e) => updateGasto(key, index, 'categoria', e.target.value)}
+                        >
+                          {config.items.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          className="form-input"
+                          placeholder="Descripción opcional"
+                          value={item.nombre}
+                          onChange={(e) => updateGasto(key, index, 'nombre', e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          className="form-input"
+                          placeholder="$0"
+                          step="0.01"
+                          value={item.monto}
+                          onChange={(e) => updateGasto(key, index, 'monto', e.target.value)}
+                        />
+                      </td>
+                      <td>
+                        <button className="btn btn-danger btn-small" onClick={() => removeGasto(key, index)}>🗑️</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency, ingresos, gastos, setActiveTab }) {
+  const [showBenchmarkModal, setShowBenchmarkModal] = useState(false);
+  const [showResultsModal, setShowResultsModal] = useState(false);
+  const [showReservaModal, setShowReservaModal] = useState(false);
+
+  const updateField = (field, value) => {
+    setRatiosData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Auto-calculate values from other tabs
+  useEffect(() => {
+    const totalIngresosMensuales = ingresos.reduce((sum, ing) => sum + parseFloat(ing.monto || 0), 0);
+    const ingresoBrutoCalculado = totalIngresosMensuales * 12;
+    
+    const impuestosAnual = (gastos.impuestos?.reduce((sum, g) => sum + parseFloat(g.monto || 0), 0) || 0) * 12;
+    const segurosAnual = (gastos.seguros?.reduce((sum, g) => sum + parseFloat(g.monto || 0), 0) || 0) * 12;
+    const ahorroAnualCalculado = (gastos.ahorro?.reduce((sum, g) => sum + parseFloat(g.monto || 0), 0) || 0) * 12;
+    const deudaAnualCalculado = (gastos.deuda?.reduce((sum, g) => sum + parseFloat(g.monto || 0), 0) || 0) * 12;
+    const gastosAnualCalculado = (gastos.diarios?.reduce((sum, g) => sum + parseFloat(g.monto || 0), 0) || 0) * 12;
+    const ingresoNetoCalculado = ingresoBrutoCalculado - impuestosAnual - segurosAnual;
+    const pagoDeudaMensualCalculado = gastos.deuda?.reduce((sum, g) => sum + parseFloat(g.monto || 0), 0) || 0;
+    const gastosEsencialesMensualesCalculado = gastos.diarios?.reduce((sum, g) => sum + parseFloat(g.monto || 0), 0) || 0;
+    const reservaCalculada = totales.totalEfectivo || 0;
+    const pasivosCorrientesCalculado = totales.pasivosTotales || 0;
+    
+    setRatiosData(prev => ({
+      ...prev,
+      ingresoBruto: ingresoBrutoCalculado,
+      ingresoNeto: ingresoNetoCalculado,
+      ahorroAnual: ahorroAnualCalculado,
+      impuestosAnual: impuestosAnual,
+      segurosAnual: segurosAnual,
+      deudaAnual: deudaAnualCalculado,
+      gastosAnual: gastosAnualCalculado,
+      pagoDeudaMensual: pagoDeudaMensualCalculado,
+      gastosEsencialesMensuales: gastosEsencialesMensualesCalculado,
+      reserva: reservaCalculada,
+      pasivosCorrientes: pasivosCorrientesCalculado
+    }));
+  }, [ingresos, gastos, totales, setRatiosData]);
+
+  // Benchmarks functions
+  const getInvBenchmark = (age) => {
+    if(age < 25) return 0.2;
+    if(age <= 30) return 0.2 + (age - 25) * (0.6 - 0.2) / 10;
+    if(age <= 40) return 0.6 + (age - 30) * (3 - 0.6) / 10;
+    if(age <= 50) return 3 + (age - 40) * (8 - 3) / 10;
+    if(age <= 60) return 8 + (age - 50) * (16 - 8) / 10;
+    return 16;
+  };
+
+  const getRiquezaBenchmark = (age) => {
+    const benchmarks = [
+      {age:25, good:2.5, great:5},
+      {age:30, good:3, great:6},
+      {age:35, good:3.5, great:7},
+      {age:40, good:4, great:8},
+      {age:45, good:4.5, great:9},
+      {age:50, good:5, great:10},
+      {age:55, good:5.5, great:11},
+      {age:60, good:6, great:12},
+      {age:65, good:6.5, great:13},
+      {age:70, good:7, great:14}
+    ];
+    
+    if(age < 25) return benchmarks[0];
+    if(age >= 70) return benchmarks[benchmarks.length-1];
+    
+    for(let i=0; i<benchmarks.length-1; i++) {
+      if(age >= benchmarks[i].age && age < benchmarks[i+1].age) {
+        const t = (age - benchmarks[i].age) / (benchmarks[i+1].age - benchmarks[i].age);
+        return {
+          good: benchmarks[i].good + t * (benchmarks[i+1].good - benchmarks[i].good),
+          great: benchmarks[i].great + t * (benchmarks[i+1].great - benchmarks[i].great)
+        };
+      }
+    }
+    return benchmarks[benchmarks.length-1];
+  };
+
+  const getRetiroBenchmark = (age) => {
+    const benchmarks = [
+      {age:25, factor:0.35},
+      {age:30, factor:0.85},
+      {age:35, factor:1.5},
+      {age:40, factor:2.58},
+      {age:45, factor:3.14},
+      {age:50, factor:4.92},
+      {age:55, factor:6.35},
+      {age:60, factor:7.23},
+      {age:65, factor:10.84},
+      {age:70, factor:11}
+    ];
+    
+    if(age < 25) return benchmarks[0].factor;
+    if(age >= 70) return benchmarks[benchmarks.length-1].factor;
+    
+    for(let i=0; i<benchmarks.length-1; i++) {
+      if(age >= benchmarks[i].age && age < benchmarks[i+1].age) {
+        const t = (age - benchmarks[i].age) / (benchmarks[i+1].age - benchmarks[i].age);
+        return benchmarks[i].factor + t * (benchmarks[i+1].factor - benchmarks[i].factor);
+      }
+    }
+    return benchmarks[benchmarks.length-1].factor;
+  };
+
+  const calcularRatios = () => {
+    const edad = parseNumber(ratiosData.edad);
+    const ingresoBruto = parseNumber(ratiosData.ingresoBruto);
+    const ingresoNeto = parseNumber(ratiosData.ingresoNeto);
+    const ahorroAnual = parseNumber(ratiosData.ahorroAnual);
+    const impuestosAnual = parseNumber(ratiosData.impuestosAnual);
+    const segurosAnual = parseNumber(ratiosData.segurosAnual);
+    const gastosAnual = parseNumber(ratiosData.gastosAnual);
+    const deudaAnual = parseNumber(ratiosData.deudaAnual);
+    const gastosEsenciales = parseNumber(ratiosData.gastosEsencialesMensuales);
+    const reserva = parseNumber(ratiosData.reserva);
+    const pagoDeuda = parseNumber(ratiosData.pagoDeudaMensual);
+    const pasivosCorrientes = parseNumber(ratiosData.pasivosCorrientes);
+
+    const activosTotales = totales.activosTotales;
+    const pasivosTotales = totales.pasivosTotales;
+    const patrimonioNeto = totales.patrimonioNeto;
+    const activosLiquidos = totales.activosLiquidos;
+    const inversiones = totales.inversiones;
+    const activosRetiro = totales.totalRetiro;
+
+    const ingresoMensualBruto = ingresoBruto/12;
+    const ingresoMensualNeto = ingresoNeto/12;
+    const superavitAnual = ingresoNeto - (impuestosAnual + segurosAnual + gastosAnual + deudaAnual + ahorroAnual);
+
+    const mesesReserva = gastosEsenciales > 0 ? reserva / gastosEsenciales : NaN;
+    const razonCorriente = pasivosCorrientes > 0 ? activosLiquidos / pasivosCorrientes : NaN;
+    const tasaAhorro = ingresoBruto > 0 ? ahorroAnual / ingresoBruto : NaN;
+    const capAcum = ingresoNeto > 0 ? (ahorroAnual + superavitAnual) / ingresoNeto : NaN;
+    const dtiNeto = ingresoMensualNeto > 0 ? pagoDeuda / ingresoMensualNeto : NaN;
+    const dtiBruto = ingresoMensualBruto > 0 ? pagoDeuda / ingresoMensualBruto : NaN;
+    const deudaActivos = activosTotales > 0 ? pasivosTotales / activosTotales : NaN;
+    const deudaPatrimonio = patrimonioNeto > 0 ? pasivosTotales / patrimonioNeto : NaN;
+    const patrimonioActivos = activosTotales > 0 ? patrimonioNeto / activosTotales : NaN;
+    const inversionRatio = ingresoBruto > 0 ? inversiones / ingresoBruto : NaN;
+    const riquezaNeta = ingresoBruto > 0 ? patrimonioNeto / ingresoBruto : NaN;
+    const ahorroRetiro = ingresoBruto > 0 ? activosRetiro / ingresoBruto : NaN;
+
+    return {
+      edad, ingresoBruto, ingresoNeto, superavitAnual, activosTotales, pasivosTotales, patrimonioNeto,
+      mesesReserva, razonCorriente, tasaAhorro, capAcum, dtiNeto, dtiBruto,
+      deudaActivos, deudaPatrimonio, patrimonioActivos, inversionRatio, riquezaNeta, ahorroRetiro
+    };
+  };
+
+  const ratios = calcularRatios();
+
+  const Tooltip = ({ text, children }) => {
+    const [show, setShow] = React.useState(false);
+    return (
+      <span 
+        style={{position: 'relative', display: 'inline-block'}}
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+      >
+        {children}
+        {show && (
+          <span style={{
+            position: 'absolute',
+            bottom: '100%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            marginBottom: '8px',
+            padding: '8px 12px',
+            background: '#1f2937',
+            color: 'white',
+            borderRadius: '8px',
+            fontSize: '13px',
+            lineHeight: '1.4',
+            whiteSpace: 'normal',
+            width: '250px',
+            zIndex: 1000,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            pointerEvents: 'none'
+          }}>
+            {text}
+            <span style={{
+              position: 'absolute',
+              top: '100%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 0,
+              height: 0,
+              borderLeft: '6px solid transparent',
+              borderRight: '6px solid transparent',
+              borderTop: '6px solid #1f2937'
+            }}></span>
+          </span>
+        )}
+      </span>
+    );
+  };
+
+  return (
+    <div>
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-label">Activos Totales</div>
+          <div className="stat-value">{formatCurrency(totales.activosTotales, currency)}</div>
+          <div style={{fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9}}>✅ Calculado automáticamente</div>
+        </div>
+        <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)'}}>
+          <div className="stat-label">Pasivos Totales</div>
+          <div className="stat-value">{formatCurrency(totales.pasivosTotales, currency)}</div>
+          <div style={{fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9}}>✅ Calculado automáticamente</div>
+        </div>
+        <div className="stat-card" style={{background: totales.patrimonioNeto >= 0 ? 'linear-gradient(135deg, var(--emerald) 0%, var(--emerald-dark) 100%)' : 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)'}}>
+          <div className="stat-label">Patrimonio Neto</div>
+          <div className="stat-value">{formatCurrency(totales.patrimonioNeto, currency)}</div>
+          <div style={{fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9}}>✅ Calculado automáticamente</div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-header">
+          <div>
+            <h2 className="card-title">📊 Información Financiera Adicional</h2>
+            <p className="card-subtitle">Valores calculados automáticamente desde otras pestañas</p>
+          </div>
+        </div>
+
+        <div className="grid-3">
+          <div className="form-group">
+            <label className="form-label">
+              <Tooltip text="Tu edad actual en años. Se usa para calcular benchmarks de inversión recomendados según tu etapa de vida.">
+                <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                  Edad
+                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                </span>
+              </Tooltip>
+            </label>
+            <input
+              type="number"
+              className="form-input"
+              placeholder="35"
+              value={ratiosData.edad}
+              onChange={(e) => updateField('edad', e.target.value)}
+            />
+            <div style={{fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.5rem'}}>Ej: 35 años</div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              <Tooltip text="Tu salario total ANTES de que te quiten impuestos, seguro social, o cualquier deducción. Es lo que aparece en tu contrato.">
+                <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                  Ingreso Anual Bruto
+                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                </span>
+              </Tooltip>
+            </label>
+            <input
+              type="text"
+              className="form-input"
+              value={formatCurrency(ratiosData.ingresoBruto || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
+            />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde Ingresos y Gastos</div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              <Tooltip text="El dinero que REALMENTE llega a tu cuenta bancaria después de todos los descuentos: impuestos, seguro social, etc.">
+                <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                  Ingreso Anual Neto
+                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                </span>
+              </Tooltip>
+            </label>
+            <input
+              type="text"
+              className="form-input"
+              value={formatCurrency(ratiosData.ingresoNeto || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
+            />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde Ingresos y Gastos</div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              <Tooltip text="Dinero que TÚ apartas voluntariamente para el futuro: cuentas de ahorro, inversiones, 401k personal. NO incluyas aportes del empleador.">
+                <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                  Ahorro Anual
+                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                </span>
+              </Tooltip>
+            </label>
+            <input
+              type="text"
+              className="form-input"
+              value={formatCurrency(ratiosData.ahorroAnual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
+            />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde categoría "Ahorro"</div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Impuestos Anuales</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formatCurrency(ratiosData.impuestosAnual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
+            />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde categoría "Impuestos"</div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Seguros Anuales</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formatCurrency(ratiosData.segurosAnual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
+            />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde categoría "Seguros"</div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Gastos Diarios Anuales</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formatCurrency(ratiosData.gastosAnual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
+            />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde "Gastos Diarios"</div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Servicio de Deuda Anual</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formatCurrency(ratiosData.deudaAnual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
+            />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde categoría "Deuda"</div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Gastos Esenciales Mensuales</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formatCurrency(ratiosData.gastosEsencialesMensuales || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
+            />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde "Gastos Diarios"</div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Reserva de Emergencia</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formatCurrency(ratiosData.reserva || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
+            />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde "Efectivo" en Activos</div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Pago Mensual de Deudas</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formatCurrency(ratiosData.pagoDeudaMensual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
+            />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde categoría "Deuda"</div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Pasivos Corrientes</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formatCurrency(ratiosData.pasivosCorrientes || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
+            />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde Pasivos Totales</div>
+          </div>
+        </div>
+
+        <div style={{marginTop: '2rem', textAlign: 'center'}}>
+          <button 
+            className="btn btn-primary" 
+            onClick={() => setShowResultsModal(true)}
+            style={{fontSize: '1.1rem', padding: '1rem 2.5rem'}}
+          >
+            📊 Ver Análisis Completo de Ratios
+          </button>
+        </div>
+      </div>
+
+      {/* Results Modal */}
+      {showResultsModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.7)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          backdropFilter: 'blur(8px)'
+        }} onClick={() => setShowResultsModal(false)}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '20px',
+            maxWidth: '1400px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 70px rgba(0,0,0,0.5)'
+          }} onClick={(e) => e.stopPropagation()}>
+            
+            <div style={{padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <button onClick={() => setShowResultsModal(false)} style={{background: 'none', border: 'none', color: 'var(--primary)', fontSize: '17px', fontWeight: '600', cursor: 'pointer'}}>← Volver</button>
+              <div style={{fontSize: '22px', fontWeight: '800', flex: 1, textAlign: 'center'}}>Resultados de Ratios</div>
+              <button onClick={() => setShowResultsModal(false)} style={{background: 'var(--border)', border: 'none', width: '32px', height: '32px', borderRadius: '50%', fontSize: '20px', cursor: 'pointer'}}>×</button>
+            </div>
+
+            <div style={{flex: 1, overflowY: 'auto', padding: '20px'}}>
+              {/* Summary Grid */}
+              <div style={{padding: '16px', background: 'white', margin: '12px 0', borderRadius: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px'}}>
+                  <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
+                    <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Activos</div>
+                    <div style={{fontSize: '22px', fontWeight: '800'}}>{formatCurrency(ratios.activosTotales, currency)}</div>
+                  </div>
+                  <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
+                    <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Pasivos</div>
+                    <div style={{fontSize: '22px', fontWeight: '800'}}>{formatCurrency(ratios.pasivosTotales, currency)}</div>
+                  </div>
+                  <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
+                    <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Patrimonio Neto</div>
+                    <div style={{fontSize: '22px', fontWeight: '800', color: ratios.patrimonioNeto >= 0 ? 'var(--success)' : 'var(--danger)'}}>{formatCurrency(ratios.patrimonioNeto, currency)}</div>
+                  </div>
+                  <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
+                    <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Estado Financiero</div>
+                    <div style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      borderRadius: '999px',
+                      padding: '8px 14px',
+                      color: '#fff',
+                      fontWeight: '700',
+                      fontSize: '14px',
+                      marginTop: '8px',
+                      background: ratios.superavitAnual > 1 ? 'var(--success)' : ratios.superavitAnual < -1 ? 'var(--danger)' : 'var(--charcoal)'
+                    }}>
+                      {ratios.superavitAnual > 1 ? 'Superávit' : ratios.superavitAnual < -1 ? 'Déficit' : 'Breakeven'}
+                    </div>
+                    <div style={{fontSize: '18px', fontWeight: '700', marginTop: '6px'}}>{formatCurrency(Math.abs(ratios.superavitAnual))}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* KPI Sections */}
+              <div style={{padding: '0 16px'}}>
+                {/* LIQUIDEZ */}
+                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: 'var(--primary)', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
+                  💧 LIQUIDEZ
+                </div>
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
+                  <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)', border: '2px solid transparent'}}>
+                    <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Meses de reserva
+                        <Tooltip text="Cuántos meses podrías sobrevivir sin ingresos usando solo tu reserva de emergencia. Se calcula: Reserva ÷ Gastos mensuales esenciales.">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
+                      <button 
+                        onClick={() => setShowReservaModal(true)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          background: 'var(--primary)',
+                          color: 'white',
+                          padding: '4px 10px',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          fontWeight: '700',
+                          textTransform: 'uppercase',
+                          cursor: 'pointer',
+                          border: 'none'
+                        }}
+                      >
+                        💡 Ver recomendaciones
+                      </button>
+                    </div>
+                    <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
+                      {isFinite(ratios.mesesReserva) ? ratios.mesesReserva.toFixed(1) + ' m' : '—'}
+                    </div>
+                    <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.mesesReserva >= 6 ? 'var(--success)' : ratios.mesesReserva >= 3 ? 'var(--warning)' : 'var(--danger)'}}>
+                      {ratios.mesesReserva >= 6 ? '✅' : ratios.mesesReserva >= 3 ? '⚠️' : '🚨'}
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4'}}>Meta: &gt;6 meses ✅</div>
+                  </div>
+
+                  <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)', border: '2px solid transparent'}}>
+                    <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Razón corriente
+                        <Tooltip text="Tu capacidad de pagar deudas de corto plazo. Mide si tienes suficiente efectivo disponible para cubrir tus pasivos corrientes. Se calcula: Efectivo ÷ Pasivos corrientes.">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
+                    </div>
+                    <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
+                      {isFinite(ratios.razonCorriente) ? ratios.razonCorriente.toFixed(2) : '—'}
+                    </div>
+                    <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.razonCorriente >= 1 ? 'var(--success)' : 'var(--danger)'}}>
+                      {ratios.razonCorriente >= 1 ? '✅' : '🚨'}
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4'}}>Meta: ≥1.0 ✅</div>
+                  </div>
+                </div>
+
+                {/* AHORRO */}
+                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: 'var(--primary)', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
+                  🐷 AHORRO
+                </div>
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
+                  <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
+                    <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Tasa de ahorro
+                        <Tooltip text="Qué porcentaje de tus ingresos guardas cada mes. Indica tu disciplina financiera y capacidad de construir riqueza. Se calcula: (Ahorro ÷ Ingreso bruto) × 100%">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
+                    </div>
+                    <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
+                      {isFinite(ratios.tasaAhorro) ? (ratios.tasaAhorro * 100).toFixed(1) + '%' : '—'}
+                    </div>
+                    <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.tasaAhorro >= 0.30 ? 'var(--success)' : ratios.tasaAhorro >= 0.15 ? 'var(--warning)' : 'var(--danger)'}}>
+                      {ratios.tasaAhorro >= 0.30 ? '✅' : ratios.tasaAhorro >= 0.15 ? '⚠️' : '🚨'}
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4'}}>Meta: ≥30% ✅ · 15-29% ⚠️ · &lt;15% 🚨</div>
+                  </div>
+
+                  <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
+                    <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Capacidad de acumulación
+                        <Tooltip text="Tu habilidad real para crear riqueza después de pagar deudas. Muestra cuánto de tu ingreso se convierte en patrimonio. Se calcula: (Ahorro - Servicio deuda) ÷ Ingreso bruto">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
+                    </div>
+                    <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
+                      {isFinite(ratios.capAcum) ? (ratios.capAcum * 100).toFixed(1) + '%' : '—'}
+                    </div>
+                    <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.capAcum >= 0.30 ? 'var(--success)' : ratios.capAcum >= 0.10 ? 'var(--warning)' : 'var(--danger)'}}>
+                      {ratios.capAcum >= 0.30 ? '✅' : ratios.capAcum >= 0.10 ? '⚠️' : '🚨'}
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4'}}>Meta: ≥30% ✅ · 10-29% ⚠️ · &lt;10% 🚨</div>
+                  </div>
+                </div>
+
+                {/* DEUDA */}
+                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: 'var(--primary)', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
+                  🏦 DEUDA
+                </div>
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
+                  <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
+                    <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        DTI neto
+                        <Tooltip text="Debt-to-Income Ratio. Qué porcentaje de tu ingreso neto va a pagar deudas cada mes. Los bancos usan esto para aprobar préstamos. Se calcula: (Pago mensual deudas ÷ Ingreso neto mensual) × 100%">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
+                    </div>
+                    <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
+                      {isFinite(ratios.dtiNeto) ? (ratios.dtiNeto * 100).toFixed(1) + '%' : '—'}
+                    </div>
+                    <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.dtiNeto <= 0.36 ? 'var(--success)' : 'var(--danger)'}}>
+                      {ratios.dtiNeto <= 0.36 ? '✅' : '🚨'}
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4'}}>Meta: ≤36% ✅ · &gt;36% 🚨</div>
+                  </div>
+
+                  <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
+                    <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Pasivos / Activos
+                        <Tooltip text="Qué porcentaje de todo lo que posees está financiado con deuda. Valores altos significan que el banco 'es dueño' de gran parte de tus activos. Se calcula: (Pasivos totales ÷ Activos totales) × 100%">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
+                    </div>
+                    <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
+                      {isFinite(ratios.deudaActivos) ? (ratios.deudaActivos * 100).toFixed(1) + '%' : '—'}
+                    </div>
+                    <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.deudaActivos > 0.50 ? 'var(--danger)' : ratios.deudaActivos >= 0.30 ? 'var(--warning)' : 'var(--success)'}}>
+                      {ratios.deudaActivos > 0.50 ? '🚨' : ratios.deudaActivos >= 0.30 ? '⚠️' : '✅'}
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4'}}>Meta: ≤30% ✅ · 30-50% ⚠️ · &gt;50% 🚨</div>
+                  </div>
+                </div>
+
+                {/* PATRIMONIO */}
+                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: 'var(--primary)', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
+                  💎 PATRIMONIO
+                </div>
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
+                  <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
+                    <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Patrimonio / Activos
+                        <Tooltip text="Qué porcentaje de tus activos es realmente tuyo (no del banco). Mayor es mejor - significa más propiedad real. Se calcula: (Patrimonio neto ÷ Activos totales) × 100%">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
+                    </div>
+                    <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
+                      {isFinite(ratios.patrimonioActivos) ? (ratios.patrimonioActivos * 100).toFixed(1) + '%' : '—'}
+                    </div>
+                    <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.patrimonioActivos >= 0.70 ? 'var(--success)' : ratios.patrimonioActivos >= 0.50 ? 'var(--warning)' : 'var(--danger)'}}>
+                      {ratios.patrimonioActivos >= 0.70 ? '✅' : ratios.patrimonioActivos >= 0.50 ? '⚠️' : '🚨'}
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4'}}>Meta: ≥70% ✅ · 50-69% ⚠️ · &lt;50% 🚨</div>
+                  </div>
+
+                  <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
+                    <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Inversión / Ingreso bruto
+                        <Tooltip text="Cuántas veces tu salario anual tienes invertido. El benchmark varía según tu edad - a mayor edad, deberías tener más. Se calcula: Total inversiones ÷ Ingreso bruto anual">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
+                      <button 
+                        onClick={() => setShowBenchmarkModal(true)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          background: 'var(--primary)',
+                          color: 'white',
+                          padding: '4px 10px',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          fontWeight: '700',
+                          textTransform: 'uppercase',
+                          cursor: 'pointer',
+                          border: 'none'
+                        }}
+                      >
+                        📊 Ver benchmark
+                      </button>
+                    </div>
+                    <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
+                      {isFinite(ratios.inversionRatio) ? ratios.inversionRatio.toFixed(2) + 'x' : '—'}
+                    </div>
+                    <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.edad >= 18 && ratios.inversionRatio >= getInvBenchmark(ratios.edad) ? 'var(--success)' : 'var(--warning)'}}>
+                      {ratios.edad >= 18 && ratios.inversionRatio >= getInvBenchmark(ratios.edad) ? '✅' : 'ℹ️'}
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4'}}>Fórmula: Inversiones ÷ Ingreso bruto anual</div>
+                  </div>
+
+                  <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
+                    <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Nivel de riqueza neta
+                        <Tooltip text="Cuántas veces tu ingreso anual vale tu patrimonio neto. Indica si estás acumulando riqueza o solo sobreviviendo. Los benchmarks varían por edad. Se calcula: Patrimonio neto ÷ Ingreso bruto anual">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
+                      <button 
+                        onClick={() => setShowBenchmarkModal(true)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          background: 'var(--primary)',
+                          color: 'white',
+                          padding: '4px 10px',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          fontWeight: '700',
+                          textTransform: 'uppercase',
+                          cursor: 'pointer',
+                          border: 'none'
+                        }}
+                      >
+                        📊 Ver benchmark
+                      </button>
+                    </div>
+                    <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
+                      {isFinite(ratios.riquezaNeta) ? ratios.riquezaNeta.toFixed(2) + 'x' : '—'}
+                    </div>
+                    <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.edad >= 18 && ratios.riquezaNeta >= getRiquezaBenchmark(ratios.edad).great ? 'var(--success)' : ratios.edad >= 18 && ratios.riquezaNeta >= getRiquezaBenchmark(ratios.edad).good ? 'var(--warning)' : 'var(--danger)'}}>
+                      {ratios.edad >= 18 && ratios.riquezaNeta >= getRiquezaBenchmark(ratios.edad).great ? '✅' : ratios.edad >= 18 && ratios.riquezaNeta >= getRiquezaBenchmark(ratios.edad).good ? '⚠️' : 'Ver tabla en benchmark'}
+                    </div>
+                  </div>
+
+                  <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
+                    <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Ahorro para retiro
+                        <Tooltip text="Cuántas veces tu ingreso anual tienes guardado específicamente para el retiro (401k, IRA, pensiones). El benchmark aumenta con la edad - a los 30 deberías tener 1x, a los 40 tener 3x, etc. Se calcula: Activos de retiro ÷ Ingreso bruto anual">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
+                      <button 
+                        onClick={() => setShowBenchmarkModal(true)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          background: 'var(--primary)',
+                          color: 'white',
+                          padding: '4px 10px',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          fontWeight: '700',
+                          textTransform: 'uppercase',
+                          cursor: 'pointer',
+                          border: 'none'
+                        }}
+                      >
+                        📊 Ver benchmark
+                      </button>
+                    </div>
+                    <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
+                      {isFinite(ratios.ahorroRetiro) ? ratios.ahorroRetiro.toFixed(2) + 'x' : '—'}
+                    </div>
+                    <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.edad >= 18 && ratios.ahorroRetiro >= getRetiroBenchmark(ratios.edad) ? 'var(--success)' : 'var(--warning)'}}>
+                      {ratios.edad >= 18 && ratios.ahorroRetiro >= getRetiroBenchmark(ratios.edad) ? '✅' : 'Ver tabla en benchmark'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Benchmark Modal */}
+      {showBenchmarkModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.7)',
+          zIndex: 1001,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          backdropFilter: 'blur(8px)'
+        }} onClick={() => setShowBenchmarkModal(false)}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '20px',
+            maxWidth: '1100px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 70px rgba(0,0,0,0.5)'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{padding: '20px 24px', background: 'var(--primary)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <div style={{fontSize: '22px', fontWeight: '800', color: 'white'}}>📊 Benchmarks por Edad</div>
+              <button onClick={() => setShowBenchmarkModal(false)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', width: '32px', height: '32px', borderRadius: '50%', fontSize: '20px', cursor: 'pointer', color: 'white'}}>×</button>
+            </div>
+            <div style={{padding: '32px', overflowY: 'auto'}}>
+              <BenchmarkTables />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reserva Modal */}
+      {showReservaModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.7)',
+          zIndex: 1001,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          backdropFilter: 'blur(8px)'
+        }} onClick={() => setShowReservaModal(false)}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '20px',
+            maxWidth: '900px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 70px rgba(0,0,0,0.5)'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{padding: '20px 24px', background: 'var(--primary)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <div style={{fontSize: '22px', fontWeight: '800', color: 'white'}}>💡 Recomendaciones de Reserva de Emergencia</div>
+              <button onClick={() => setShowReservaModal(false)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', width: '32px', height: '32px', borderRadius: '50%', fontSize: '20px', cursor: 'pointer', color: 'white'}}>×</button>
+            </div>
+            <div style={{padding: '32px', overflowY: 'auto'}}>
+              <p style={{color: 'var(--text-muted)', marginBottom: '24px', lineHeight: '1.6', fontSize: '15px'}}>
+                La cantidad ideal de meses de reserva depende de tu situación laboral y personal. Usa esta guía para determinar cuánto necesitas:
+              </p>
+              
+              <table style={{width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: '12px', overflow: 'hidden'}}>
+                <thead style={{background: 'var(--primary)', color: '#fff'}}>
+                  <tr>
+                    <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Meses Recomendados</th>
+                    <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Situación</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{borderBottom: '1px solid var(--border)'}}>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--success)'}}>6 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Empleo estable + buena liquidez</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Trabajo seguro con historial sólido, sin dependientes mayores</div>
+                    </td>
+                  </tr>
+                  <tr style={{borderBottom: '1px solid var(--border)'}}>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--success)'}}>9 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Empleo estable + dependientes</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Trabajo seguro pero con familia o personas que dependen de ti</div>
+                    </td>
+                  </tr>
+                  <tr style={{borderBottom: '1px solid var(--border)'}}>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--warning)'}}>12 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Empleo inestable + dependientes</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Trabajo con menos estabilidad o industria volátil, con dependientes</div>
+                    </td>
+                  </tr>
+                  <tr style={{borderBottom: '1px solid var(--border)'}}>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--warning)'}}>18 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Ingresos variables (freelance)</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Trabajador independiente o consultor con ingresos que fluctúan mes a mes</div>
+                    </td>
+                  </tr>
+                  <tr style={{borderBottom: '1px solid var(--border)'}}>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--danger)'}}>24 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Negocio propio / alta volatilidad</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Emprendedor con negocio propio o ingresos muy variables</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--danger)'}}>36 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Ingresos irregulares / pre-retiro</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Ingresos muy irregulares o estás cerca del retiro y quieres más seguridad</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div style={{background: '#f0f9ff', padding: '16px', borderRadius: '12px', borderLeft: '4px solid var(--primary)', marginTop: '24px'}}>
+                <p style={{margin: 0, fontSize: '14px', lineHeight: '1.6', color: 'var(--text)'}}>
+                  <strong>💡 Consejo:</strong> Tu reserva de emergencia debe cubrir tus gastos esenciales mensuales multiplicados por los meses recomendados según tu situación. Esta es tu red de seguridad ante imprevistos como pérdida de empleo, emergencias médicas o reparaciones urgentes.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Benchmark Tables Component
+function BenchmarkTables() {
+  return (
+    <div>
+      <div style={{marginBottom: '32px'}}>
+        <h3 style={{margin: '0 0 16px', padding: '12px 16px', fontSize: '18px', fontWeight: '700', color: 'white', background: 'var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px'}}>
+          💰 Inversión / Ingreso Bruto
+        </h3>
+        <p style={{color: 'var(--text-muted)', marginBottom: '16px', lineHeight: '1.6'}}>
+          Cuántas veces tu ingreso anual bruto deberías tener acumulado en inversiones según tu edad.
+        </p>
+        <table style={{width: '100%', borderCollapse: 'collapse', marginBottom: '24px', background: '#fff', borderRadius: '12px', overflow: 'hidden'}}>
+          <thead style={{background: 'var(--primary)', color: '#fff'}}>
+            <tr>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Edad</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Benchmark</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Ejemplo (Ingreso $50,000)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              [25, '0.2x', '$10,000'],
+              [30, '0.6x', '$30,000'],
+              [35, '0.6x', '$30,000'],
+              [40, '1.8x', '$90,000'],
+              [45, '3.0x', '$150,000'],
+              [50, '5.5x', '$275,000'],
+              [55, '8.0x', '$400,000'],
+              [60, '12.0x', '$600,000'],
+              [65, '16.0x', '$800,000']
+            ].map(([edad, benchmark, ejemplo]) => (
+              <tr key={edad}>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: '15px'}}>{edad}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: '15px'}}>{benchmark}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: '15px'}}>{ejemplo}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{marginBottom: '32px'}}>
+        <h3 style={{margin: '0 0 16px', padding: '12px 16px', fontSize: '18px', fontWeight: '700', color: 'white', background: 'var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px'}}>
+          💎 Nivel de Riqueza Neta (Patrimonio / Ingreso)
+        </h3>
+        <p style={{color: 'var(--text-muted)', marginBottom: '16px', lineHeight: '1.6'}}>
+          Tu patrimonio neto como múltiplo de tu ingreso bruto anual. Dos niveles: <strong>Good</strong> (⚠️) y <strong>Great</strong> (✅).
+        </p>
+        <table style={{width: '100%', borderCollapse: 'collapse', marginBottom: '24px', background: '#fff', borderRadius: '12px', overflow: 'hidden'}}>
+          <thead style={{background: 'var(--primary)', color: '#fff'}}>
+            <tr>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Edad</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Good (⚠️)</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Great (✅)</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Ejemplo Great ($50k)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              [25, '2.5x', '5.0x', '$250,000'],
+              [30, '3.0x', '6.0x', '$300,000'],
+              [35, '3.5x', '7.0x', '$350,000'],
+              [40, '4.0x', '8.0x', '$400,000'],
+              [45, '4.5x', '9.0x', '$450,000'],
+              [50, '5.0x', '10.0x', '$500,000'],
+              [55, '5.5x', '11.0x', '$550,000'],
+              [60, '6.0x', '12.0x', '$600,000'],
+              [65, '6.5x', '13.0x', '$650,000'],
+              [70, '7.0x', '14.0x', '$700,000']
+            ].map(([edad, good, great, ejemplo]) => (
+              <tr key={edad}>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{edad}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{good}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{great}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{ejemplo}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{marginBottom: '32px'}}>
+        <h3 style={{margin: '0 0 16px', padding: '12px 16px', fontSize: '18px', fontWeight: '700', color: 'white', background: 'var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px'}}>
+          🏖️ Ahorro para Retiro (Activos Retiro / Ingreso)
+        </h3>
+        <p style={{color: 'var(--text-muted)', marginBottom: '16px', lineHeight: '1.6'}}>
+          Cuánto deberías tener acumulado específicamente para el retiro (401k, IRA, pensiones) como múltiplo de tu ingreso bruto anual.
+          <strong style={{color: 'var(--text)'}}> Este benchmark está diseñado para cubrir aproximadamente el 45% de tus necesidades de ingreso en el retiro (Fidelity).</strong> El resto vendría de Seguro Social, pensiones, u otras fuentes.
+        </p>
+        <table style={{width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: '12px', overflow: 'hidden'}}>
+          <thead style={{background: 'var(--primary)', color: '#fff'}}>
+            <tr>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Edad</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Benchmark (45% cobertura)</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Ejemplo (Ingreso $50,000)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              [25, '0.35x', '$17,500'],
+              [30, '0.85x', '$42,500'],
+              [35, '1.5x', '$75,000'],
+              [40, '2.58x', '$129,000'],
+              [45, '3.14x', '$157,000'],
+              [50, '4.92x', '$246,000'],
+              [55, '6.35x', '$317,500'],
+              [60, '7.23x', '$361,500'],
+              [65, '10.84x', '$542,000'],
+              [70, '11.0x', '$550,000']
+            ].map(([edad, benchmark, ejemplo]) => (
+              <tr key={edad}>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{edad}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{benchmark}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{ejemplo}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{background: '#f8fafc', padding: '16px', borderRadius: '12px', borderLeft: '4px solid var(--emerald)'}}>
+        <p style={{margin: 0, fontSize: '14px', lineHeight: '1.6', color: 'var(--text)'}}>
+          <strong>Nota:</strong> Estos benchmarks son guías generales. Tu situación personal puede variar según tus metas, estilo de vida esperado en el retiro, edad de retiro planeada, y otras fuentes de ingreso (pensión, seguro social, etc.).
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ExportFooter({ totales, currency }) {
+  const exportPDF = async () => {
+    alert('Función de exportación a PDF próximamente. Por ahora puedes usar Imprimir > Guardar como PDF desde tu navegador.');
+  };
+
+  return (
+    <footer className="export-footer">
+      <div className="export-footer-content">
+        <div className="export-info">
+          <div className="font-bold">Estado Financiero Global</div>
+          <div className="text-muted">
+            Patrimonio Neto: <span className="currency font-bold" style={{color: totales.patrimonioNeto >= 0 ? 'var(--emerald)' : 'var(--danger)'}}>
+              {formatCurrency(totales.patrimonioNeto, currency)}
+            </span>
+          </div>
+        </div>
+        
+        <div className="export-actions">
+          <button className="btn btn-outline" onClick={() => window.print()}>
+            🖨️ Imprimir Reporte
+          </button>
+          <button className="btn btn-primary" onClick={exportPDF}>
+            📄 Exportar PDF
+          </button>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>
