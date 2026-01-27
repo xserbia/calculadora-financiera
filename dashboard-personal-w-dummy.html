@@ -1798,7 +1798,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
         <div className="card-header">
           <div>
             <h2 className="card-title">📊 Información Financiera Adicional</h2>
-            <p className="card-subtitle">Completa estos campos para calcular todos los ratios</p>
+            <p className="card-subtitle">Valores calculados automáticamente desde otras pestañas</p>
           </div>
         </div>
 
@@ -1832,12 +1832,13 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
               </Tooltip>
             </label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="$50,000"
-              value={ratiosData.ingresoBruto}
-              onChange={(e) => updateField('ingresoBruto', e.target.value)}
+              value={formatCurrency(ratiosData.ingresoBruto || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde Ingresos y Gastos</div>
           </div>
 
           <div className="form-group">
@@ -1850,12 +1851,13 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
               </Tooltip>
             </label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="$38,000"
-              value={ratiosData.ingresoNeto}
-              onChange={(e) => updateField('ingresoNeto', e.target.value)}
+              value={formatCurrency(ratiosData.ingresoNeto || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde Ingresos y Gastos</div>
           </div>
 
           <div className="form-group">
@@ -1868,100 +1870,109 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
               </Tooltip>
             </label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="$6,000"
-              value={ratiosData.ahorroAnual}
-              onChange={(e) => updateField('ahorroAnual', e.target.value)}
+              value={formatCurrency(ratiosData.ahorroAnual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde categoría "Ahorro"</div>
           </div>
 
           <div className="form-group">
             <label className="form-label">Impuestos Anuales</label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="$12,000"
-              value={ratiosData.impuestosAnual}
-              onChange={(e) => updateField('impuestosAnual', e.target.value)}
+              value={formatCurrency(ratiosData.impuestosAnual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde categoría "Impuestos"</div>
           </div>
 
           <div className="form-group">
             <label className="form-label">Seguros Anuales</label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="$4,800"
-              value={ratiosData.segurosAnual}
-              onChange={(e) => updateField('segurosAnual', e.target.value)}
+              value={formatCurrency(ratiosData.segurosAnual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde categoría "Seguros"</div>
           </div>
 
           <div className="form-group">
             <label className="form-label">Gastos Diarios Anuales</label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="$24,000"
-              value={ratiosData.gastosAnual}
-              onChange={(e) => updateField('gastosAnual', e.target.value)}
+              value={formatCurrency(ratiosData.gastosAnual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde "Gastos Diarios"</div>
           </div>
 
           <div className="form-group">
             <label className="form-label">Servicio de Deuda Anual</label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="$9,600"
-              value={ratiosData.deudaAnual}
-              onChange={(e) => updateField('deudaAnual', e.target.value)}
+              value={formatCurrency(ratiosData.deudaAnual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde categoría "Deuda"</div>
           </div>
 
           <div className="form-group">
             <label className="form-label">Gastos Esenciales Mensuales</label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="$2,500"
-              value={ratiosData.gastosEsencialesMensuales}
-              onChange={(e) => updateField('gastosEsencialesMensuales', e.target.value)}
+              value={formatCurrency(ratiosData.gastosEsencialesMensuales || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde "Gastos Diarios"</div>
           </div>
 
           <div className="form-group">
             <label className="form-label">Reserva de Emergencia</label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="$15,000"
-              value={ratiosData.reserva}
-              onChange={(e) => updateField('reserva', e.target.value)}
+              value={formatCurrency(ratiosData.reserva || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde "Efectivo" en Activos</div>
           </div>
 
           <div className="form-group">
             <label className="form-label">Pago Mensual de Deudas</label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="$1,200"
-              value={ratiosData.pagoDeudaMensual}
-              onChange={(e) => updateField('pagoDeudaMensual', e.target.value)}
+              value={formatCurrency(ratiosData.pagoDeudaMensual || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde categoría "Deuda"</div>
           </div>
 
           <div className="form-group">
             <label className="form-label">Pasivos Corrientes</label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="$8,000"
-              value={ratiosData.pasivosCorrientes}
-              onChange={(e) => updateField('pasivosCorrientes', e.target.value)}
+              value={formatCurrency(ratiosData.pasivosCorrientes || 0, currency)}
+              readOnly
+              style={{background: '#f8fafc', cursor: 'not-allowed'}}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>✅ Calculado desde Pasivos Totales</div>
           </div>
         </div>
 
