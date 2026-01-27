@@ -612,62 +612,35 @@ const { useState, useEffect, useRef, useMemo } = React;
 const formatCurrency = (value, currencyCode = 'USD') => {
   if (value === null || value === undefined || value === '') {
     const symbols = {
-      'USD': '$', 'CAD': 'C$', 'MXN': '$',
-      'GTQ': 'Q', 'HNL': 'L', 'NIO': 'C$', 'CRC': '₡', 'PAB': 'B/.',
-      'COP': '$', 'VES': 'Bs.', 'BRL': 'R$', 'PEN': 'S/', 'BOB': 'Bs.',
-      'PYG': '₲', 'CLP': '$', 'ARS': '$', 'UYU': '$U',
-      'DOP': 'RD$', 'CUP': '$', 'HTG': 'G', 'JMD': 'J$', 'TTD': 'TT$',
-      'EUR': '€', 'GBP': '£', 'CHF': 'CHF'
+      'USD': '$', 'EUR': '€', 'GBP': '£', 'MXN': '$', 
+      'COP': '$', 'ARS': '$', 'CLP': '$', 'PEN': 'S/', 
+      'BRL': 'R$', 'CAD': 'C$'
     };
     return `${symbols[currencyCode] || '$'}0`;
   }
-  
   const num = typeof value === 'string' ? parseFloat(value.replace(/,/g, '')) : value;
   if (isNaN(num)) {
     const symbols = {
-      'USD': '$', 'CAD': 'C$', 'MXN': '$',
-      'GTQ': 'Q', 'HNL': 'L', 'NIO': 'C$', 'CRC': '₡', 'PAB': 'B/.',
-      'COP': '$', 'VES': 'Bs.', 'BRL': 'R$', 'PEN': 'S/', 'BOB': 'Bs.',
-      'PYG': '₲', 'CLP': '$', 'ARS': '$', 'UYU': '$U',
-      'DOP': 'RD$', 'CUP': '$', 'HTG': 'G', 'JMD': 'J$', 'TTD': 'TT$',
-      'EUR': '€', 'GBP': '£', 'CHF': 'CHF'
+      'USD': '$', 'EUR': '€', 'GBP': '£', 'MXN': '$', 
+      'COP': '$', 'ARS': '$', 'CLP': '$', 'PEN': 'S/', 
+      'BRL': 'R$', 'CAD': 'C$'
     };
     return `${symbols[currencyCode] || '$'}0`;
   }
   
-  const symbols = {
-    'USD': '$', 'CAD': 'C$', 'MXN': '$',
-    'GTQ': 'Q', 'HNL': 'L', 'NIO': 'C$', 'CRC': '₡', 'PAB': 'B/.',
-    'COP': '$', 'VES': 'Bs.', 'BRL': 'R$', 'PEN': 'S/', 'BOB': 'Bs.',
-    'PYG': '₲', 'CLP': '$', 'ARS': '$', 'UYU': '$U',
-    'DOP': 'RD$', 'CUP': '$', 'HTG': 'G', 'JMD': 'J$', 'TTD': 'TT$',
-    'EUR': '€', 'GBP': '£', 'CHF': 'CHF'
-  };
-  
   const locales = {
-    'USD': 'en-US', 'CAD': 'en-CA', 'MXN': 'es-MX',
-    'GTQ': 'es-GT', 'HNL': 'es-HN', 'NIO': 'es-NI', 'CRC': 'es-CR', 'PAB': 'es-PA',
-    'COP': 'es-CO', 'VES': 'es-VE', 'BRL': 'pt-BR', 'PEN': 'es-PE', 'BOB': 'es-BO',
-    'PYG': 'es-PY', 'CLP': 'es-CL', 'ARS': 'es-AR', 'UYU': 'es-UY',
-    'DOP': 'es-DO', 'CUP': 'es-CU', 'HTG': 'fr-HT', 'JMD': 'en-JM', 'TTD': 'en-TT',
-    'EUR': 'de-DE', 'GBP': 'en-GB', 'CHF': 'de-CH'
+    'USD': 'en-US', 'EUR': 'de-DE', 'GBP': 'en-GB',
+    'MXN': 'es-MX', 'COP': 'es-CO', 'ARS': 'es-AR',
+    'CLP': 'es-CL', 'PEN': 'es-PE', 'BRL': 'pt-BR',
+    'CAD': 'en-CA'
   };
   
-  // Try to use Intl.NumberFormat, fallback to manual formatting if not supported
-  try {
-    return new Intl.NumberFormat(locales[currencyCode] || 'en-US', {
-      style: 'currency',
-      currency: currencyCode,
-      maximumFractionDigits: 0
-    }).format(num);
-  } catch (error) {
-    // Fallback for unsupported currencies
-    const symbol = symbols[currencyCode] || '$';
-    const formattedNum = Math.abs(num).toLocaleString('en-US', { maximumFractionDigits: 0 });
-    return num < 0 ? `-${symbol}${formattedNum}` : `${symbol}${formattedNum}`;
-  }
+  return new Intl.NumberFormat(locales[currencyCode] || 'en-US', {
+    style: 'currency',
+    currency: currencyCode,
+    maximumFractionDigits: 0
+  }).format(num);
 };
-
 
 const parseNumber = (value) => {
   if (value === null || value === undefined || value === '') return 0;
@@ -862,45 +835,16 @@ function App() {
                   outline: 'none'
                 }}
               >
-                <optgroup label="AMÉRICA DEL NORTE">
-                  <option value="USD" style={{background: '#2845d9', color: 'white'}}>🇺🇸 USD - Dólar Estadounidense</option>
-                  <option value="CAD" style={{background: '#2845d9', color: 'white'}}>🇨🇦 CAD - Dólar Canadiense</option>
-                  <option value="MXN" style={{background: '#2845d9', color: 'white'}}>🇲🇽 MXN - Peso Mexicano</option>
-                </optgroup>
-                
-                <optgroup label="AMÉRICA CENTRAL">
-                  <option value="GTQ" style={{background: '#2845d9', color: 'white'}}>🇬🇹 GTQ - Quetzal Guatemalteco</option>
-                  <option value="HNL" style={{background: '#2845d9', color: 'white'}}>🇭🇳 HNL - Lempira Hondureño</option>
-                  <option value="NIO" style={{background: '#2845d9', color: 'white'}}>🇳🇮 NIO - Córdoba Nicaragüense</option>
-                  <option value="CRC" style={{background: '#2845d9', color: 'white'}}>🇨🇷 CRC - Colón Costarricense</option>
-                  <option value="PAB" style={{background: '#2845d9', color: 'white'}}>🇵🇦 PAB - Balboa Panameño</option>
-                </optgroup>
-                
-                <optgroup label="AMÉRICA DEL SUR">
-                  <option value="COP" style={{background: '#2845d9', color: 'white'}}>🇨🇴 COP - Peso Colombiano</option>
-                  <option value="VES" style={{background: '#2845d9', color: 'white'}}>🇻🇪 VES - Bolívar Venezolano</option>
-                  <option value="BRL" style={{background: '#2845d9', color: 'white'}}>🇧🇷 BRL - Real Brasileño</option>
-                  <option value="PEN" style={{background: '#2845d9', color: 'white'}}>🇵🇪 PEN - Sol Peruano</option>
-                  <option value="BOB" style={{background: '#2845d9', color: 'white'}}>🇧🇴 BOB - Boliviano</option>
-                  <option value="PYG" style={{background: '#2845d9', color: 'white'}}>🇵🇾 PYG - Guaraní Paraguayo</option>
-                  <option value="CLP" style={{background: '#2845d9', color: 'white'}}>🇨🇱 CLP - Peso Chileno</option>
-                  <option value="ARS" style={{background: '#2845d9', color: 'white'}}>🇦🇷 ARS - Peso Argentino</option>
-                  <option value="UYU" style={{background: '#2845d9', color: 'white'}}>🇺🇾 UYU - Peso Uruguayo</option>
-                </optgroup>
-                
-                <optgroup label="CARIBE">
-                  <option value="DOP" style={{background: '#2845d9', color: 'white'}}>🇩🇴 DOP - Peso Dominicano</option>
-                  <option value="CUP" style={{background: '#2845d9', color: 'white'}}>🇨🇺 CUP - Peso Cubano</option>
-                  <option value="HTG" style={{background: '#2845d9', color: 'white'}}>🇭🇹 HTG - Gourde Haitiano</option>
-                  <option value="JMD" style={{background: '#2845d9', color: 'white'}}>🇯🇲 JMD - Dólar Jamaiquino</option>
-                  <option value="TTD" style={{background: '#2845d9', color: 'white'}}>🇹🇹 TTD - Dólar Trinitense</option>
-                </optgroup>
-                
-                <optgroup label="EUROPA Y OTROS">
-                  <option value="EUR" style={{background: '#2845d9', color: 'white'}}>🇪🇺 EUR - Euro</option>
-                  <option value="GBP" style={{background: '#2845d9', color: 'white'}}>🇬🇧 GBP - Libra Esterlina</option>
-                  <option value="CHF" style={{background: '#2845d9', color: 'white'}}>🇨🇭 CHF - Franco Suizo</option>
-                </optgroup>
+                <option value="USD" style={{background: '#2845d9', color: 'white'}}>🇺🇸 USD - Dólar</option>
+                <option value="EUR" style={{background: '#2845d9', color: 'white'}}>🇪🇺 EUR - Euro</option>
+                <option value="GBP" style={{background: '#2845d9', color: 'white'}}>🇬🇧 GBP - Libra</option>
+                <option value="MXN" style={{background: '#2845d9', color: 'white'}}>🇲🇽 MXN - Peso Mexicano</option>
+                <option value="COP" style={{background: '#2845d9', color: 'white'}}>🇨🇴 COP - Peso Colombiano</option>
+                <option value="ARS" style={{background: '#2845d9', color: 'white'}}>🇦🇷 ARS - Peso Argentino</option>
+                <option value="CLP" style={{background: '#2845d9', color: 'white'}}>🇨🇱 CLP - Peso Chileno</option>
+                <option value="PEN" style={{background: '#2845d9', color: 'white'}}>🇵🇪 PEN - Sol Peruano</option>
+                <option value="BRL" style={{background: '#2845d9', color: 'white'}}>🇧🇷 BRL - Real Brasileño</option>
+                <option value="CAD" style={{background: '#2845d9', color: 'white'}}>🇨🇦 CAD - Dólar Canadiense</option>
               </select>
             </div>
             
@@ -2364,7 +2308,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
               <button onClick={() => setShowBenchmarkModal(false)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', width: '32px', height: '32px', borderRadius: '50%', fontSize: '20px', cursor: 'pointer', color: 'white'}}>×</button>
             </div>
             <div style={{padding: '32px', overflowY: 'auto'}}>
-              <BenchmarkTables currency={currency} />
+              <BenchmarkTables />
             </div>
           </div>
         </div>
@@ -2470,7 +2414,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
 }
 
 // Benchmark Tables Component
-function BenchmarkTables({ currency }) {
+function BenchmarkTables() {
   return (
     <div>
       <div style={{marginBottom: '32px'}}>
@@ -2485,25 +2429,25 @@ function BenchmarkTables({ currency }) {
             <tr>
               <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Edad</th>
               <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Benchmark</th>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Ejemplo (Ingreso {formatCurrency(50000, currency)})</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Ejemplo (Ingreso $50,000)</th>
             </tr>
           </thead>
           <tbody>
             {[
-              [25, '0.2x', 10000],
-              [30, '0.6x', 30000],
-              [35, '0.6x', 30000],
-              [40, '1.8x', 90000],
-              [45, '3.0x', 150000],
-              [50, '5.5x', 275000],
-              [55, '8.0x', 400000],
-              [60, '12.0x', 600000],
-              [65, '16.0x', 800000]
+              [25, '0.2x', '$10,000'],
+              [30, '0.6x', '$30,000'],
+              [35, '0.6x', '$30,000'],
+              [40, '1.8x', '$90,000'],
+              [45, '3.0x', '$150,000'],
+              [50, '5.5x', '$275,000'],
+              [55, '8.0x', '$400,000'],
+              [60, '12.0x', '$600,000'],
+              [65, '16.0x', '$800,000']
             ].map(([edad, benchmark, ejemplo]) => (
               <tr key={edad}>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: '15px'}}>{edad}</td>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: '15px'}}>{benchmark}</td>
-                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: '15px'}}>{formatCurrency(ejemplo, currency)}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: '15px'}}>{ejemplo}</td>
               </tr>
             ))}
           </tbody>
@@ -2523,27 +2467,27 @@ function BenchmarkTables({ currency }) {
               <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Edad</th>
               <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Good (⚠️)</th>
               <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Great (✅)</th>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Ejemplo Great ({formatCurrency(50000, currency)})</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Ejemplo Great ($50k)</th>
             </tr>
           </thead>
           <tbody>
             {[
-              [25, '2.5x', '5.0x', 250000],
-              [30, '3.0x', '6.0x', 300000],
-              [35, '3.5x', '7.0x', 350000],
-              [40, '4.0x', '8.0x', 400000],
-              [45, '4.5x', '9.0x', 450000],
-              [50, '5.0x', '10.0x', 500000],
-              [55, '5.5x', '11.0x', 550000],
-              [60, '6.0x', '12.0x', 600000],
-              [65, '6.5x', '13.0x', 650000],
-              [70, '7.0x', '14.0x', 700000]
+              [25, '2.5x', '5.0x', '$250,000'],
+              [30, '3.0x', '6.0x', '$300,000'],
+              [35, '3.5x', '7.0x', '$350,000'],
+              [40, '4.0x', '8.0x', '$400,000'],
+              [45, '4.5x', '9.0x', '$450,000'],
+              [50, '5.0x', '10.0x', '$500,000'],
+              [55, '5.5x', '11.0x', '$550,000'],
+              [60, '6.0x', '12.0x', '$600,000'],
+              [65, '6.5x', '13.0x', '$650,000'],
+              [70, '7.0x', '14.0x', '$700,000']
             ].map(([edad, good, great, ejemplo]) => (
               <tr key={edad}>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{edad}</td>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{good}</td>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{great}</td>
-                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{formatCurrency(ejemplo, currency)}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{ejemplo}</td>
               </tr>
             ))}
           </tbody>
@@ -2563,26 +2507,26 @@ function BenchmarkTables({ currency }) {
             <tr>
               <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Edad</th>
               <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Benchmark (45% cobertura)</th>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Ejemplo (Ingreso {formatCurrency(50000, currency)})</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Ejemplo (Ingreso $50,000)</th>
             </tr>
           </thead>
           <tbody>
             {[
-              [25, '0.35x', 17500],
-              [30, '0.85x', 42500],
-              [35, '1.5x', 75000],
-              [40, '2.58x', 129000],
-              [45, '3.14x', 157000],
-              [50, '4.92x', 246000],
-              [55, '6.35x', 317500],
-              [60, '7.23x', 361500],
-              [65, '10.84x', 542000],
-              [70, '11.0x', 550000]
+              [25, '0.35x', '$17,500'],
+              [30, '0.85x', '$42,500'],
+              [35, '1.5x', '$75,000'],
+              [40, '2.58x', '$129,000'],
+              [45, '3.14x', '$157,000'],
+              [50, '4.92x', '$246,000'],
+              [55, '6.35x', '$317,500'],
+              [60, '7.23x', '$361,500'],
+              [65, '10.84x', '$542,000'],
+              [70, '11.0x', '$550,000']
             ].map(([edad, benchmark, ejemplo]) => (
               <tr key={edad}>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{edad}</td>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{benchmark}</td>
-                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{formatCurrency(ejemplo, currency)}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{ejemplo}</td>
               </tr>
             ))}
           </tbody>
@@ -2623,27 +2567,6 @@ function ExportFooter({ totales, currency }) {
             📄 Exportar PDF
           </button>
         </div>
-      </div>
-      
-      <div style={{
-        borderTop: '1px solid var(--border)',
-        marginTop: '1.5rem',
-        paddingTop: '1.5rem',
-        fontSize: '12px',
-        lineHeight: '1.6',
-        color: 'var(--text-muted)',
-        textAlign: 'center'
-      }}>
-        <p style={{margin: '0 0 8px'}}>
-          ⚖️ <strong>Aviso Legal:</strong> Esta calculadora es una herramienta educativa y de planificación financiera personal. 
-          Los resultados, ratios y benchmarks proporcionados son únicamente con fines informativos y no constituyen 
-          asesoramiento financiero, fiscal, legal o de inversión profesional.
-        </p>
-        <p style={{margin: '0'}}>
-          Los benchmarks mostrados son promedios generales y pueden no aplicar a tu situación individual. 
-          Para decisiones financieras importantes, consulta con un asesor financiero certificado. 
-          No nos hacemos responsables de decisiones tomadas con base en esta información.
-        </p>
       </div>
     </footer>
   );
