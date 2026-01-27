@@ -17,13 +17,14 @@
 
 <style>
 :root {
+  --primary: #3956E8;
   --emerald: #10b981;
   --emerald-dark: #059669;
   --amber: #f59e0b;
   --charcoal: #18181b;
   --slate: #475569;
   --slate-light: #cbd5e1;
-  --bg: #f5ebfc;
+  --bg: #fafafa;
   --card: #ffffff;
   --border: #e2e8f0;
   --text: #0f172a;
@@ -55,7 +56,7 @@ body {
 
 /* Header */
 .app-header {
-  background: #2845d9;
+  background: linear-gradient(135deg, var(--charcoal) 0%, #27272a 100%);
   color: white;
   padding: 2rem 2rem 0;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -227,7 +228,7 @@ select.form-input {
 }
 
 .btn-primary {
-  background: #2845d9;
+  background: var(--primary);
   color: white;
 }
 
@@ -259,10 +260,16 @@ select.form-input {
 }
 
 .btn-danger {
-  background: var(--danger);
-  color: white;
+  background: #fecaca;
+  color: #991b1b;
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
+}
+
+.btn-danger:hover {
+  background: #fca5a5;
+  color: #7f1d1d;
+  transform: translateY(-1px);
 }
 
 .btn-small {
@@ -568,7 +575,7 @@ tbody tr:hover {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #2845d9;
+  background: var(--emerald);
   color: white;
   font-size: 0.75rem;
   font-weight: 700;
@@ -602,16 +609,65 @@ tbody tr:hover {
 const { useState, useEffect, useRef, useMemo } = React;
 
 // ============= UTILITY FUNCTIONS =============
-const formatCurrency = (value) => {
-  if (value === null || value === undefined || value === '') return '$0';
+const formatCurrency = (value, currencyCode = 'USD') => {
+  if (value === null || value === undefined || value === '') {
+    const symbols = {
+      'USD': '$', 'CAD': 'C$', 'MXN': '$',
+      'GTQ': 'Q', 'HNL': 'L', 'NIO': 'C$', 'CRC': '₡', 'PAB': 'B/.',
+      'COP': '$', 'VES': 'Bs.', 'BRL': 'R$', 'PEN': 'S/', 'BOB': 'Bs.',
+      'PYG': '₲', 'CLP': '$', 'ARS': '$', 'UYU': '$U',
+      'DOP': 'RD$', 'CUP': '$', 'HTG': 'G', 'JMD': 'J$', 'TTD': 'TT$',
+      'EUR': '€', 'GBP': '£', 'CHF': 'CHF'
+    };
+    return `${symbols[currencyCode] || '$'}0`;
+  }
+  
   const num = typeof value === 'string' ? parseFloat(value.replace(/,/g, '')) : value;
-  if (isNaN(num)) return '$0';
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0
-  }).format(num);
+  if (isNaN(num)) {
+    const symbols = {
+      'USD': '$', 'CAD': 'C$', 'MXN': '$',
+      'GTQ': 'Q', 'HNL': 'L', 'NIO': 'C$', 'CRC': '₡', 'PAB': 'B/.',
+      'COP': '$', 'VES': 'Bs.', 'BRL': 'R$', 'PEN': 'S/', 'BOB': 'Bs.',
+      'PYG': '₲', 'CLP': '$', 'ARS': '$', 'UYU': '$U',
+      'DOP': 'RD$', 'CUP': '$', 'HTG': 'G', 'JMD': 'J$', 'TTD': 'TT$',
+      'EUR': '€', 'GBP': '£', 'CHF': 'CHF'
+    };
+    return `${symbols[currencyCode] || '$'}0`;
+  }
+  
+  const symbols = {
+    'USD': '$', 'CAD': 'C$', 'MXN': '$',
+    'GTQ': 'Q', 'HNL': 'L', 'NIO': 'C$', 'CRC': '₡', 'PAB': 'B/.',
+    'COP': '$', 'VES': 'Bs.', 'BRL': 'R$', 'PEN': 'S/', 'BOB': 'Bs.',
+    'PYG': '₲', 'CLP': '$', 'ARS': '$', 'UYU': '$U',
+    'DOP': 'RD$', 'CUP': '$', 'HTG': 'G', 'JMD': 'J$', 'TTD': 'TT$',
+    'EUR': '€', 'GBP': '£', 'CHF': 'CHF'
+  };
+  
+  const locales = {
+    'USD': 'en-US', 'CAD': 'en-CA', 'MXN': 'es-MX',
+    'GTQ': 'es-GT', 'HNL': 'es-HN', 'NIO': 'es-NI', 'CRC': 'es-CR', 'PAB': 'es-PA',
+    'COP': 'es-CO', 'VES': 'es-VE', 'BRL': 'pt-BR', 'PEN': 'es-PE', 'BOB': 'es-BO',
+    'PYG': 'es-PY', 'CLP': 'es-CL', 'ARS': 'es-AR', 'UYU': 'es-UY',
+    'DOP': 'es-DO', 'CUP': 'es-CU', 'HTG': 'fr-HT', 'JMD': 'en-JM', 'TTD': 'en-TT',
+    'EUR': 'de-DE', 'GBP': 'en-GB', 'CHF': 'de-CH'
+  };
+  
+  // Try to use Intl.NumberFormat, fallback to manual formatting if not supported
+  try {
+    return new Intl.NumberFormat(locales[currencyCode] || 'en-US', {
+      style: 'currency',
+      currency: currencyCode,
+      maximumFractionDigits: 0
+    }).format(num);
+  } catch (error) {
+    // Fallback for unsupported currencies
+    const symbol = symbols[currencyCode] || '$';
+    const formattedNum = Math.abs(num).toLocaleString('en-US', { maximumFractionDigits: 0 });
+    return num < 0 ? `-${symbol}${formattedNum}` : `${symbol}${formattedNum}`;
+  }
 };
+
 
 const parseNumber = (value) => {
   if (value === null || value === undefined || value === '') return 0;
@@ -718,6 +774,8 @@ const DUMMY_RATIOS = {
 // ============= MAIN APP COMPONENT =============
 function App() {
   const [activeTab, setActiveTab] = useState('activos');
+  const [currency, setCurrency] = useState('USD');
+  const [showHelpModal, setShowHelpModal] = useState(false);
   
   // ===== SHARED STATE WITH DUMMY DATA =====
   const [activos, setActivos] = useState(DUMMY_ACTIVOS);
@@ -786,6 +844,86 @@ function App() {
           <h1 className="app-title">💰 Dashboard Financiero Personal</h1>
           <p className="app-subtitle">Caso de ejemplo: María García, 35 años | Ingresos: $92,400/año | Patrimonio: $306,600</p>
           
+          <div style={{display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+              <label style={{color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', fontWeight: '600'}}>Moneda:</label>
+              <select 
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                style={{
+                  padding: '0.5rem 1rem',
+                  borderRadius: '8px',
+                  border: '2px solid rgba(255,255,255,0.2)',
+                  background: 'rgba(255,255,255,0.1)',
+                  color: 'white',
+                  fontWeight: '600',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+              >
+                <optgroup label="AMÉRICA DEL NORTE">
+                  <option value="USD" style={{background: '#2845d9', color: 'white'}}>🇺🇸 USD - Dólar Estadounidense</option>
+                  <option value="CAD" style={{background: '#2845d9', color: 'white'}}>🇨🇦 CAD - Dólar Canadiense</option>
+                  <option value="MXN" style={{background: '#2845d9', color: 'white'}}>🇲🇽 MXN - Peso Mexicano</option>
+                </optgroup>
+                
+                <optgroup label="AMÉRICA CENTRAL">
+                  <option value="GTQ" style={{background: '#2845d9', color: 'white'}}>🇬🇹 GTQ - Quetzal Guatemalteco</option>
+                  <option value="HNL" style={{background: '#2845d9', color: 'white'}}>🇭🇳 HNL - Lempira Hondureño</option>
+                  <option value="NIO" style={{background: '#2845d9', color: 'white'}}>🇳🇮 NIO - Córdoba Nicaragüense</option>
+                  <option value="CRC" style={{background: '#2845d9', color: 'white'}}>🇨🇷 CRC - Colón Costarricense</option>
+                  <option value="PAB" style={{background: '#2845d9', color: 'white'}}>🇵🇦 PAB - Balboa Panameño</option>
+                </optgroup>
+                
+                <optgroup label="AMÉRICA DEL SUR">
+                  <option value="COP" style={{background: '#2845d9', color: 'white'}}>🇨🇴 COP - Peso Colombiano</option>
+                  <option value="VES" style={{background: '#2845d9', color: 'white'}}>🇻🇪 VES - Bolívar Venezolano</option>
+                  <option value="BRL" style={{background: '#2845d9', color: 'white'}}>🇧🇷 BRL - Real Brasileño</option>
+                  <option value="PEN" style={{background: '#2845d9', color: 'white'}}>🇵🇪 PEN - Sol Peruano</option>
+                  <option value="BOB" style={{background: '#2845d9', color: 'white'}}>🇧🇴 BOB - Boliviano</option>
+                  <option value="PYG" style={{background: '#2845d9', color: 'white'}}>🇵🇾 PYG - Guaraní Paraguayo</option>
+                  <option value="CLP" style={{background: '#2845d9', color: 'white'}}>🇨🇱 CLP - Peso Chileno</option>
+                  <option value="ARS" style={{background: '#2845d9', color: 'white'}}>🇦🇷 ARS - Peso Argentino</option>
+                  <option value="UYU" style={{background: '#2845d9', color: 'white'}}>🇺🇾 UYU - Peso Uruguayo</option>
+                </optgroup>
+                
+                <optgroup label="CARIBE">
+                  <option value="DOP" style={{background: '#2845d9', color: 'white'}}>🇩🇴 DOP - Peso Dominicano</option>
+                  <option value="CUP" style={{background: '#2845d9', color: 'white'}}>🇨🇺 CUP - Peso Cubano</option>
+                  <option value="HTG" style={{background: '#2845d9', color: 'white'}}>🇭🇹 HTG - Gourde Haitiano</option>
+                  <option value="JMD" style={{background: '#2845d9', color: 'white'}}>🇯🇲 JMD - Dólar Jamaiquino</option>
+                  <option value="TTD" style={{background: '#2845d9', color: 'white'}}>🇹🇹 TTD - Dólar Trinitense</option>
+                </optgroup>
+                
+                <optgroup label="EUROPA Y OTROS">
+                  <option value="EUR" style={{background: '#2845d9', color: 'white'}}>🇪🇺 EUR - Euro</option>
+                  <option value="GBP" style={{background: '#2845d9', color: 'white'}}>🇬🇧 GBP - Libra Esterlina</option>
+                  <option value="CHF" style={{background: '#2845d9', color: 'white'}}>🇨🇭 CHF - Franco Suizo</option>
+                </optgroup>
+              </select>
+            </div>
+            
+            <button
+              onClick={() => setShowHelpModal(true)}
+              style={{
+                padding: '0.5rem 1.25rem',
+                borderRadius: '8px',
+                border: '2px solid rgba(255,255,255,0.3)',
+                background: 'rgba(255,255,255,0.15)',
+                color: 'white',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              ❓ Cómo usar esta calculadora
+            </button>
+          </div>
+          
           <div className="tabs-container">
             <button 
               className={`tab-button ${activeTab === 'activos' ? 'active' : ''}`}
@@ -823,13 +961,13 @@ function App() {
 
       <main className="main-content fade-in">
         {activeTab === 'activos' && (
-          <InventarioActivos activos={activos} setActivos={setActivos} totales={totales} />
+          <InventarioActivos activos={activos} setActivos={setActivos} totales={totales} currency={currency} />
         )}
         {activeTab === 'deudas' && (
-          <InventarioDeudas deudas={deudas} setDeudas={setDeudas} />
+          <InventarioDeudas deudas={deudas} setDeudas={setDeudas} currency={currency} />
         )}
         {activeTab === 'balance' && (
-          <HojaBalance activos={activos} deudas={deudas} totales={totales} />
+          <HojaBalance activos={activos} deudas={deudas} totales={totales} currency={currency} />
         )}
         {activeTab === 'ingresos' && (
           <IngresosGastos 
@@ -839,6 +977,7 @@ function App() {
             setGastos={setGastos}
             modoCalculo={modoCalculo}
             setModoCalculo={setModoCalculo}
+            currency={currency}
           />
         )}
         {activeTab === 'ratios' && (
@@ -846,11 +985,104 @@ function App() {
             ratiosData={ratiosData}
             setRatiosData={setRatiosData}
             totales={totales}
+            currency={currency}
           />
         )}
       </main>
 
-      <ExportFooter totales={totales} />
+      {/* Help Modal */}
+      {showHelpModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.7)',
+          zIndex: 2000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          backdropFilter: 'blur(8px)'
+        }} onClick={() => setShowHelpModal(false)}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '20px',
+            maxWidth: '800px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 70px rgba(0,0,0,0.5)'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{padding: '24px 28px', background: 'var(--primary)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <div style={{fontSize: '24px', fontWeight: '800', color: 'white'}}>💡 Cómo usar esta Calculadora</div>
+              <button onClick={() => setShowHelpModal(false)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', fontSize: '22px', cursor: 'pointer', color: 'white'}}>×</button>
+            </div>
+            <div style={{padding: '32px', overflowY: 'auto', lineHeight: '1.7'}}>
+              <h3 style={{margin: '0 0 16px', fontSize: '20px', fontWeight: '700', color: 'var(--primary)'}}>
+                🎯 Objetivo
+              </h3>
+              <p style={{marginBottom: '24px', fontSize: '15px', color: 'var(--text)'}}>
+                Esta calculadora te ayuda a <strong>obtener una foto completa de tu salud financiera</strong> calculando ratios clave que te indican si estás en buen camino hacia tus metas financieras. Podrás ver:
+              </p>
+              <ul style={{marginBottom: '32px', paddingLeft: '24px', fontSize: '15px', color: 'var(--text)'}}>
+                <li style={{marginBottom: '12px'}}><strong>Tu patrimonio neto</strong> (lo que realmente tienes vs. lo que debes)</li>
+                <li style={{marginBottom: '12px'}}><strong>Tu capacidad de ahorro</strong> (cuánto guardas del dinero que ganas)</li>
+                <li style={{marginBottom: '12px'}}><strong>Tu nivel de deuda</strong> (si tus deudas están bajo control)</li>
+                <li style={{marginBottom: '12px'}}><strong>Tu preparación para el retiro</strong> (si estás ahorrando suficiente para tu edad)</li>
+              </ul>
+
+              <h3 style={{margin: '32px 0 16px', fontSize: '20px', fontWeight: '700', color: 'var(--primary)'}}>
+                📝 Cómo usar el dashboard
+              </h3>
+              
+              <div style={{background: '#f0f9ff', padding: '20px', borderRadius: '12px', marginBottom: '20px', borderLeft: '4px solid var(--primary)'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 1: Inventario de Activos</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  Lista todo lo que <strong>posees</strong>: cuentas bancarias, inversiones, casa, autos, etc. Usa valores actuales de mercado.
+                </p>
+              </div>
+
+              <div style={{background: '#fef3f2', padding: '20px', borderRadius: '12px', marginBottom: '20px', borderLeft: '4px solid var(--danger)'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 2: Inventario de Deudas</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  Lista todo lo que <strong>debes</strong>: hipoteca, préstamos de auto, tarjetas de crédito, préstamos estudiantiles, etc.
+                </p>
+              </div>
+
+              <div style={{background: '#f0fdf4', padding: '20px', borderRadius: '12px', marginBottom: '20px', borderLeft: '4px solid var(--success)'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 3: Hoja de Balance</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  Aquí verás tu <strong>patrimonio neto</strong> calculado automáticamente (Activos - Pasivos). Esta es la cifra más importante.
+                </p>
+              </div>
+
+              <div style={{background: '#fffbeb', padding: '20px', borderRadius: '12px', marginBottom: '20px', borderLeft: '4px solid var(--amber)'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 4: Ingresos y Gastos</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  Registra tus ingresos mensuales y todos tus gastos por categoría (ahorro, deuda, gastos diarios, seguros, impuestos).
+                </p>
+              </div>
+
+              <div style={{background: '#faf5ff', padding: '20px', borderRadius: '12px', marginBottom: '24px', borderLeft: '4px solid #9333ea'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 5: Ratios Financieros</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  Completa datos adicionales y haz clic en <strong>"Ver Análisis Completo"</strong> para obtener tus ratios financieros comparados con benchmarks según tu edad y situación.
+                </p>
+              </div>
+
+              <div style={{background: '#fff7ed', padding: '20px', borderRadius: '12px', borderLeft: '4px solid #ea580c'}}>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>💡 Consejo Pro</h4>
+                <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
+                  <strong>Sé honesto y completo.</strong> Los datos más precisos te darán el análisis más útil. Esta herramienta te ayuda a tomar decisiones informadas sobre tu futuro financiero.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <ExportFooter totales={totales} currency={currency} />
     </div>
   );
 }
@@ -858,7 +1090,7 @@ function App() {
 // ============= COMPONENT IMPLEMENTATIONS (same as before) =============
 // [Previous component code remains exactly the same - InventarioActivos, InventarioDeudas, HojaBalance, IngresosGastos, RatiosFinancieros, ExportFooter]
 
-function InventarioActivos({ activos, setActivos, totales }) {
+function InventarioActivos({ activos, setActivos, totales, currency }) {
   const categorias = [
     { key: 'efectivo', nombre: 'Efectivo y Equivalentes', items: ['Cuentas de cheque', 'Cuentas de ahorro', 'Efectivo a mano', 'Fondos de mercado'] },
     { key: 'inversiones', nombre: 'Inversiones', items: ['Acciones', 'Bonos', 'Fondos mutuos', 'ETFs', 'Otros'] },
@@ -895,15 +1127,15 @@ function InventarioActivos({ activos, setActivos, totales }) {
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-label">Total Activos</div>
-          <div className="stat-value">{formatCurrency(totales.activosTotales)}</div>
+          <div className="stat-value">{formatCurrency(totales.activosTotales, currency)}</div>
         </div>
         <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--amber) 0%, #d97706 100%)'}}>
           <div className="stat-label">Efectivo y Equivalentes</div>
-          <div className="stat-value">{formatCurrency(totales.totalEfectivo)}</div>
+          <div className="stat-value">{formatCurrency(totales.totalEfectivo, currency)}</div>
         </div>
         <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--charcoal) 0%, #3f3f46 100%)'}}>
           <div className="stat-label">Inversiones</div>
-          <div className="stat-value">{formatCurrency(totales.totalInversiones)}</div>
+          <div className="stat-value">{formatCurrency(totales.totalInversiones, currency)}</div>
         </div>
       </div>
 
@@ -982,7 +1214,7 @@ function InventarioActivos({ activos, setActivos, totales }) {
   );
 }
 
-function InventarioDeudas({ deudas, setDeudas }) {
+function InventarioDeudas({ deudas, setDeudas, currency }) {
   const categorias = [
     { key: 'tarjetas', nombre: 'Tarjetas de Crédito' },
     { key: 'lineaPersonal', nombre: 'Línea de Crédito Personal' },
@@ -1025,11 +1257,11 @@ function InventarioDeudas({ deudas, setDeudas }) {
       <div className="stats-grid">
         <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)'}}>
           <div className="stat-label">Balance Total</div>
-          <div className="stat-value">{formatCurrency(totalBalance)}</div>
+          <div className="stat-value">{formatCurrency(totalBalance, currency)}</div>
         </div>
         <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--amber) 0%, #d97706 100%)'}}>
           <div className="stat-label">Pago Mensual Total</div>
-          <div className="stat-value">{formatCurrency(totalMensual)}</div>
+          <div className="stat-value">{formatCurrency(totalMensual, currency)}</div>
         </div>
         <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--charcoal) 0%, #3f3f46 100%)'}}>
           <div className="stat-label">Número de Cuentas</div>
@@ -1132,7 +1364,7 @@ function InventarioDeudas({ deudas, setDeudas }) {
   );
 }
 
-function HojaBalance({ activos, deudas, totales }) {
+function HojaBalance({ activos, deudas, totales, currency }) {
   return (
     <div>
       <div className="card">
@@ -1149,27 +1381,27 @@ function HojaBalance({ activos, deudas, totales }) {
             
             <div className="summary-row">
               <span className="summary-row-label">Efectivo y Equivalentes</span>
-              <span className="currency">{formatCurrency(totales.totalEfectivo)}</span>
+              <span className="currency">{formatCurrency(totales.totalEfectivo, currency)}</span>
             </div>
             <div className="summary-row">
               <span className="summary-row-label">Inversiones</span>
-              <span className="currency">{formatCurrency(totales.totalInversiones)}</span>
+              <span className="currency">{formatCurrency(totales.totalInversiones, currency)}</span>
             </div>
             <div className="summary-row">
               <span className="summary-row-label">Cuentas de Retiro</span>
-              <span className="currency">{formatCurrency(totales.totalRetiro)}</span>
+              <span className="currency">{formatCurrency(totales.totalRetiro, currency)}</span>
             </div>
             <div className="summary-row">
               <span className="summary-row-label">Bienes Raíces</span>
-              <span className="currency">{formatCurrency(totales.totalBienesRaices)}</span>
+              <span className="currency">{formatCurrency(totales.totalBienesRaices, currency)}</span>
             </div>
             <div className="summary-row">
               <span className="summary-row-label">Bienes Personales</span>
-              <span className="currency">{formatCurrency(totales.totalBienesPersonales)}</span>
+              <span className="currency">{formatCurrency(totales.totalBienesPersonales, currency)}</span>
             </div>
             <div className="summary-row">
               <span className="summary-row-label font-bold">Total Activos (I)</span>
-              <span className="summary-row-value">{formatCurrency(totales.activosTotales)}</span>
+              <span className="summary-row-value">{formatCurrency(totales.activosTotales, currency)}</span>
             </div>
           </div>
 
@@ -1193,14 +1425,14 @@ function HojaBalance({ activos, deudas, totales }) {
               return (
                 <div className="summary-row" key={key}>
                   <span className="summary-row-label">{nombres[key]}</span>
-                  <span className="currency">{formatCurrency(total)}</span>
+                  <span className="currency">{formatCurrency(total, currency)}</span>
                 </div>
               );
             })}
             
             <div className="summary-row">
               <span className="summary-row-label font-bold">Total Pasivos (II)</span>
-              <span className="summary-row-value">{formatCurrency(totales.pasivosTotales)}</span>
+              <span className="summary-row-value">{formatCurrency(totales.pasivosTotales, currency)}</span>
             </div>
           </div>
         </div>
@@ -1210,7 +1442,7 @@ function HojaBalance({ activos, deudas, totales }) {
             <h3 className="summary-title">Patrimonio Neto (I - II)</h3>
             <div style={{fontSize: '3rem'}} className="currency">
               <span className={totales.patrimonioNeto >= 0 ? 'text-success' : 'text-danger'}>
-                {formatCurrency(totales.patrimonioNeto)}
+                {formatCurrency(totales.patrimonioNeto, currency)}
               </span>
             </div>
             <p className="text-muted" style={{marginTop: '1rem'}}>
@@ -1223,7 +1455,7 @@ function HojaBalance({ activos, deudas, totales }) {
   );
 }
 
-function IngresosGastos({ ingresos, setIngresos, gastos, setGastos, modoCalculo, setModoCalculo }) {
+function IngresosGastos({ ingresos, setIngresos, gastos, setGastos, modoCalculo, setModoCalculo, currency }) {
   const categoriasIngresos = ['Salario', 'Negocio/Side Hustle', 'Bonos', 'Intereses', 'Renta', 'Otros'];
   
   const categoriasGastos = {
@@ -1298,15 +1530,15 @@ function IngresosGastos({ ingresos, setIngresos, gastos, setGastos, modoCalculo,
         <div className="stats-grid">
           <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--emerald) 0%, var(--emerald-dark) 100%)'}}>
             <div className="stat-label">Total Ingresos ({modoCalculo})</div>
-            <div className="stat-value">{formatCurrency(totalIngresos)}</div>
+            <div className="stat-value">{formatCurrency(totalIngresos, currency)}</div>
           </div>
           <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)'}}>
             <div className="stat-label">Total Gastos ({modoCalculo})</div>
-            <div className="stat-value">{formatCurrency(totalGastos)}</div>
+            <div className="stat-value">{formatCurrency(totalGastos, currency)}</div>
           </div>
           <div className="stat-card" style={{background: balance >= 0 ? 'linear-gradient(135deg, var(--emerald) 0%, var(--emerald-dark) 100%)' : 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)'}}>
             <div className="stat-label">{balance >= 0 ? 'Superávit' : 'Déficit'}</div>
-            <div className="stat-value">{formatCurrency(Math.abs(balance))}</div>
+            <div className="stat-value">{formatCurrency(Math.abs(balance), currency)}</div>
           </div>
         </div>
       </div>
@@ -1382,23 +1614,23 @@ function IngresosGastos({ ingresos, setIngresos, gastos, setGastos, modoCalculo,
 
           <div className="summary-row">
             <span>Ahorro</span>
-            <span className="currency">{formatCurrency(totalAhorro)}</span>
+            <span className="currency">{formatCurrency(totalAhorro, currency)}</span>
           </div>
           <div className="summary-row">
             <span>Deuda</span>
-            <span className="currency">{formatCurrency(totalDeuda)}</span>
+            <span className="currency">{formatCurrency(totalDeuda, currency)}</span>
           </div>
           <div className="summary-row">
             <span>Gastos Diarios</span>
-            <span className="currency">{formatCurrency(totalDiarios)}</span>
+            <span className="currency">{formatCurrency(totalDiarios, currency)}</span>
           </div>
           <div className="summary-row">
             <span>Seguros</span>
-            <span className="currency">{formatCurrency(totalSeguros)}</span>
+            <span className="currency">{formatCurrency(totalSeguros, currency)}</span>
           </div>
           <div className="summary-row">
             <span>Impuestos</span>
-            <span className="currency">{formatCurrency(totalImpuestos)}</span>
+            <span className="currency">{formatCurrency(totalImpuestos, currency)}</span>
           </div>
         </div>
       </div>
@@ -1471,9 +1703,10 @@ function IngresosGastos({ ingresos, setIngresos, gastos, setGastos, modoCalculo,
   );
 }
 
-function RatiosFinancieros({ ratiosData, setRatiosData, totales }) {
+function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
   const [showBenchmarkModal, setShowBenchmarkModal] = useState(false);
   const [showResultsModal, setShowResultsModal] = useState(false);
+  const [showReservaModal, setShowReservaModal] = useState(false);
 
   const updateField = (field, value) => {
     setRatiosData(prev => ({ ...prev, [field]: value }));
@@ -1602,17 +1835,17 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales }) {
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-label">Activos Totales</div>
-          <div className="stat-value">{formatCurrency(totales.activosTotales)}</div>
+          <div className="stat-value">{formatCurrency(totales.activosTotales, currency)}</div>
           <div style={{fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9}}>✅ Calculado automáticamente</div>
         </div>
         <div className="stat-card" style={{background: 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)'}}>
           <div className="stat-label">Pasivos Totales</div>
-          <div className="stat-value">{formatCurrency(totales.pasivosTotales)}</div>
+          <div className="stat-value">{formatCurrency(totales.pasivosTotales, currency)}</div>
           <div style={{fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9}}>✅ Calculado automáticamente</div>
         </div>
         <div className="stat-card" style={{background: totales.patrimonioNeto >= 0 ? 'linear-gradient(135deg, var(--emerald) 0%, var(--emerald-dark) 100%)' : 'linear-gradient(135deg, var(--danger) 0%, #dc2626 100%)'}}>
           <div className="stat-label">Patrimonio Neto</div>
-          <div className="stat-value">{formatCurrency(totales.patrimonioNeto)}</div>
+          <div className="stat-value">{formatCurrency(totales.patrimonioNeto, currency)}</div>
           <div style={{fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9}}>✅ Calculado automáticamente</div>
         </div>
       </div>
@@ -1631,7 +1864,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales }) {
               <Tooltip text="Tu edad actual en años. Se usa para calcular benchmarks de inversión recomendados según tu etapa de vida.">
                 <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
                   Edad
-                  <span style={{fontSize: '0.75rem', background: '#fbf0ff', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}>ⓘ</span>
+                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}>ⓘ</span>
                 </span>
               </Tooltip>
             </label>
@@ -1836,15 +2069,15 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales }) {
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px'}}>
                   <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
                     <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Activos</div>
-                    <div style={{fontSize: '22px', fontWeight: '800'}}>{formatCurrency(ratios.activosTotales)}</div>
+                    <div style={{fontSize: '22px', fontWeight: '800'}}>{formatCurrency(ratios.activosTotales, currency)}</div>
                   </div>
                   <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
                     <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Pasivos</div>
-                    <div style={{fontSize: '22px', fontWeight: '800'}}>{formatCurrency(ratios.pasivosTotales)}</div>
+                    <div style={{fontSize: '22px', fontWeight: '800'}}>{formatCurrency(ratios.pasivosTotales, currency)}</div>
                   </div>
                   <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
                     <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Patrimonio Neto</div>
-                    <div style={{fontSize: '22px', fontWeight: '800', color: ratios.patrimonioNeto >= 0 ? 'var(--success)' : 'var(--danger)'}}>{formatCurrency(ratios.patrimonioNeto)}</div>
+                    <div style={{fontSize: '22px', fontWeight: '800', color: ratios.patrimonioNeto >= 0 ? 'var(--success)' : 'var(--danger)'}}>{formatCurrency(ratios.patrimonioNeto, currency)}</div>
                   </div>
                   <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
                     <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Estado Financiero</div>
@@ -1870,19 +2103,38 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales }) {
               {/* KPI Sections */}
               <div style={{padding: '0 16px'}}>
                 {/* LIQUIDEZ */}
-                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: '#2845d9', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
+                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: 'var(--primary)', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
                   💧 LIQUIDEZ
                 </div>
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
                   <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)', border: '2px solid transparent'}}>
                     <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
                       <div style={{fontSize: '15px', fontWeight: '600', flex: 1}}>Meses de reserva</div>
+                      <button 
+                        onClick={() => setShowReservaModal(true)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          background: 'var(--primary)',
+                          color: 'white',
+                          padding: '4px 10px',
+                          borderRadius: '6px',
+                          fontSize: '12px',
+                          fontWeight: '700',
+                          textTransform: 'uppercase',
+                          cursor: 'pointer',
+                          border: 'none'
+                        }}
+                      >
+                        💡 Ver recomendaciones
+                      </button>
                     </div>
                     <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
                       {isFinite(ratios.mesesReserva) ? ratios.mesesReserva.toFixed(1) + ' m' : '—'}
                     </div>
                     <div style={{fontSize: '15px', fontWeight: '600', marginBottom: '8px', color: ratios.mesesReserva >= 6 ? 'var(--success)' : ratios.mesesReserva >= 3 ? 'var(--warning)' : 'var(--danger)'}}>
-                      {ratios.mesesReserva >= 6 ? '✅' : ratios.mesesReserva > 6 ? '⚠️' : '🚨'}
+                      {ratios.mesesReserva >= 6 ? '✅' : ratios.mesesReserva >= 3 ? '⚠️' : '🚨'}
                     </div>
                     <div style={{fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4'}}>Meta: &gt;6 meses ✅</div>
                   </div>
@@ -1902,7 +2154,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales }) {
                 </div>
 
                 {/* AHORRO */}
-                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: '#2845d9', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
+                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: 'var(--primary)', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
                   🐷 AHORRO
                 </div>
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
@@ -1934,7 +2186,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales }) {
                 </div>
 
                 {/* DEUDA */}
-                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: '#2845d9', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
+                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: 'var(--primary)', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
                   🏦 DEUDA
                 </div>
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
@@ -1966,7 +2218,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales }) {
                 </div>
 
                 {/* PATRIMONIO */}
-                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: '#2845d9', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
+                <div style={{margin: '24px 0 12px', padding: '8px 12px', background: 'var(--primary)', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.5px'}}>
                   💎 PATRIMONIO
                 </div>
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
@@ -2107,12 +2359,108 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales }) {
             flexDirection: 'column',
             boxShadow: '0 25px 70px rgba(0,0,0,0.5)'
           }} onClick={(e) => e.stopPropagation()}>
-            <div style={{padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-              <div style={{fontSize: '22px', fontWeight: '800'}}>📊 Benchmarks por Edad</div>
-              <button onClick={() => setShowBenchmarkModal(false)} style={{background: 'var(--border)', border: 'none', width: '32px', height: '32px', borderRadius: '50%', fontSize: '20px', cursor: 'pointer'}}>×</button>
+            <div style={{padding: '20px 24px', background: 'var(--primary)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <div style={{fontSize: '22px', fontWeight: '800', color: 'white'}}>📊 Benchmarks por Edad</div>
+              <button onClick={() => setShowBenchmarkModal(false)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', width: '32px', height: '32px', borderRadius: '50%', fontSize: '20px', cursor: 'pointer', color: 'white'}}>×</button>
             </div>
             <div style={{padding: '32px', overflowY: 'auto'}}>
-              <BenchmarkTables />
+              <BenchmarkTables currency={currency} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reserva Modal */}
+      {showReservaModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.7)',
+          zIndex: 1001,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          backdropFilter: 'blur(8px)'
+        }} onClick={() => setShowReservaModal(false)}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '20px',
+            maxWidth: '900px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 70px rgba(0,0,0,0.5)'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{padding: '20px 24px', background: 'var(--primary)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <div style={{fontSize: '22px', fontWeight: '800', color: 'white'}}>💡 Recomendaciones de Reserva de Emergencia</div>
+              <button onClick={() => setShowReservaModal(false)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', width: '32px', height: '32px', borderRadius: '50%', fontSize: '20px', cursor: 'pointer', color: 'white'}}>×</button>
+            </div>
+            <div style={{padding: '32px', overflowY: 'auto'}}>
+              <p style={{color: 'var(--text-muted)', marginBottom: '24px', lineHeight: '1.6', fontSize: '15px'}}>
+                La cantidad ideal de meses de reserva depende de tu situación laboral y personal. Usa esta guía para determinar cuánto necesitas:
+              </p>
+              
+              <table style={{width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: '12px', overflow: 'hidden'}}>
+                <thead style={{background: 'var(--primary)', color: '#fff'}}>
+                  <tr>
+                    <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Meses Recomendados</th>
+                    <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Situación</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{borderBottom: '1px solid var(--border)'}}>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--success)'}}>6 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Empleo estable + buena liquidez</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Trabajo seguro con historial sólido, sin dependientes mayores</div>
+                    </td>
+                  </tr>
+                  <tr style={{borderBottom: '1px solid var(--border)'}}>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--success)'}}>9 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Empleo estable + dependientes</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Trabajo seguro pero con familia o personas que dependen de ti</div>
+                    </td>
+                  </tr>
+                  <tr style={{borderBottom: '1px solid var(--border)'}}>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--warning)'}}>12 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Empleo inestable + dependientes</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Trabajo con menos estabilidad o industria volátil, con dependientes</div>
+                    </td>
+                  </tr>
+                  <tr style={{borderBottom: '1px solid var(--border)'}}>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--warning)'}}>18 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Ingresos variables (freelance)</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Trabajador independiente o consultor con ingresos que fluctúan mes a mes</div>
+                    </td>
+                  </tr>
+                  <tr style={{borderBottom: '1px solid var(--border)'}}>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--danger)'}}>24 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Negocio propio / alta volatilidad</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Emprendedor con negocio propio o ingresos muy variables</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{padding: '16px', fontSize: '20px', fontWeight: '700', color: 'var(--danger)'}}>36 meses</td>
+                    <td style={{padding: '16px', fontSize: '15px', lineHeight: '1.6'}}>
+                      <strong>Ingresos irregulares / pre-retiro</strong>
+                      <div style={{color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px'}}>Ingresos muy irregulares o estás cerca del retiro y quieres más seguridad</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div style={{background: '#f0f9ff', padding: '16px', borderRadius: '12px', borderLeft: '4px solid var(--primary)', marginTop: '24px'}}>
+                <p style={{margin: 0, fontSize: '14px', lineHeight: '1.6', color: 'var(--text)'}}>
+                  <strong>💡 Consejo:</strong> Tu reserva de emergencia debe cubrir tus gastos esenciales mensuales multiplicados por los meses recomendados según tu situación. Esta es tu red de seguridad ante imprevistos como pérdida de empleo, emergencias médicas o reparaciones urgentes.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -2122,11 +2470,11 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales }) {
 }
 
 // Benchmark Tables Component
-function BenchmarkTables() {
+function BenchmarkTables({ currency }) {
   return (
     <div>
       <div style={{marginBottom: '32px'}}>
-        <h3 style={{margin: '0 0 16px', fontSize: '18px', fontWeight: '700', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '8px'}}>
+        <h3 style={{margin: '0 0 16px', padding: '12px 16px', fontSize: '18px', fontWeight: '700', color: 'white', background: 'var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px'}}>
           💰 Inversión / Ingreso Bruto
         </h3>
         <p style={{color: 'var(--text-muted)', marginBottom: '16px', lineHeight: '1.6'}}>
@@ -2135,27 +2483,27 @@ function BenchmarkTables() {
         <table style={{width: '100%', borderCollapse: 'collapse', marginBottom: '24px', background: '#fff', borderRadius: '12px', overflow: 'hidden'}}>
           <thead style={{background: 'var(--primary)', color: '#fff'}}>
             <tr>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase'}}>Edad</th>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase'}}>Benchmark</th>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase'}}>Ejemplo (Ingreso $50,000)</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Edad</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Benchmark</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', textTransform: 'uppercase', color: 'white'}}>Ejemplo (Ingreso {formatCurrency(50000, currency)})</th>
             </tr>
           </thead>
           <tbody>
             {[
-              [25, '0.2x', '$10,000'],
-              [30, '0.6x', '$30,000'],
-              [35, '0.6x', '$30,000'],
-              [40, '1.8x', '$90,000'],
-              [45, '3.0x', '$150,000'],
-              [50, '5.5x', '$275,000'],
-              [55, '8.0x', '$400,000'],
-              [60, '12.0x', '$600,000'],
-              [65, '16.0x', '$800,000']
+              [25, '0.2x', 10000],
+              [30, '0.6x', 30000],
+              [35, '0.6x', 30000],
+              [40, '1.8x', 90000],
+              [45, '3.0x', 150000],
+              [50, '5.5x', 275000],
+              [55, '8.0x', 400000],
+              [60, '12.0x', 600000],
+              [65, '16.0x', 800000]
             ].map(([edad, benchmark, ejemplo]) => (
               <tr key={edad}>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: '15px'}}>{edad}</td>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: '15px'}}>{benchmark}</td>
-                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: '15px'}}>{ejemplo}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)', fontSize: '15px'}}>{formatCurrency(ejemplo, currency)}</td>
               </tr>
             ))}
           </tbody>
@@ -2163,7 +2511,7 @@ function BenchmarkTables() {
       </div>
 
       <div style={{marginBottom: '32px'}}>
-        <h3 style={{margin: '0 0 16px', fontSize: '18px', fontWeight: '700', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '8px'}}>
+        <h3 style={{margin: '0 0 16px', padding: '12px 16px', fontSize: '18px', fontWeight: '700', color: 'white', background: 'var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px'}}>
           💎 Nivel de Riqueza Neta (Patrimonio / Ingreso)
         </h3>
         <p style={{color: 'var(--text-muted)', marginBottom: '16px', lineHeight: '1.6'}}>
@@ -2172,30 +2520,30 @@ function BenchmarkTables() {
         <table style={{width: '100%', borderCollapse: 'collapse', marginBottom: '24px', background: '#fff', borderRadius: '12px', overflow: 'hidden'}}>
           <thead style={{background: 'var(--primary)', color: '#fff'}}>
             <tr>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px'}}>Edad</th>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px'}}>Good (⚠️)</th>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px'}}>Great (✅)</th>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px'}}>Ejemplo Great ($50k)</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Edad</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Good (⚠️)</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Great (✅)</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Ejemplo Great ({formatCurrency(50000, currency)})</th>
             </tr>
           </thead>
           <tbody>
             {[
-              [25, '2.5x', '5.0x', '$250,000'],
-              [30, '3.0x', '6.0x', '$300,000'],
-              [35, '3.5x', '7.0x', '$350,000'],
-              [40, '4.0x', '8.0x', '$400,000'],
-              [45, '4.5x', '9.0x', '$450,000'],
-              [50, '5.0x', '10.0x', '$500,000'],
-              [55, '5.5x', '11.0x', '$550,000'],
-              [60, '6.0x', '12.0x', '$600,000'],
-              [65, '6.5x', '13.0x', '$650,000'],
-              [70, '7.0x', '14.0x', '$700,000']
+              [25, '2.5x', '5.0x', 250000],
+              [30, '3.0x', '6.0x', 300000],
+              [35, '3.5x', '7.0x', 350000],
+              [40, '4.0x', '8.0x', 400000],
+              [45, '4.5x', '9.0x', 450000],
+              [50, '5.0x', '10.0x', 500000],
+              [55, '5.5x', '11.0x', 550000],
+              [60, '6.0x', '12.0x', 600000],
+              [65, '6.5x', '13.0x', 650000],
+              [70, '7.0x', '14.0x', 700000]
             ].map(([edad, good, great, ejemplo]) => (
               <tr key={edad}>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{edad}</td>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{good}</td>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{great}</td>
-                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{ejemplo}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{formatCurrency(ejemplo, currency)}</td>
               </tr>
             ))}
           </tbody>
@@ -2203,7 +2551,7 @@ function BenchmarkTables() {
       </div>
 
       <div style={{marginBottom: '32px'}}>
-        <h3 style={{margin: '0 0 16px', fontSize: '18px', fontWeight: '700', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '8px'}}>
+        <h3 style={{margin: '0 0 16px', padding: '12px 16px', fontSize: '18px', fontWeight: '700', color: 'white', background: 'var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '8px'}}>
           🏖️ Ahorro para Retiro (Activos Retiro / Ingreso)
         </h3>
         <p style={{color: 'var(--text-muted)', marginBottom: '16px', lineHeight: '1.6'}}>
@@ -2213,28 +2561,28 @@ function BenchmarkTables() {
         <table style={{width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: '12px', overflow: 'hidden'}}>
           <thead style={{background: 'var(--primary)', color: '#fff'}}>
             <tr>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px'}}>Edad</th>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px'}}>Benchmark (45% cobertura)</th>
-              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px'}}>Ejemplo (Ingreso $50,000)</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Edad</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Benchmark (45% cobertura)</th>
+              <th style={{padding: '14px 16px', textAlign: 'left', fontWeight: '700', fontSize: '14px', color: 'white'}}>Ejemplo (Ingreso {formatCurrency(50000, currency)})</th>
             </tr>
           </thead>
           <tbody>
             {[
-              [25, '0.35x', '$17,500'],
-              [30, '0.85x', '$42,500'],
-              [35, '1.5x', '$75,000'],
-              [40, '2.58x', '$129,000'],
-              [45, '3.14x', '$157,000'],
-              [50, '4.92x', '$246,000'],
-              [55, '6.35x', '$317,500'],
-              [60, '7.23x', '$361,500'],
-              [65, '10.84x', '$542,000'],
-              [70, '11.0x', '$550,000']
+              [25, '0.35x', 17500],
+              [30, '0.85x', 42500],
+              [35, '1.5x', 75000],
+              [40, '2.58x', 129000],
+              [45, '3.14x', 157000],
+              [50, '4.92x', 246000],
+              [55, '6.35x', 317500],
+              [60, '7.23x', 361500],
+              [65, '10.84x', 542000],
+              [70, '11.0x', 550000]
             ].map(([edad, benchmark, ejemplo]) => (
               <tr key={edad}>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{edad}</td>
                 <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{benchmark}</td>
-                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{ejemplo}</td>
+                <td style={{padding: '12px 16px', borderBottom: '1px solid var(--border)'}}>{formatCurrency(ejemplo, currency)}</td>
               </tr>
             ))}
           </tbody>
@@ -2250,7 +2598,7 @@ function BenchmarkTables() {
   );
 }
 
-function ExportFooter({ totales }) {
+function ExportFooter({ totales, currency }) {
   const exportPDF = async () => {
     alert('Función de exportación a PDF próximamente. Por ahora puedes usar Imprimir > Guardar como PDF desde tu navegador.');
   };
@@ -2262,7 +2610,7 @@ function ExportFooter({ totales }) {
           <div className="font-bold">Estado Financiero Global</div>
           <div className="text-muted">
             Patrimonio Neto: <span className="currency font-bold" style={{color: totales.patrimonioNeto >= 0 ? 'var(--emerald)' : 'var(--danger)'}}>
-              {formatCurrency(totales.patrimonioNeto)}
+              {formatCurrency(totales.patrimonioNeto, currency)}
             </span>
           </div>
         </div>
@@ -2275,6 +2623,27 @@ function ExportFooter({ totales }) {
             📄 Exportar PDF
           </button>
         </div>
+      </div>
+      
+      <div style={{
+        borderTop: '1px solid var(--border)',
+        marginTop: '1.5rem',
+        paddingTop: '1.5rem',
+        fontSize: '12px',
+        lineHeight: '1.6',
+        color: 'var(--text-muted)',
+        textAlign: 'center'
+      }}>
+        <p style={{margin: '0 0 8px'}}>
+          ⚖️ <strong>Aviso Legal:</strong> Esta calculadora es una herramienta educativa y de planificación financiera personal. 
+          Los resultados, ratios y benchmarks proporcionados son únicamente con fines informativos y no constituyen 
+          asesoramiento financiero, fiscal, legal o de inversión profesional.
+        </p>
+        <p style={{margin: '0'}}>
+          Los benchmarks mostrados son promedios generales y pueden no aplicar a tu situación individual. 
+          Para decisiones financieras importantes, consulta con un asesor financiero certificado. 
+          No nos hacemos responsables de decisiones tomadas con base en esta información.
+        </p>
       </div>
     </footer>
   );
