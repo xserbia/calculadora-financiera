@@ -56,7 +56,7 @@ body {
 
 /* Header */
 .app-header {
-  background: linear-gradient(135deg, var(--charcoal) 0%, #27272a 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, #2845d9 100%);
   color: white;
   padding: 2rem 2rem 0;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -72,7 +72,7 @@ body {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 800;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #fff 0%, var(--emerald) 100%);
+  background: linear-gradient(135deg, #fff 0%, #fbbf24 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1768,11 +1768,51 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
 
   const ratios = calcularRatios();
 
-  const Tooltip = ({ text, children }) => (
-    <span style={{cursor: 'help'}} title={text}>
-      {children}
-    </span>
-  );
+  const Tooltip = ({ text, children }) => {
+    const [show, setShow] = React.useState(false);
+    return (
+      <span 
+        style={{position: 'relative', display: 'inline-block'}}
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+      >
+        {children}
+        {show && (
+          <span style={{
+            position: 'absolute',
+            bottom: '100%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            marginBottom: '8px',
+            padding: '8px 12px',
+            background: '#1f2937',
+            color: 'white',
+            borderRadius: '8px',
+            fontSize: '13px',
+            lineHeight: '1.4',
+            whiteSpace: 'normal',
+            width: '250px',
+            zIndex: 1000,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            pointerEvents: 'none'
+          }}>
+            {text}
+            <span style={{
+              position: 'absolute',
+              top: '100%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 0,
+              height: 0,
+              borderLeft: '6px solid transparent',
+              borderRight: '6px solid transparent',
+              borderTop: '6px solid #1f2937'
+            }}></span>
+          </span>
+        )}
+      </span>
+    );
+  };
 
   return (
     <div>
@@ -1808,7 +1848,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
               <Tooltip text="Tu edad actual en años. Se usa para calcular benchmarks de inversión recomendados según tu etapa de vida.">
                 <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
                   Edad
-                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}>ⓘ</span>
+                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
                 </span>
               </Tooltip>
             </label>
@@ -1827,7 +1867,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
               <Tooltip text="Tu salario total ANTES de que te quiten impuestos, seguro social, o cualquier deducción. Es lo que aparece en tu contrato.">
                 <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
                   Ingreso Anual Bruto
-                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}>ⓘ</span>
+                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
                 </span>
               </Tooltip>
             </label>
@@ -1846,7 +1886,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
               <Tooltip text="El dinero que REALMENTE llega a tu cuenta bancaria después de todos los descuentos: impuestos, seguro social, etc.">
                 <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
                   Ingreso Anual Neto
-                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}>ⓘ</span>
+                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
                 </span>
               </Tooltip>
             </label>
@@ -1865,7 +1905,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
               <Tooltip text="Dinero que TÚ apartas voluntariamente para el futuro: cuentas de ahorro, inversiones, 401k personal. NO incluyas aportes del empleador.">
                 <span style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
                   Ahorro Anual
-                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center'}}>ⓘ</span>
+                  <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
                 </span>
               </Tooltip>
             </label>
@@ -2064,7 +2104,12 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
                   <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)', border: '2px solid transparent'}}>
                     <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
-                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1}}>Meses de reserva</div>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Meses de reserva
+                        <Tooltip text="Cuántos meses podrías sobrevivir sin ingresos usando solo tu reserva de emergencia. Se calcula: Reserva ÷ Gastos mensuales esenciales.">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
                       <button 
                         onClick={() => setShowReservaModal(true)}
                         style={{
@@ -2096,7 +2141,12 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
 
                   <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)', border: '2px solid transparent'}}>
                     <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
-                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1}}>Razón corriente</div>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Razón corriente
+                        <Tooltip text="Tu capacidad de pagar deudas de corto plazo. Mide si tienes suficiente efectivo disponible para cubrir tus pasivos corrientes. Se calcula: Efectivo ÷ Pasivos corrientes.">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
                     </div>
                     <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
                       {isFinite(ratios.razonCorriente) ? ratios.razonCorriente.toFixed(2) : '—'}
@@ -2115,7 +2165,12 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
                   <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
                     <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
-                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1}}>Tasa de ahorro</div>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Tasa de ahorro
+                        <Tooltip text="Qué porcentaje de tus ingresos guardas cada mes. Indica tu disciplina financiera y capacidad de construir riqueza. Se calcula: (Ahorro ÷ Ingreso bruto) × 100%">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
                     </div>
                     <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
                       {isFinite(ratios.tasaAhorro) ? (ratios.tasaAhorro * 100).toFixed(1) + '%' : '—'}
@@ -2128,7 +2183,12 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
 
                   <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
                     <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
-                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1}}>Capacidad de acumulación</div>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Capacidad de acumulación
+                        <Tooltip text="Tu habilidad real para crear riqueza después de pagar deudas. Muestra cuánto de tu ingreso se convierte en patrimonio. Se calcula: (Ahorro - Servicio deuda) ÷ Ingreso bruto">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
                     </div>
                     <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
                       {isFinite(ratios.capAcum) ? (ratios.capAcum * 100).toFixed(1) + '%' : '—'}
@@ -2147,7 +2207,12 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
                   <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
                     <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
-                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1}}>DTI neto</div>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        DTI neto
+                        <Tooltip text="Debt-to-Income Ratio. Qué porcentaje de tu ingreso neto va a pagar deudas cada mes. Los bancos usan esto para aprobar préstamos. Se calcula: (Pago mensual deudas ÷ Ingreso neto mensual) × 100%">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
                     </div>
                     <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
                       {isFinite(ratios.dtiNeto) ? (ratios.dtiNeto * 100).toFixed(1) + '%' : '—'}
@@ -2160,7 +2225,12 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
 
                   <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
                     <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
-                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1}}>Pasivos / Activos</div>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Pasivos / Activos
+                        <Tooltip text="Qué porcentaje de todo lo que posees está financiado con deuda. Valores altos significan que el banco 'es dueño' de gran parte de tus activos. Se calcula: (Pasivos totales ÷ Activos totales) × 100%">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
                     </div>
                     <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
                       {isFinite(ratios.deudaActivos) ? (ratios.deudaActivos * 100).toFixed(1) + '%' : '—'}
@@ -2179,7 +2249,12 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px'}}>
                   <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
                     <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
-                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1}}>Patrimonio / Activos</div>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Patrimonio / Activos
+                        <Tooltip text="Qué porcentaje de tus activos es realmente tuyo (no del banco). Mayor es mejor - significa más propiedad real. Se calcula: (Patrimonio neto ÷ Activos totales) × 100%">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
                     </div>
                     <div style={{fontSize: '28px', fontWeight: '800', marginBottom: '8px'}}>
                       {isFinite(ratios.patrimonioActivos) ? (ratios.patrimonioActivos * 100).toFixed(1) + '%' : '—'}
@@ -2192,7 +2267,12 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
 
                   <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
                     <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
-                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1}}>Inversión / Ingreso bruto</div>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Inversión / Ingreso bruto
+                        <Tooltip text="Cuántas veces tu salario anual tienes invertido. El benchmark varía según tu edad - a mayor edad, deberías tener más. Se calcula: Total inversiones ÷ Ingreso bruto anual">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
                       <button 
                         onClick={() => setShowBenchmarkModal(true)}
                         style={{
@@ -2224,7 +2304,12 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
 
                   <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
                     <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
-                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1}}>Nivel de riqueza neta</div>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Nivel de riqueza neta
+                        <Tooltip text="Cuántas veces tu ingreso anual vale tu patrimonio neto. Indica si estás acumulando riqueza o solo sobreviviendo. Los benchmarks varían por edad. Se calcula: Patrimonio neto ÷ Ingreso bruto anual">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
                       <button 
                         onClick={() => setShowBenchmarkModal(true)}
                         style={{
@@ -2255,7 +2340,12 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency }) {
 
                   <div style={{background: 'white', borderRadius: '14px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
                     <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '10px'}}>
-                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1}}>Ahorro para retiro</div>
+                      <div style={{fontSize: '15px', fontWeight: '600', flex: 1, display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        Ahorro para retiro
+                        <Tooltip text="Cuántas veces tu ingreso anual tienes guardado específicamente para el retiro (401k, IRA, pensiones). El benchmark aumenta con la edad - a los 30 deberías tener 1x, a los 40 tener 3x, etc. Se calcula: Activos de retiro ÷ Ingreso bruto anual">
+                          <span style={{fontSize: '0.75rem', background: 'var(--primary)', color: 'white', width: '18px', height: '18px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>ⓘ</span>
+                        </Tooltip>
+                      </div>
                       <button 
                         onClick={() => setShowBenchmarkModal(true)}
                         style={{
