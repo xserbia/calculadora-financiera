@@ -1226,6 +1226,12 @@ function App() {
               📊 Vista General
             </button>
             <button 
+              className={`tab-button ${activeTab === 'ingresos' ? 'active' : ''}`}
+              onClick={() => setActiveTab('ingresos')}
+            >
+              💵 Ingresos y Gastos
+            </button>
+            <button 
               className={`tab-button ${activeTab === 'activos' ? 'active' : ''}`}
               onClick={() => setActiveTab('activos')}
             >
@@ -1235,25 +1241,19 @@ function App() {
               className={`tab-button ${activeTab === 'deudas' ? 'active' : ''}`}
               onClick={() => setActiveTab('deudas')}
             >
-              💳 Deudas
-            </button>
-            <button 
-              className={`tab-button ${activeTab === 'ingresos' ? 'active' : ''}`}
-              onClick={() => setActiveTab('ingresos')}
-            >
-              💵 Ingresos y Gastos
-            </button>
-            <button 
-              className={`tab-button ${activeTab === 'ratios' ? 'active' : ''}`}
-              onClick={() => setActiveTab('ratios')}
-            >
-              📈 Ratios Financieros
+              💳 Pasivos
             </button>
             <button 
               className={`tab-button ${activeTab === 'balance' ? 'active' : ''}`}
               onClick={() => setActiveTab('balance')}
             >
               ⚖️ Patrimonio Neto
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'ratios' ? 'active' : ''}`}
+              onClick={() => setActiveTab('ratios')}
+            >
+              📈 Ratios Financieros
             </button>
           </div>
         </div>
@@ -1358,7 +1358,7 @@ function App() {
               </div>
 
               <div style={{background: '#fef3f2', padding: '20px', borderRadius: '12px', marginBottom: '20px', borderLeft: '4px solid var(--danger)'}}>
-                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 2: Inventario de Deudas</h4>
+                <h4 style={{margin: '0 0 12px', fontSize: '16px', fontWeight: '700', color: 'var(--text)'}}>Paso 2: Inventario de Pasivos</h4>
                 <p style={{margin: 0, fontSize: '14px', color: 'var(--text-muted)'}}>
                   Lista todo lo que <strong>debes</strong>: hipoteca, préstamos de auto, tarjetas de crédito, préstamos estudiantiles, etc.
                 </p>
