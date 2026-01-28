@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Financiero - Vista de Flujo (Prototipo)</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f5f5;
+  overflow-x: hidden;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background: white;
+  padding: 2rem 1rem;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  padding-left: 1rem;
+}
+
+.menu-section {
+  margin-bottom: 2rem;
+}
+
+.menu-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px;
+  background: #f0f0f0;
+}
+
+.menu-item {
+  padding: 0.75rem 1rem;
+  margin: 0.25rem 0;
+  color: #666;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.menu-item:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 2rem 1.5rem;
+  position: relative;
+  overflow-x: auto;
+}
+
+/* Flow Diagram */
+.flow-diagram {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.flow-center {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  min-height: 700px;
+}
+
+.flow-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+/* Flow Box */
+.flow-box {
+  border: 3px solid;
+  border-radius: 20px;
+  padding: 1rem 1.5rem;
+  background: white;
+  text-align: center;
+  min-width: 120px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.flow-box.positive {
+  border-color: #10b981;
+}
+
+.flow-box.negative {
+  border-color: #ef4444;
+}
+
+.flow-box.neutral {
+  border-color: #64748b;
+}
+
+.flow-label {
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.flow-amount {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #333;
+}
+
+.flow-box.positive .flow-amount {
+  color: #10b981;
+}
+
+.flow-box.negative .flow-amount {
+  color: #ef4444;
+}
+
+/* Person Icon */
+.person-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.person-silhouette {
+  width: 70px;
+  height: 110px;
+  background: #333;
+  border-radius: 35px 35px 0 0;
+  position: relative;
+}
+
+.person-silhouette::before {
+  content: '';
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background: #333;
+  border-radius: 50%;
+}
+
+.person-name {
+  font-weight: 700;
+  color: #333;
+  font-size: 1rem;
+}
+
+/* Ratio Cards */
+.ratio-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+  min-width: 320px;
+}
+
+.ratio-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.ratio-header {
+  background: #3b82f6;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ratio-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.ratio-metric {
+  text-align: center;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #333;
+}
+
+.metric-status {
+  font-size: 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.metric-meta {
+  font-size: 0.65rem;
+  color: #999;
+  margin-top: 0.25rem;
+}
+
+.btn-benchmark {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+/* SVG Connections */
+.connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.flow-box {
+  position: relative;
+  z-index: 1;
+}
+
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.connection-line {
+  stroke: #cbd5e1;
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: round;
+}
+
+.connection-arrow {
+  fill: #cbd5e1;
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .flow-diagram {
+    flex-wrap: wrap;
+  }
+  
+  .ratio-cards {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .ratio-card {
+    flex: 1;
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  
+  .flow-diagram {
+    flex-direction: column;
+  }
+  
+  .flow-center {
+    width: 100%;
+    flex: 1;
+  }
+  
+  .flow-row {
+    flex-direction: column;
+  }
+  
+  .ratio-cards {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">💰 Logo</div>
+    
+    <div class="menu-section">
+      <div class="menu-title">
+        Management ▼
+      </div>
+      <div class="menu-item">Information General</div>
+      <div class="menu-item">Ingresos</div>
+      <div class="menu-item">Gastos</div>
+      <div class="menu-item">Activos</div>
+      <div class="menu-item">Pasivos</div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="flow-diagram">
+      
+      <!-- Left Section: Data Summary -->
+      <div style="flex: 0 0 320px; display: flex; flex-direction: column; gap: 1rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 800; color: #333; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          📊 Resumen Financiero
+        </h2>
+        
+        <div style="background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          <h3 style="font-weight: 700; margin-bottom: 1rem; color: #3b82f6;">Flujo de Caja</h3>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #f0fdf4; border-radius: 8px;">
+              <span style="color: #666;">Ingresos Anuales</span>
+              <span style="font-weight: 700; color: #10b981;">$90,000</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #fef2f2; border-radius: 8px;">
+              <span style="color: #666;">Gastos Anuales</span>
+              <span style="font-weight: 700; color: #ef4444;">$75,000</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #f0fdf4; border-radius: 8px;">
+              <span style="color: #666;">Ahorro</span>
+              <span style="font-weight: 700; color: #10b981;">$15,000</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #fef2f2; border-radius: 8px; border: 2px solid #ef4444;">
+              <span style="color: #666; font-weight: 600;">Déficit</span>
+              <span style="font-weight: 700; color: #ef4444;">-$30,484</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          <h3 style="font-weight: 700; margin-bottom: 1rem; color: #3b82f6;">Balance General</h3>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #f0fdf4; border-radius: 8px;">
+              <span style="color: #666;">Activos</span>
+              <span style="font-weight: 700; color: #10b981;">$650,000</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #fef2f2; border-radius: 8px;">
+              <span style="color: #666;">Pasivos</span>
+              <span style="font-weight: 700; color: #ef4444;">$344,400</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: #f0fdf4; border-radius: 8px; border: 3px solid #10b981;">
+              <span style="color: #666; font-weight: 600;">Patrimonio Neto</span>
+              <span style="font-weight: 700; color: #10b981; font-size: 1.25rem;">$305,600</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Flow Center -->
+      <div class="flow-center">
+        
+        <!-- SVG Connections from left summary to right analysis -->
+        <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <polygon points="0 0, 10 3, 0 6" fill="#94a3b8" />
+            </marker>
+          </defs>
+          
+          <!-- From left summary boxes to person -->
+          <path d="M -150 100 L 100 100 L 100 350" 
+                stroke="#cbd5e1" stroke-width="2" fill="none" 
+                stroke-linecap="round" stroke-dasharray="5,5"/>
+          
+          <path d="M -150 250 L 50 250 L 50 350" 
+                stroke="#cbd5e1" stroke-width="2" fill="none" 
+                stroke-linecap="round" stroke-dasharray="5,5"/>
+          
+          <!-- From person to right analysis cards -->
+          <path d="M 150 350 L 450 350 L 450 100" 
+                stroke="#cbd5e1" stroke-width="2" fill="none" 
+                stroke-linecap="round" stroke-dasharray="5,5"
+                marker-end="url(#arrowhead)"/>
+          
+          <path d="M 150 380 L 450 380 L 450 250" 
+                stroke="#cbd5e1" stroke-width="2" fill="none" 
+                stroke-linecap="round" stroke-dasharray="5,5"
+                marker-end="url(#arrowhead)"/>
+                
+          <path d="M 150 410 L 450 410 L 450 400" 
+                stroke="#cbd5e1" stroke-width="2" fill="none" 
+                stroke-linecap="round" stroke-dasharray="5,5"
+                marker-end="url(#arrowhead)"/>
+        </svg>
+        
+        <!-- Person in center -->
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; position: relative; z-index: 2;">
+          <div class="person-icon">
+            <div class="person-silhouette"></div>
+            <div class="person-name">María García</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Ratio Cards -->
+      <div class="ratio-cards">
+        <h2 style="font-size: 1.5rem; font-weight: 800; color: #333; margin-bottom: 0.5rem;">🎯 Análisis de Ratios</h2>
+        
+        <!-- Liquidez -->
+        <div class="ratio-card">
+          <div class="ratio-header">💧 Liquidez</div>
+          <div class="ratio-metrics">
+            <div class="ratio-metric">
+              <div class="metric-label">Meses de reserva ⓘ</div>
+              <div class="metric-value">7.1m</div>
+              <div class="metric-status">✅</div>
+              <div class="metric-meta">Meta: >6 meses ✅</div>
+            </div>
+            <div class="ratio-metric">
+              <div class="metric-label">Razón corriente ⓘ</div>
+              <div class="metric-value">11.54</div>
+              <div class="metric-status">✅</div>
+              <div class="metric-meta">Meta: >1.0 ✅</div>
+            </div>
+          </div>
+          <button class="btn-benchmark">💡 Ver recomendaciones</button>
+        </div>
+
+        <!-- Ahorro -->
+        <div class="ratio-card">
+          <div class="ratio-header">🐷 Ahorro</div>
+          <div class="ratio-metrics">
+            <div class="ratio-metric">
+              <div class="metric-label">Tasa de ahorro ⓘ</div>
+              <div class="metric-value">14.9%</div>
+              <div class="metric-status">🚨</div>
+              <div class="metric-meta">Meta: ≥30% ✅ · 15-29% ⚠️</div>
+            </div>
+            <div class="ratio-metric">
+              <div class="metric-label">Capacidad de acumulación ⓘ</div>
+              <div class="metric-value">-25.1%</div>
+              <div class="metric-status">🚨</div>
+              <div class="metric-meta">Meta: ≥30% ✅ · 12-29% ⚠️</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deuda -->
+        <div class="ratio-card">
+          <div class="ratio-header">🏦 Deuda</div>
+          <div class="ratio-metrics">
+            <div class="ratio-metric">
+              <div class="metric-label">DTI neto ⓘ</div>
+              <div class="metric-value">50.2%</div>
+              <div class="metric-status">🚨</div>
+              <div class="metric-meta">Meta: ≤36% ✅ · >36% 🚨</div>
+            </div>
+            <div class="ratio-metric">
+              <div class="metric-label">Pasivos / Activos ⓘ</div>
+              <div class="metric-value">53.0%</div>
+              <div class="metric-status">🚨</div>
+              <div class="metric-meta">Meta: ≤30% ✅ · 30-50% ⚠️</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patrimonio -->
+        <div class="ratio-card">
+          <div class="ratio-header">💎 Patrimonio</div>
+          <div class="ratio-metrics">
+            <div class="ratio-metric">
+              <div class="metric-label">Patrimonio / Activos ⓘ</div>
+              <div class="metric-value">47.0%</div>
+              <div class="metric-status">🚨</div>
+              <div class="metric-meta">Meta: ≥70% ✅</div>
+            </div>
+            <div class="ratio-metric">
+              <div class="metric-label">Inversión / Ingreso bruto ⓘ</div>
+              <div class="metric-value">2.33x</div>
+              <button class="btn-benchmark">📊 Ver benchmark</button>
+            </div>
+          </div>
+          <div style="margin-top: 1rem; border-top: 1px solid #e5e5e5; padding-top: 1rem;">
+            <div class="ratio-metrics">
+              <div class="ratio-metric">
+                <div class="metric-label">Nivel de riqueza neta ⓘ</div>
+                <div class="metric-value">3.31x</div>
+                <button class="btn-benchmark">📊 Ver benchmark</button>
+              </div>
+              <div class="ratio-metric">
+                <div class="metric-label">Ahorro para retiro ⓘ</div>
+                <div class="metric-value">1.30x</div>
+                <button class="btn-benchmark">📊 Ver benchmark</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
