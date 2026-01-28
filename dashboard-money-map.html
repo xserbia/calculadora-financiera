@@ -409,40 +409,6 @@ svg {
       <!-- Flow Center -->
       <div class="flow-center">
         
-        <!-- SVG Connections from left summary to right analysis -->
-        <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
-          <defs>
-            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-              <polygon points="0 0, 10 3, 0 6" fill="#94a3b8" />
-            </marker>
-          </defs>
-          
-          <!-- From left summary boxes to person -->
-          <path d="M -150 100 L 100 100 L 100 350" 
-                stroke="#cbd5e1" stroke-width="2" fill="none" 
-                stroke-linecap="round" stroke-dasharray="5,5"/>
-          
-          <path d="M -150 250 L 50 250 L 50 350" 
-                stroke="#cbd5e1" stroke-width="2" fill="none" 
-                stroke-linecap="round" stroke-dasharray="5,5"/>
-          
-          <!-- From person to right analysis cards -->
-          <path d="M 150 350 L 450 350 L 450 100" 
-                stroke="#cbd5e1" stroke-width="2" fill="none" 
-                stroke-linecap="round" stroke-dasharray="5,5"
-                marker-end="url(#arrowhead)"/>
-          
-          <path d="M 150 380 L 450 380 L 450 250" 
-                stroke="#cbd5e1" stroke-width="2" fill="none" 
-                stroke-linecap="round" stroke-dasharray="5,5"
-                marker-end="url(#arrowhead)"/>
-                
-          <path d="M 150 410 L 450 410 L 450 400" 
-                stroke="#cbd5e1" stroke-width="2" fill="none" 
-                stroke-linecap="round" stroke-dasharray="5,5"
-                marker-end="url(#arrowhead)"/>
-        </svg>
-        
         <!-- Person in center -->
         <div style="display: flex; align-items: center; justify-content: center; height: 100%; position: relative; z-index: 2;">
           <div class="person-icon">
