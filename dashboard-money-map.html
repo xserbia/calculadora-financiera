@@ -651,15 +651,25 @@ const parseNumber = (value) => {
 // ============= DUMMY DATA =============
 // ============= ONBOARDING MODAL COMPONENT =============
 function OnboardingModal({ isOpen, onClose, onSave, initialProfile }) {
-  const [formData, setFormData] = useState(initialProfile);
+  const [formData, setFormData] = useState({
+    ...initialProfile,
+    parejaNombre: initialProfile.parejaNombre || '',
+    parejaApellido: initialProfile.parejaApellido || '',
+    parejaAvatar: initialProfile.parejaAvatar || '👤'
+  });
   
   const avatarOptions = ['👤', '👨', '👩', '🧑', '👨‍💼', '👩‍💼', '👨‍🎓', '👩‍🎓', '🧔', '👨‍🦰', '👩‍🦰', '👱‍♂️', '👱‍♀️'];
   
   const handleSubmit = (e) => {
     e.preventDefault();
+    const isCouple = formData.estadoCivil === 'casado' || formData.estadoCivil === 'pareja';
     const profileToSave = {
       ...formData,
-      analisisConjunto: formData.estadoCivil === 'casado' || formData.estadoCivil === 'pareja'
+      analisisConjunto: isCouple,
+      // Clear partner fields if not a couple
+      parejaNombre: isCouple ? formData.parejaNombre : '',
+      parejaApellido: isCouple ? formData.parejaApellido : '',
+      parejaAvatar: isCouple ? formData.parejaAvatar : '👤'
     };
     onSave(profileToSave);
     onClose();
@@ -832,26 +842,103 @@ function OnboardingModal({ isOpen, onClose, onSave, initialProfile }) {
 
           {/* Info box para casados/pareja */}
           {(formData.estadoCivil === 'casado' || formData.estadoCivil === 'pareja') && (
-            <div style={{
-              background: '#eff6ff',
-              border: '2px solid var(--primary)',
-              borderRadius: '12px',
-              padding: '1rem',
-              marginBottom: '1.5rem'
-            }}>
-              <div style={{display: 'flex', gap: '0.75rem', alignItems: 'flex-start'}}>
-                <span style={{fontSize: '1.5rem'}}>💡</span>
-                <div>
-                  <div style={{fontWeight: '700', marginBottom: '0.25rem', color: 'var(--primary)'}}>
-                    Análisis Financiero Conjunto
-                  </div>
-                  <div style={{fontSize: '0.875rem', color: '#1e40af', lineHeight: '1.5'}}>
-                    El dashboard analizará las finanzas de ambos como una unidad familiar. 
-                    Ingresa los ingresos, gastos y activos combinados.
+            <>
+              <div style={{
+                background: '#eff6ff',
+                border: '2px solid var(--primary)',
+                borderRadius: '12px',
+                padding: '1rem',
+                marginBottom: '1.5rem'
+              }}>
+                <div style={{display: 'flex', gap: '0.75rem', alignItems: 'flex-start'}}>
+                  <span style={{fontSize: '1.5rem'}}>💡</span>
+                  <div>
+                    <div style={{fontWeight: '700', marginBottom: '0.25rem', color: 'var(--primary)'}}>
+                      Análisis Financiero Conjunto
+                    </div>
+                    <div style={{fontSize: '0.875rem', color: '#1e40af', lineHeight: '1.5'}}>
+                      El dashboard analizará las finanzas de ambos como una unidad familiar. 
+                      Ingresa los ingresos, gastos y activos combinados.
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+
+              {/* Partner Avatar Selection */}
+              <div style={{marginBottom: '1.5rem', textAlign: 'center', background: '#f8fafc', padding: '1.5rem', borderRadius: '12px'}}>
+                <label style={{display: 'block', fontWeight: '600', marginBottom: '1rem', color: '#333'}}>
+                  Elige el avatar de tu pareja
+                </label>
+                <div style={{display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap'}}>
+                  {avatarOptions.map(avatar => (
+                    <button
+                      key={`partner-${avatar}`}
+                      type="button"
+                      onClick={() => updateField('parejaAvatar', avatar)}
+                      style={{
+                        fontSize: '2rem',
+                        width: '60px',
+                        height: '60px',
+                        border: formData.parejaAvatar === avatar ? '3px solid var(--primary)' : '2px solid var(--border)',
+                        borderRadius: '50%',
+                        background: formData.parejaAvatar === avatar ? 'rgba(59, 130, 246, 0.1)' : 'white',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      {avatar}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Partner Name Fields */}
+              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem'}}>
+                <div>
+                  <label style={{display: 'block', fontWeight: '600', marginBottom: '0.5rem', fontSize: '0.9rem'}}>
+                    Nombre de tu pareja *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.parejaNombre}
+                    onChange={(e) => updateField('parejaNombre', e.target.value)}
+                    placeholder="María"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '2px solid var(--border)',
+                      borderRadius: '8px',
+                      fontSize: '1rem',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{display: 'block', fontWeight: '600', marginBottom: '0.5rem', fontSize: '0.9rem'}}>
+                    Apellido de tu pareja *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.parejaApellido}
+                    onChange={(e) => updateField('parejaApellido', e.target.value)}
+                    placeholder="González"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: '2px solid var(--border)',
+                      borderRadius: '8px',
+                      fontSize: '1rem',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+              </div>
+            </>
           )}
 
           {/* Dependientes */}
@@ -926,7 +1013,11 @@ function App() {
       estadoCivil: 'soltero', // soltero, casado, pareja
       dependientes: 0,
       avatar: '👤',
-      analisisConjunto: false
+      analisisConjunto: false,
+      // Partner fields
+      parejaNombre: '',
+      parejaApellido: '',
+      parejaAvatar: '👤'
     };
   });
 
@@ -2004,34 +2095,94 @@ function VistaGeneral({ totales, ingresos, gastos, ratiosData, currency, setActi
         </div>
 
         {/* Center: Person Icon */}
-        <div style={{flex: '0 0 240px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '600px'}}>
+        <div style={{flex: '0 0 280px', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '600px'}}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem'}}>
-            <div style={{
-              width: '120px', 
-              height: '120px', 
-              background: 'linear-gradient(135deg, var(--primary) 0%, #2563eb 100%)', 
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '4rem',
-              boxShadow: '0 8px 24px rgba(59, 130, 246, 0.3)',
-              border: '4px solid white'
-            }}>
-              {userProfile.avatar}
-            </div>
-            <div style={{textAlign: 'center'}}>
-              <div style={{fontWeight: '800', color: '#333', fontSize: '1.25rem', marginBottom: '0.25rem'}}>
-                {userProfile.nombre && userProfile.apellido 
-                  ? `${userProfile.nombre} ${userProfile.apellido}` 
-                  : 'Usuario'}
+            
+            {/* Avatar(s) */}
+            {userProfile.analisisConjunto ? (
+              // Couple avatars
+              <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+                <div style={{
+                  width: '100px', 
+                  height: '100px', 
+                  background: 'linear-gradient(135deg, var(--primary) 0%, #2563eb 100%)', 
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '3rem',
+                  boxShadow: '0 8px 24px rgba(59, 130, 246, 0.3)',
+                  border: '4px solid white'
+                }}>
+                  {userProfile.avatar}
+                </div>
+                <div style={{fontSize: '2rem', color: 'var(--primary)'}}>❤️</div>
+                <div style={{
+                  width: '100px', 
+                  height: '100px', 
+                  background: 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)', 
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '3rem',
+                  boxShadow: '0 8px 24px rgba(236, 72, 153, 0.3)',
+                  border: '4px solid white'
+                }}>
+                  {userProfile.parejaAvatar || '👤'}
+                </div>
               </div>
+            ) : (
+              // Single avatar
+              <div style={{
+                width: '120px', 
+                height: '120px', 
+                background: 'linear-gradient(135deg, var(--primary) 0%, #2563eb 100%)', 
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '4rem',
+                boxShadow: '0 8px 24px rgba(59, 130, 246, 0.3)',
+                border: '4px solid white'
+              }}>
+                {userProfile.avatar}
+              </div>
+            )}
+            
+            {/* Names and Info */}
+            <div style={{textAlign: 'center'}}>
+              {userProfile.analisisConjunto ? (
+                // Couple names
+                <div>
+                  <div style={{fontWeight: '800', color: '#333', fontSize: '1.1rem', marginBottom: '0.25rem'}}>
+                    {userProfile.nombre && userProfile.apellido 
+                      ? `${userProfile.nombre} ${userProfile.apellido}` 
+                      : 'Usuario 1'}
+                  </div>
+                  <div style={{color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '0.5rem'}}>y</div>
+                  <div style={{fontWeight: '800', color: '#333', fontSize: '1.1rem', marginBottom: '0.25rem'}}>
+                    {userProfile.parejaNombre && userProfile.parejaApellido 
+                      ? `${userProfile.parejaNombre} ${userProfile.parejaApellido}` 
+                      : 'Usuario 2'}
+                  </div>
+                </div>
+              ) : (
+                // Single name
+                <div style={{fontWeight: '800', color: '#333', fontSize: '1.25rem', marginBottom: '0.25rem'}}>
+                  {userProfile.nombre && userProfile.apellido 
+                    ? `${userProfile.nombre} ${userProfile.apellido}` 
+                    : 'Usuario'}
+                </div>
+              )}
+              
               {userProfile.edad && (
-                <div style={{color: 'var(--text-muted)', fontSize: '0.9rem'}}>
+                <div style={{color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.5rem'}}>
                   {userProfile.edad} años
                   {userProfile.dependientes > 0 && ` · ${userProfile.dependientes} ${userProfile.dependientes === 1 ? 'dependiente' : 'dependientes'}`}
                 </div>
               )}
+              
               {userProfile.analisisConjunto && (
                 <div style={{
                   background: '#eff6ff',
