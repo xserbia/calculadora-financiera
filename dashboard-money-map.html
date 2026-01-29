@@ -2541,6 +2541,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency, ingre
     const ingresoMensualBruto = ingresoBruto/12;
     const ingresoMensualNeto = ingresoNeto/12;
     const superavitAnual = ingresoNeto - (impuestosAnual + segurosAnual + gastosAnual + deudaAnual + ahorroAnual);
+    const gastosAnualesTotales = impuestosAnual + segurosAnual + gastosAnual + deudaAnual;
 
     const mesesReserva = gastosEsenciales > 0 ? reserva / gastosEsenciales : NaN;
     const razonCorriente = pasivosCorrientes > 0 ? activosLiquidos / pasivosCorrientes : NaN;
@@ -2557,6 +2558,7 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency, ingre
 
     return {
       edad, ingresoBruto, ingresoNeto, superavitAnual, activosTotales, pasivosTotales, patrimonioNeto,
+      ahorroAnual, gastosAnualesTotales,
       mesesReserva, razonCorriente, tasaAhorro, capAcum, dtiNeto, dtiBruto,
       deudaActivos, deudaPatrimonio, patrimonioActivos, inversionRatio, riquezaNeta, ahorroRetiro
     };
@@ -2857,7 +2859,25 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency, ingre
             <div style={{flex: 1, overflowY: 'auto', padding: '20px'}}>
               {/* Summary Grid */}
               <div style={{padding: '16px', background: 'white', margin: '12px 0', borderRadius: '16px', boxShadow: '0 2px 8px rgba(0,0,0,.08)'}}>
-                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px'}}>
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px'}}>
+                  {/* Row 1: Flujo de Caja */}
+                  <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
+                    <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Ingreso</div>
+                    <div style={{fontSize: '22px', fontWeight: '800', color: 'var(--success)'}}>{formatCurrency(ratios.ingresoBruto, currency)}</div>
+                  </div>
+                  <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
+                    <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Gastos</div>
+                    <div style={{fontSize: '22px', fontWeight: '800', color: 'var(--danger)'}}>{formatCurrency(ratios.gastosAnualesTotales, currency)}</div>
+                  </div>
+                  <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
+                    <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Ahorro*</div>
+                    <div style={{fontSize: '22px', fontWeight: '800', color: 'var(--success)'}}>{formatCurrency(ratios.ahorroAnual, currency)}</div>
+                    <div style={{fontSize: '11px', color: ratios.superavitAnual >= 0 ? 'var(--success)' : 'var(--danger)', marginTop: '4px', fontWeight: '600'}}>
+                      {ratios.superavitAnual >= 0 ? 'Superávit' : 'Déficit'}: {formatCurrency(Math.abs(ratios.superavitAnual), currency)}
+                    </div>
+                  </div>
+                  
+                  {/* Row 2: Balance General */}
                   <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
                     <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Activos</div>
                     <div style={{fontSize: '22px', fontWeight: '800'}}>{formatCurrency(ratios.activosTotales, currency)}</div>
@@ -2870,24 +2890,9 @@ function RatiosFinancieros({ ratiosData, setRatiosData, totales, currency, ingre
                     <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Patrimonio Neto</div>
                     <div style={{fontSize: '22px', fontWeight: '800', color: ratios.patrimonioNeto >= 0 ? 'var(--success)' : 'var(--danger)'}}>{formatCurrency(ratios.patrimonioNeto, currency)}</div>
                   </div>
-                  <div style={{background: '#fafafa', borderRadius: '12px', padding: '14px', textAlign: 'center'}}>
-                    <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px', fontWeight: '600'}}>Estado Financiero</div>
-                    <div style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      borderRadius: '999px',
-                      padding: '8px 14px',
-                      color: '#fff',
-                      fontWeight: '700',
-                      fontSize: '14px',
-                      marginTop: '8px',
-                      background: ratios.superavitAnual > 1 ? 'var(--success)' : ratios.superavitAnual < -1 ? 'var(--danger)' : 'var(--charcoal)'
-                    }}>
-                      {ratios.superavitAnual > 1 ? 'Superávit' : ratios.superavitAnual < -1 ? 'Déficit' : 'Breakeven'}
-                    </div>
-                    <div style={{fontSize: '18px', fontWeight: '700', marginTop: '6px'}}>{formatCurrency(Math.abs(ratios.superavitAnual))}</div>
-                  </div>
+                </div>
+                <div style={{fontSize: '11px', color: 'var(--text-muted)', marginTop: '12px', textAlign: 'center'}}>
+                  * Incluye superávit o déficit después de gastos
                 </div>
               </div>
 
