@@ -731,10 +731,10 @@ function OnboardingModal({ isOpen, onClose, onSave, initialProfile }) {
           </button>
           <div style={{fontSize: '3rem', marginBottom: '1rem'}}>👋</div>
           <img 
-  src="https://xserbia.github.io/calculadora-financiera/assets/XAVIER-MONEY-MAP-LOGO-2.png" 
-  alt="Xavier Serbia Money Map"
-  style={{height: '100px', marginBottom: '0.75rem'}}
-/>
+            src="https://xserbia.github.io/calculadora-financiera/assets/XAVIER-MONEY-MAP-LOGO-2.png" 
+            alt="Xavier Serbia Money Map"
+            style={{height: '70px', marginBottom: '0.75rem'}}
+          />
           <div style={{color: 'var(--text-muted)', fontSize: '0.95rem'}}>Comienza tu viaje hacia la libertad financiera</div>
         </div>
 
@@ -1027,7 +1027,10 @@ function OnboardingModal({ isOpen, onClose, onSave, initialProfile }) {
 // ============= MAIN APP COMPONENT =============
 function App() {
   const [activeTab, setActiveTab] = useState('vistaGeneral');
-  const [currency, setCurrency] = useState('USD');
+  const [currency, setCurrency] = useState(() => {
+    const saved = localStorage.getItem('currency');
+    return saved || 'USD';
+  });
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showOnboardingModal, setShowOnboardingModal] = useState(false);
   
@@ -1068,47 +1071,118 @@ function App() {
       setRatiosData(prev => ({ ...prev, edad: profile.edad }));
     }
   };
+
+  // Clear all saved data
+  const clearAllData = () => {
+    if (confirm('⚠️ ¿Estás seguro de que quieres borrar TODOS tus datos financieros?\n\nEsta acción no se puede deshacer.')) {
+      // Clear all localStorage
+      localStorage.removeItem('activos');
+      localStorage.removeItem('deudas');
+      localStorage.removeItem('ingresos');
+      localStorage.removeItem('gastos');
+      localStorage.removeItem('ratiosData');
+      localStorage.removeItem('modoCalculo');
+      localStorage.removeItem('currency');
+      localStorage.removeItem('userProfile');
+      localStorage.removeItem('hasSeenOnboarding');
+      
+      // Reload page to reset all states
+      window.location.reload();
+    }
+  };
   
-  // ===== SHARED STATE WITH DUMMY DATA =====
-  const [activos, setActivos] = useState({
-    efectivo: [],
-    inversiones: [],
-    retiro: [],
-    bienesRaices: [],
-    bienesPersonales: []
+  // ===== SHARED STATE WITH LOCALSTORAGE PERSISTENCE =====
+  const [activos, setActivos] = useState(() => {
+    const saved = localStorage.getItem('activos');
+    return saved ? JSON.parse(saved) : {
+      efectivo: [],
+      inversiones: [],
+      retiro: [],
+      bienesRaices: [],
+      bienesPersonales: []
+    };
   });
-  const [deudas, setDeudas] = useState({
-    tarjetas: [],
-    lineaPersonal: [],
-    lineaPropiedad: [],
-    casa: [],
-    auto: [],
-    educacion: [],
-    otros: []
+  
+  const [deudas, setDeudas] = useState(() => {
+    const saved = localStorage.getItem('deudas');
+    return saved ? JSON.parse(saved) : {
+      tarjetas: [],
+      lineaPersonal: [],
+      lineaPropiedad: [],
+      casa: [],
+      auto: [],
+      educacion: [],
+      otros: []
+    };
   });
-  const [ingresos, setIngresos] = useState([]);
-  const [gastos, setGastos] = useState({
-    diarios: [],
-    deuda: [],
-    ahorro: [],
-    impuestos: [],
-    seguros: []
+  
+  const [ingresos, setIngresos] = useState(() => {
+    const saved = localStorage.getItem('ingresos');
+    return saved ? JSON.parse(saved) : [];
   });
-  const [modoCalculo, setModoCalculo] = useState('mensual');
-  const [ratiosData, setRatiosData] = useState({
-    edad: '',
-    ingresoBruto: 0,
-    ingresoNeto: 0,
-    ahorroAnual: 0,
-    impuestosAnual: 0,
-    segurosAnual: 0,
-    deudaAnual: 0,
-    gastosAnual: 0,
-    pagoDeudaMensual: 0,
-    gastosEsencialesMensuales: 0,
-    reserva: 0,
-    pasivosCorrientes: 0
+  
+  const [gastos, setGastos] = useState(() => {
+    const saved = localStorage.getItem('gastos');
+    return saved ? JSON.parse(saved) : {
+      diarios: [],
+      deuda: [],
+      ahorro: [],
+      impuestos: [],
+      seguros: []
+    };
   });
+  
+  const [modoCalculo, setModoCalculo] = useState(() => {
+    const saved = localStorage.getItem('modoCalculo');
+    return saved || 'mensual';
+  });
+  
+  const [ratiosData, setRatiosData] = useState(() => {
+    const saved = localStorage.getItem('ratiosData');
+    return saved ? JSON.parse(saved) : {
+      edad: '',
+      ingresoBruto: 0,
+      ingresoNeto: 0,
+      ahorroAnual: 0,
+      impuestosAnual: 0,
+      segurosAnual: 0,
+      deudaAnual: 0,
+      gastosAnual: 0,
+      pagoDeudaMensual: 0,
+      gastosEsencialesMensuales: 0,
+      reserva: 0,
+      pasivosCorrientes: 0
+    };
+  });
+
+  // Auto-save to localStorage whenever data changes
+  useEffect(() => {
+    localStorage.setItem('activos', JSON.stringify(activos));
+  }, [activos]);
+
+  useEffect(() => {
+    localStorage.setItem('deudas', JSON.stringify(deudas));
+  }, [deudas]);
+
+  useEffect(() => {
+    localStorage.setItem('ingresos', JSON.stringify(ingresos));
+  }, [ingresos]);
+
+  useEffect(() => {
+    localStorage.setItem('gastos', JSON.stringify(gastos));
+  }, [gastos]);
+
+  useEffect(() => {
+    localStorage.setItem('ratiosData', JSON.stringify(ratiosData));
+  }, [ratiosData]);
+
+  useEffect(() => {
+    localStorage.setItem('modoCalculo', modoCalculo);
+  }, [modoCalculo]);
+
+  useEffect(() => {
+    localStorage.setItem('currency', currency);
+  }, [currency]);
 
   // ===== COMPUTED VALUES =====
   const totales = useMemo(() => {
@@ -1174,11 +1248,11 @@ function App() {
       <header className="app-header">
         <div className="header-content">
           <img 
-  src="https://xserbia.github.io/calculadora-financiera/assets/XAVIER-MONEY-MAP-LOGO.png" 
-  alt="Xavier Serbia Money Map"
-  style={{height: '100px', marginBottom: '0.5rem'}}
-/>
-          <p className="app-subtitle">Tu mapa financiero personal</p>
+            src="https://xserbia.github.io/calculadora-financiera/assets/XAVIER-MONEY-MAP-LOGO.png" 
+            alt="Xavier Serbia Money Map"
+            style={{height: '60px', marginBottom: '0.5rem'}}
+          />
+          <p className="app-subtitle">Tu mapa financiero personal hacia la libertad económica</p>
           
           <div style={{display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem'}}>
             <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
@@ -1247,6 +1321,26 @@ function App() {
               }}
             >
               ❓ Cómo usar esta calculadora
+            </button>
+            
+            <button
+              onClick={clearAllData}
+              style={{
+                padding: '0.5rem 1.25rem',
+                borderRadius: '8px',
+                border: '2px solid rgba(239, 68, 68, 0.5)',
+                background: 'rgba(239, 68, 68, 0.15)',
+                color: 'white',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+              title="Borrar todos los datos guardados y empezar de nuevo"
+            >
+              🗑️ Limpiar Datos
             </button>
           </div>
           
@@ -1805,11 +1899,11 @@ function IngresosGastos({ ingresos, setIngresos, gastos, setGastos, modoCalculo,
   const categoriasIngresos = ['Salario', 'Negocio/Side Hustle', 'Bonos', 'Intereses', 'Renta', 'Otros'];
   
   const categoriasGastos = {
-    ahorro: { nombre: 'Ahorro', items: ['Efectivo a mano','Cuentas de cheque','Cuentas de ahorro','Cuentas de retiro','Cuentas de mercado de dinero','Cuenta de inversiones','Contribucion de empleador','Otros'] },
-    deuda: { nombre: 'Pago de Deuda', items: ['Hipoteca (o renta)','Prestamo de auto','Prestamo educativo','Prestamo personal','Linea de credito','Manutencion','Tarjetas de credito','Otros'] },
-    diarios: { nombre: 'Gastos Diarios', items: ['Servicio publico','Cuidado de hijos','Mantenimiento auto','Cuidado personal','Supermercado','Comidas afuera','Ropa','Vacaciones','Muebles y enseres','Gastos Medicos y dentista','Telecomunicaciones','Mantenimiento del hogar','Entretenimiento','Libros y membresia de contenido','Regalos y mesada','Donaciones','Fiestas','Mejoras al hogar','Dues','Servicios profesionales','Gastos de mascota','Otros'] },
-    seguros: { nombre: 'Seguros', items: ['Vida','Medico','Propiedad','Renta','Sombrilla','Incapacidad','Auto','Propiedad personal','Otros'] },
-    impuestos: { nombre: 'Impuestos', items: ['Federal','Seguro Social','Medicare','Estatales y locales','Propiedad','Auto','Negocio','Otros'] }
+    ahorro: { nombre: 'Ahorro', items: ['Cuenta de ahorro', 'Inversiones', '401(k)', 'IRA', 'Otros'] },
+    deuda: { nombre: 'Pago de Deuda', items: ['Hipoteca/Renta', 'Auto', 'Préstamos estudiantiles', 'Tarjetas de crédito', 'Otros'] },
+    diarios: { nombre: 'Gastos Diarios', items: ['Supermercado', 'Comidas afuera', 'Transporte', 'Servicios', 'Entretenimiento', 'Otros'] },
+    seguros: { nombre: 'Seguros', items: ['Vida', 'Médico', 'Auto', 'Propiedad', 'Otros'] },
+    impuestos: { nombre: 'Impuestos', items: ['Federal', 'Estatal', 'Seguro Social', 'Medicare', 'Propiedad', 'Otros'] }
   };
 
   const addIngreso = () => {
