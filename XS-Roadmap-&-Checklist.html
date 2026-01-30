@@ -1,429 +1,1152 @@
-# 🗺️ Xavier Serbia Money Map - Roadmap & Checklist
-
-**Versión:** 1.0  
-**Última actualización:** 30 de enero, 2026
-
----
-
-## ✅ COMPLETADO (v1.0)
-
-### Core Funcionalidad
-- [x] Dashboard principal con 6 tabs
-- [x] Vista General con resumen visual
-- [x] Inventario de Activos (5 categorías)
-- [x] Inventario de Pasivos (7 categorías)
-- [x] Ingresos y Gastos (5 categorías de gastos)
-- [x] Patrimonio Neto (Hoja de Balance)
-- [x] Ratios Financieros completos (11 ratios)
-- [x] Auto-cálculo de valores desde otras pestañas
-- [x] Campos read-only con indicadores de origen
-- [x] Tooltips explicativos en todos los ratios
-- [x] Benchmarks por edad (inversión, riqueza, retiro)
-- [x] Modal de benchmarks con tablas detalladas
-- [x] Modal de recomendaciones de reserva de emergencia
-
-### UI/UX
-- [x] Onboarding modal (primera vez)
-- [x] Perfil de usuario con avatar personalizable
-- [x] Análisis conjunto para parejas (2 avatares)
-- [x] Selector de 10 monedas (USD, EUR, MXN, COP, etc.)
-- [x] Modo cálculo mensual/anual
-- [x] Modal de ayuda ("Cómo usar")
-- [x] Click para cerrar modales (backdrop + X)
-- [x] Logos personalizados (header y modal)
-- [x] Color scheme: Primary blue (#3956E8)
-
-### Persistencia
-- [x] localStorage para todos los datos
-- [x] Auto-guardado en tiempo real
-- [x] Recuperación automática al recargar
-- [x] Botón "Limpiar Datos" con confirmación
-
-### Export
-- [x] Footer con disclaimer legal
-- [x] Botón "Imprimir Reporte"
-- [x] Botón "Exportar PDF" (placeholder)
-
----
-
-## 📊 NIVEL 1: VISUALIZACIÓN
-
-### Gráficos y Charts
-- [ ] **Pie Chart:** Distribución de activos por categoría
-- [ ] **Pie Chart:** Distribución de gastos por categoría
-- [ ] **Bar Chart:** Ingresos vs Gastos (comparación visual)
-- [ ] **Waterfall Chart:** Flujo completo (Ingreso → Gastos → Ahorro → Patrimonio)
-- [ ] **Line Chart:** Proyección de patrimonio a 5, 10, 20 años
-- [ ] **Radar Chart:** Tus ratios vs benchmarks recomendados
-- [ ] **Donut Chart:** Asset allocation (efectivo, inversiones, retiro, etc.)
-- [ ] Biblioteca de charts integrada (Chart.js ya incluido)
-
-### Dashboard Visual Mejorado
-- [ ] KPIs principales con sparklines (mini gráficos de tendencia)
-- [ ] Heat map de salud financiera (rojo/amarillo/verde por categoría)
-- [ ] Progress bars hacia benchmarks (visual de % logrado)
-- [ ] Cards expandibles con detalles on-demand
-- [ ] Vista móvil optimizada (responsive)
-
----
-
-## 💡 NIVEL 2: SIMULADORES Y PROYECCIONES
-
-### Calculadora de Retiro/FIRE
-- [ ] Calculadora: ¿Cuánto necesitas para retirarte? (Regla 25x)
-- [ ] Calculadora: ¿A qué edad puedes retirarte? (según ahorro actual)
-- [ ] Calculadora: ¿Cuánto ahorrar mensual para retirarte a X edad?
-- [ ] Simulador FIRE (Financial Independence, Retire Early)
-- [ ] Gráfico de timeline hasta retiro
-- [ ] Diferentes escenarios de retiro (conservador, moderado, agresivo)
-- [ ] Considerar Seguro Social / Pensión
-- [ ] Ajuste por inflación en proyecciones
-
-### Simulador de Pago de Deudas
-- [ ] Método bola de nieve (Snowball)
-- [ ] Método avalancha (Avalanche)
-- [ ] Comparación lado a lado: Snowball vs Avalanche
-- [ ] Timeline: Cuándo estarás libre de deudas
-- [ ] Calculadora de ahorro por pagar en diferente orden
-- [ ] Simulador de pagos extra (¿qué pasa si pago $500 extra?)
-- [ ] Gráfico de reducción de deuda mes a mes
-- [ ] Total de intereses ahorrados
-
-### Escenarios "What If"
-- [ ] Simulador: "¿Qué pasa si pierdo el trabajo?"
-- [ ] Simulador: "¿Qué pasa si me suben el salario X%?"
-- [ ] Simulador: "¿Qué pasa si compro una casa?"
-- [ ] Simulador: "¿Qué pasa si tengo un bebé?"
-- [ ] Simulador: "¿Qué pasa si abro un negocio?"
-- [ ] Comparar múltiples escenarios lado a lado
-- [ ] Guardar escenarios favoritos
-- [ ] Compartir escenarios (link)
-
----
-
-## 📈 NIVEL 3: TRACKING Y PROGRESO
-
-### Histórico Mensual
-- [ ] Guardar snapshot mensual automático
-- [ ] Gráfico de evolución del patrimonio neto (line chart)
-- [ ] Comparar mes actual vs meses anteriores (table)
-- [ ] Identificar tendencias (mejorando/empeorando)
-- [ ] Ver ratios históricos (cómo han cambiado)
-- [ ] Exportar histórico a CSV
-- [ ] Eliminar snapshots individuales
-
-### Metas Financieras
-- [ ] Crear metas personalizadas (Casa, Auto, Viaje, etc.)
-- [ ] Definir monto objetivo y fecha límite
-- [ ] Progress bar hacia cada meta
-- [ ] Fecha estimada de logro según ahorro actual
-- [ ] Calculadora: "Cuánto ahorrar mensual para lograr meta en X meses"
-- [ ] Notificación cuando logras una meta
-- [ ] Editar/eliminar metas
-- [ ] Priorizar metas (orden de importancia)
-
-### Hábitos de Ahorro
-- [ ] Tracker de ahorro mensual (¿cumpliste tu meta?)
-- [ ] Racha (streak) de meses consecutivos ahorrando
-- [ ] Badges/logros por hitos alcanzados
-- [ ] Calendario visual de ahorro
-
----
-
-## 🧠 NIVEL 4: INTELIGENCIA Y RECOMENDACIONES
-
-### Análisis Inteligente
-- [ ] Top 3 problemas financieros detectados (automático)
-- [ ] Top 3 oportunidades de mejora
-- [ ] Recomendaciones personalizadas de acción
-- [ ] "Si haces X, tu patrimonio aumentará Y en Z años"
-- [ ] Análisis de gastos: categorías donde más gastas
-- [ ] Detección de gastos inusuales
-- [ ] Sugerencias de optimización
-
-### Alertas y Notificaciones
-- [ ] Alerta: "Tu DTI subió a nivel peligroso"
-- [ ] Alerta: "Tu reserva bajó de 6 meses"
-- [ ] Felicitación: "Aumentaste tu tasa de ahorro"
-- [ ] Recordatorio: "Actualiza tus datos mensuales"
-- [ ] Alerta: "Nueva deuda agregada"
-- [ ] Sistema de preferencias de notificaciones
-
-### Score Financiero
-- [ ] Score general 0-100 basado en todos los ratios
-- [ ] Desglose del score por categoría
-- [ ] Comparación con personas de tu edad
-- [ ] Ranking: Principiante → Intermedio → Avanzado → Experto
-- [ ] Consejos para mejorar tu score
-- [ ] Histórico del score (cómo ha evolucionado)
-
----
-
-## 🛠️ NIVEL 5: HERRAMIENTAS ADICIONALES
-
-### Optimizador de Deudas
-- [ ] Calculadora: ¿Cuál deuda pagar primero? (mayor impacto)
-- [ ] Análisis: Refinanciar vs Pagar
-- [ ] Simulador de consolidación de deudas
-- [ ] Calcular ahorro por refinanciar a menor APR
-- [ ] Balance transfer: ¿conviene?
-
-### Calculadora de Inflación
-- [ ] Ajustar todos los valores por inflación
-- [ ] Selector de tasa de inflación (manual o automático)
-- [ ] Patrimonio neto en "dólares de hoy"
-- [ ] Todas las proyecciones ajustadas por inflación
-- [ ] Comparar poder adquisitivo año a año
-
-### Análisis de Inversiones
-- [ ] ROI de cada inversión individual
-- [ ] Asset allocation actual (% acciones, bonos, cash, RE, etc.)
-- [ ] Asset allocation recomendado según edad
-- [ ] Sugerencias de rebalanceo
-- [ ] Score de diversificación (0-100)
-- [ ] Análisis de riesgo del portafolio
-- [ ] Calculadora de compound interest
-
-### Calculadora de Impuestos
-- [ ] Estimador de impuestos anuales
-- [ ] Calculadora de deducciones
-- [ ] Bracket de impuestos según ingreso
-- [ ] Estrategias de optimización fiscal
-- [ ] Comparar diferentes jurisdicciones
-
----
-
-## 📄 NIVEL 6: EXPORTACIÓN Y COMPARTIR
-
-### Reportes Profesionales
-- [ ] PDF ejecutivo con gráficos (1-2 páginas)
-- [ ] Reporte completo detallado (5-10 páginas)
-- [ ] Reporte específico para asesor financiero
-- [ ] Exportar datos a Excel (XLSX)
-- [ ] Exportar datos a CSV
-- [ ] Exportar snapshots históricos
-
-### Compartir y Colaborar
-- [ ] Generar link para compartir (read-only)
-- [ ] Link con password protection
-- [ ] Expiración de links compartidos
-- [ ] Ver quién ha visto tu reporte
-- [ ] Modo presentación (para pantalla)
-
-### Impresión Optimizada
-- [ ] Versión print-friendly (CSS optimizado)
-- [ ] One-page summary
-- [ ] Reporte detallado multi-página
-- [ ] Opción blanco y negro (ahorrar tinta)
-
----
-
-## 🔐 NIVEL 7: FUNCIONALIDADES AVANZADAS
-
-### Multi-usuario/Parejas
-- [ ] Análisis separado de cada persona
-- [ ] Vista conjunta (suma de ambos)
-- [ ] Comparación de contribuciones
-- [ ] Gráficos comparativos (Mi patrimonio vs Tu patrimonio vs Nuestro patrimonio)
-- [ ] Gestión de permisos (quién puede editar qué)
-
-### Cuentas Múltiples
-- [ ] Separar finanzas personales y de negocio
-- [ ] Múltiples perfiles (tú, tu empresa, tus padres)
-- [ ] Cambiar entre perfiles fácilmente
-- [ ] Consolidar múltiples perfiles en uno
-
-### Sincronización Cloud
-- [ ] Guardar datos en la nube (Firebase/Supabase)
-- [ ] Sincronización automática entre dispositivos
-- [ ] Backup automático diario/semanal
-- [ ] Restaurar desde backup
-- [ ] Conflictos de sincronización (merge strategy)
-- [ ] Modo offline (funciona sin internet)
-
-### Seguridad
-- [ ] Autenticación de usuario (email/password)
-- [ ] Autenticación con Google/Apple
-- [ ] Cifrado de datos sensibles
-- [ ] PIN/Touch ID para abrir app
-- [ ] 2FA (autenticación de dos factores)
-- [ ] Logs de acceso/cambios
-
----
-
-## 🌐 NIVEL 8: INTEGRACIÓN CON SERVICIOS EXTERNOS
-
-### Open Banking / Plaid
-- [ ] Conectar cuentas bancarias automáticamente
-- [ ] Sincronización automática de transacciones
-- [ ] Categorización automática de gastos
-- [ ] Alertas de transacciones inusuales
-
-### APIs Financieras
-- [ ] Cotizaciones de acciones en tiempo real
-- [ ] Valores de criptomonedas
-- [ ] Tasas de interés actualizadas
-- [ ] Tipos de cambio en tiempo real
-
-### Integraciones
-- [ ] Exportar a Mint
-- [ ] Exportar a YNAB (You Need A Budget)
-- [ ] Exportar a Personal Capital
-- [ ] Importar desde otros servicios
-
----
-
-## 📱 NIVEL 9: MOBILE Y PWA
-
-### Progressive Web App
-- [ ] Instalar como app nativa (PWA)
-- [ ] Funciona offline
-- [ ] Notificaciones push
-- [ ] Icono en home screen
-
-### Optimización Mobile
-- [ ] UI completamente responsive
-- [ ] Gestos táctiles (swipe, pinch to zoom)
-- [ ] Bottom navigation para mobile
-- [ ] Teclado numérico optimizado para inputs
-
----
-
-## 🎓 NIVEL 10: EDUCACIÓN FINANCIERA
-
-### Centro de Aprendizaje
-- [ ] Artículos educativos sobre cada ratio
-- [ ] Videos explicativos
-- [ ] Glosario de términos financieros
-- [ ] Cursos básicos de finanzas personales
-- [ ] Quiz de conocimientos financieros
-
-### Recursos
-- [ ] Calculadoras adicionales (mortgage, car loan, etc.)
-- [ ] Links a recursos externos confiables
-- [ ] Blog con consejos financieros
-- [ ] Casos de estudio (ejemplos reales anonimizados)
-
----
-
-## 🚀 NIVEL 11: GAMIFICACIÓN
-
-### Sistema de Puntos
-- [ ] Ganar puntos por acciones positivas
-- [ ] Niveles de usuario (1-100)
-- [ ] Leaderboard (comparar con otros usuarios)
-- [ ] Achievements/Trofeos desbloqueables
-
-### Desafíos
-- [ ] Desafío: "Ahorra $500 este mes"
-- [ ] Desafío: "Reduce gastos en 10%"
-- [ ] Desafío: "Actualiza datos 7 días seguidos"
-- [ ] Recompensas por completar desafíos
-
----
-
-## 🔧 MEJORAS TÉCNICAS
-
-### Performance
-- [ ] Lazy loading de componentes
-- [ ] Optimizar cálculos pesados
-- [ ] Service Worker para caching
-- [ ] Minimizar re-renders innecesarios
-
-### Testing
-- [ ] Unit tests para cálculos críticos
-- [ ] Integration tests para flujos completos
-- [ ] End-to-end tests
-- [ ] Test coverage > 80%
-
-### Accesibilidad
-- [ ] ARIA labels completos
-- [ ] Navegación por teclado
-- [ ] Screen reader compatible
-- [ ] Alto contraste para visión reducida
-- [ ] WCAG 2.1 AA compliant
-
-### Internacionalización
-- [ ] Soporte multi-idioma (ES, EN, PT)
-- [ ] Formatos de fecha/moneda por región
-- [ ] Traducciones profesionales
-
----
-
-## 💼 FUNCIONALIDADES DE NEGOCIO
-
-### Modelo de Suscripción
-- [ ] Plan Free (funcionalidad básica)
-- [ ] Plan Pro (todas las funcionalidades)
-- [ ] Plan Business (múltiples usuarios)
-- [ ] Página de pricing
-- [ ] Integración con Stripe
-
-### Marketing
-- [ ] Landing page profesional
-- [ ] SEO optimizado
-- [ ] Blog para SEO
-- [ ] Programa de referidos
-- [ ] Email marketing (onboarding, tips)
-
----
-
-## 📝 CUSTOM FEATURES (Agrega aquí tus ideas)
-
-- [ ] _Tu idea aquí..._
-- [ ] _Tu idea aquí..._
-- [ ] _Tu idea aquí..._
-- [ ] _Tu idea aquí..._
-- [ ] _Tu idea aquí..._
-
----
-
-## 🎯 PRIORIDADES SUGERIDAS
-
-### SPRINT 1 (Alta prioridad)
-1. [ ] Gráficos básicos (Pie y Bar charts)
-2. [ ] Calculadora de Retiro/FIRE
-3. [ ] Simulador de pago de deudas
-4. [ ] Histórico mensual
-5. [ ] Score financiero
-
-### SPRINT 2 (Media prioridad)
-1. [ ] Metas financieras
-2. [ ] Escenarios "What If"
-3. [ ] Análisis inteligente con recomendaciones
-4. [ ] Optimizador de deudas
-5. [ ] Reportes PDF mejorados
-
-### SPRINT 3 (Baja prioridad)
-1. [ ] Sincronización cloud
-2. [ ] PWA
-3. [ ] Multi-usuario
-4. [ ] Gamificación
-5. [ ] Open Banking
-
----
-
-## 📊 MÉTRICAS DE ÉXITO
-
-- [ ] 1,000 usuarios activos
-- [ ] 10,000 cálculos de ratios realizados
-- [ ] 5,000 snapshots mensuales guardados
-- [ ] 500 reportes PDF generados
-- [ ] 100 usuarios de pago (Pro)
-- [ ] NPS (Net Promoter Score) > 50
-- [ ] Tasa de retención 30 días > 40%
-
----
-
-**Última actualización:** 30 de enero, 2026  
-**Próxima revisión:** [Fecha]  
-**Responsable:** Xavier Serbia
-
----
-
-## 📌 NOTAS
-
-- Este roadmap es un documento vivo y debe actualizarse regularmente
-- Prioridades pueden cambiar según feedback de usuarios
-- Marcar items como completados con fecha y versión
-- Agregar notas de implementación cuando sea relevante
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xavier Serbia Money Map - Product Roadmap</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #3956E8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg: #f8fafc;
+      --card-bg: white;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+      color: white;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border-left: 4px solid var(--primary);
+    }
+
+    .stat-card h3 {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card .value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .stat-card .subtext {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--success));
+      transition: width 0.3s ease;
+    }
+
+    .nav {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 1rem;
+      z-index: 100;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+
+    .nav-link:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .section {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 0.875rem;
+      background: var(--primary);
+      color: white;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .subsection {
+      margin-bottom: 2rem;
+    }
+
+    .subsection-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+
+    .checkbox-item:hover {
+      background: var(--bg);
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      margin-top: 0.125rem;
+      flex-shrink: 0;
+    }
+
+    .checkbox-item label {
+      cursor: pointer;
+      user-select: none;
+      flex: 1;
+    }
+
+    .checkbox-item.completed {
+      opacity: 0.6;
+    }
+
+    .checkbox-item.completed label {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .priority-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    .priority-high {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .priority-medium {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .priority-low {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    .btn-secondary {
+      background: var(--bg);
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .custom-items {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--bg);
+      border-radius: 8px;
+    }
+
+    .add-item-input {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .add-item-input input {
+      flex: 1;
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .add-item-input input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .stat-card .value {
+        font-size: 2rem;
+      }
+
+      .section {
+        padding: 1.25rem;
+      }
+
+      .nav-links {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+    }
+
+    .emoji {
+      font-size: 1.25em;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="container">
+      <h1>🗺️ Xavier Serbia Money Map - Product Roadmap</h1>
+      <p>Versión 1.0 | Última actualización: 30 de enero, 2026</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Stats Dashboard -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Total Items</h3>
+        <div class="value" id="totalItems">0</div>
+        <div class="subtext">Funcionalidades planeadas</div>
+      </div>
+      <div class="stat-card">
+        <h3>Completados</h3>
+        <div class="value" id="completedItems">0</div>
+        <div class="subtext">Funcionalidades listas</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <h3>Progreso Global</h3>
+        <div class="value" id="progressPercent">0%</div>
+        <div class="subtext">Del roadmap completo</div>
+      </div>
+      <div class="stat-card">
+        <h3>Siguiente Sprint</h3>
+        <div class="value" style="font-size: 1.5rem;">📊 Visualización</div>
+        <div class="subtext">Gráficos y charts</div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn btn-primary" onclick="markAllComplete()">
+        ✅ Marcar todo como completo
+      </button>
+      <button class="btn btn-secondary" onclick="markAllIncomplete()">
+        ⬜ Desmarcar todo
+      </button>
+      <button class="btn btn-secondary" onclick="exportProgress()">
+        💾 Exportar progreso
+      </button>
+      <button class="btn btn-danger" onclick="resetProgress()">
+        🗑️ Resetear progreso
+      </button>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav">
+      <div class="nav-links">
+        <button class="nav-link" onclick="scrollToSection('completado')">✅ Completado</button>
+        <button class="nav-link" onclick="scrollToSection('visualizacion')">📊 Visualización</button>
+        <button class="nav-link" onclick="scrollToSection('simuladores')">💡 Simuladores</button>
+        <button class="nav-link" onclick="scrollToSection('tracking')">📈 Tracking</button>
+        <button class="nav-link" onclick="scrollToSection('inteligencia')">🧠 Inteligencia</button>
+        <button class="nav-link" onclick="scrollToSection('herramientas')">🛠️ Herramientas</button>
+        <button class="nav-link" onclick="scrollToSection('exportacion')">📄 Exportación</button>
+        <button class="nav-link" onclick="scrollToSection('avanzado')">🔐 Avanzado</button>
+        <button class="nav-link" onclick="scrollToSection('custom')">✨ Personalizado</button>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: COMPLETADO -->
+    <div class="section" id="completado">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="emoji">✅</span>
+          Completado (v1.0 MVP)
+        </h2>
+        <span class="section-badge">
+          <span id="completed-count">25</span> items
+        </span>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Core Funcionalidad</h3>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c1" checked disabled>
+          <label for="c1">Dashboard principal con 6 tabs</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c2" checked disabled>
+          <label for="c2">Vista General con resumen visual</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c3" checked disabled>
+          <label for="c3">Inventario de Activos (5 categorías)</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c4" checked disabled>
+          <label for="c4">Inventario de Pasivos (7 categorías)</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c5" checked disabled>
+          <label for="c5">Ratios Financieros completos (11 ratios)</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c6" checked disabled>
+          <label for="c6">Auto-cálculo de valores desde otras pestañas</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c7" checked disabled>
+          <label for="c7">Tooltips explicativos en todos los ratios</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c8" checked disabled>
+          <label for="c8">Benchmarks por edad</label>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">UI/UX</h3>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c9" checked disabled>
+          <label for="c9">Onboarding modal (primera vez)</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c10" checked disabled>
+          <label for="c10">Perfil de usuario con avatar personalizable</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c11" checked disabled>
+          <label for="c11">Análisis conjunto para parejas (2 avatares)</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c12" checked disabled>
+          <label for="c12">Selector de 27 monedas</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c13" checked disabled>
+          <label for="c13">Modal de ayuda ("Cómo usar")</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c14" checked disabled>
+          <label for="c14">Logos personalizados (header y modal)</label>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Persistencia</h3>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c15" checked disabled>
+          <label for="c15">localStorage para todos los datos</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c16" checked disabled>
+          <label for="c16">Auto-guardado en tiempo real</label>
+        </div>
+        <div class="checkbox-item completed">
+          <input type="checkbox" id="c17" checked disabled>
+          <label for="c17">Botón "Limpiar Datos" con confirmación</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: VISUALIZACIÓN -->
+    <div class="section" id="visualizacion">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="emoji">📊</span>
+          Nivel 1: Visualización
+        </h2>
+        <span class="section-badge priority-high">
+          Alta prioridad
+        </span>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Gráficos y Charts</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="v1" onchange="updateProgress()">
+          <label for="v1">Pie Chart: Distribución de activos por categoría</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="v2" onchange="updateProgress()">
+          <label for="v2">Pie Chart: Distribución de gastos por categoría</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="v3" onchange="updateProgress()">
+          <label for="v3">Bar Chart: Ingresos vs Gastos (comparación visual)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="v4" onchange="updateProgress()">
+          <label for="v4">Waterfall Chart: Flujo completo (Ingreso → Gastos → Ahorro → Patrimonio)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="v5" onchange="updateProgress()">
+          <label for="v5">Line Chart: Proyección de patrimonio a 5, 10, 20 años</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="v6" onchange="updateProgress()">
+          <label for="v6">Radar Chart: Tus ratios vs benchmarks recomendados</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="v7" onchange="updateProgress()">
+          <label for="v7">Donut Chart: Asset allocation (efectivo, inversiones, retiro, etc.)</label>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Dashboard Visual Mejorado</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="v8" onchange="updateProgress()">
+          <label for="v8">KPIs principales con sparklines (mini gráficos de tendencia)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="v9" onchange="updateProgress()">
+          <label for="v9">Heat map de salud financiera (rojo/amarillo/verde por categoría)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="v10" onchange="updateProgress()">
+          <label for="v10">Progress bars hacia benchmarks (visual de % logrado)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="v11" onchange="updateProgress()">
+          <label for="v11">Dark mode toggle</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: SIMULADORES -->
+    <div class="section" id="simuladores">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="emoji">💡</span>
+          Nivel 2: Simuladores y Proyecciones
+        </h2>
+        <span class="section-badge priority-high">
+          Alta prioridad
+        </span>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Calculadora de Retiro/FIRE</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s1" onchange="updateProgress()">
+          <label for="s1">Calculadora: ¿Cuánto necesitas para retirarte? (Regla 25x)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s2" onchange="updateProgress()">
+          <label for="s2">Calculadora: ¿A qué edad puedes retirarte? (según ahorro actual)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s3" onchange="updateProgress()">
+          <label for="s3">Calculadora: ¿Cuánto ahorrar mensual para retirarte a X edad?</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s4" onchange="updateProgress()">
+          <label for="s4">Simulador FIRE (Financial Independence, Retire Early)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s5" onchange="updateProgress()">
+          <label for="s5">Gráfico de timeline hasta retiro</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s6" onchange="updateProgress()">
+          <label for="s6">Diferentes escenarios de retiro (conservador, moderado, agresivo)</label>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Simulador de Pago de Deudas</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s7" onchange="updateProgress()">
+          <label for="s7">Método bola de nieve (Snowball)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s8" onchange="updateProgress()">
+          <label for="s8">Método avalancha (Avalanche)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s9" onchange="updateProgress()">
+          <label for="s9">Comparación lado a lado: Snowball vs Avalanche</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s10" onchange="updateProgress()">
+          <label for="s10">Timeline: Cuándo estarás libre de deudas</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s11" onchange="updateProgress()">
+          <label for="s11">Simulador de pagos extra (¿qué pasa si pago $500 extra?)</label>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Escenarios "What If"</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s12" onchange="updateProgress()">
+          <label for="s12">Simulador: "¿Qué pasa si pierdo el trabajo?"</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s13" onchange="updateProgress()">
+          <label for="s13">Simulador: "¿Qué pasa si me suben el salario X%?"</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s14" onchange="updateProgress()">
+          <label for="s14">Simulador: "¿Qué pasa si compro una casa?"</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="s15" onchange="updateProgress()">
+          <label for="s15">Comparar múltiples escenarios lado a lado</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: TRACKING -->
+    <div class="section" id="tracking">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="emoji">📈</span>
+          Nivel 3: Tracking y Progreso
+        </h2>
+        <span class="section-badge priority-medium">
+          Media prioridad
+        </span>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Histórico Mensual</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="t1" onchange="updateProgress()">
+          <label for="t1">Guardar snapshot mensual automático</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="t2" onchange="updateProgress()">
+          <label for="t2">Gráfico de evolución del patrimonio neto (line chart)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="t3" onchange="updateProgress()">
+          <label for="t3">Comparar mes actual vs meses anteriores</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="t4" onchange="updateProgress()">
+          <label for="t4">Identificar tendencias (mejorando/empeorando)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="t5" onchange="updateProgress()">
+          <label for="t5">Exportar histórico a CSV</label>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Metas Financieras</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="t6" onchange="updateProgress()">
+          <label for="t6">Crear metas personalizadas (Casa, Auto, Viaje, etc.)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="t7" onchange="updateProgress()">
+          <label for="t7">Progress bar hacia cada meta</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="t8" onchange="updateProgress()">
+          <label for="t8">Fecha estimada de logro según ahorro actual</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="t9" onchange="updateProgress()">
+          <label for="t9">Notificación cuando logras una meta</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: INTELIGENCIA -->
+    <div class="section" id="inteligencia">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="emoji">🧠</span>
+          Nivel 4: Inteligencia y Recomendaciones
+        </h2>
+        <span class="section-badge priority-medium">
+          Media prioridad
+        </span>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Análisis Inteligente</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="i1" onchange="updateProgress()">
+          <label for="i1">Top 3 problemas financieros detectados (automático)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="i2" onchange="updateProgress()">
+          <label for="i2">Top 3 oportunidades de mejora</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="i3" onchange="updateProgress()">
+          <label for="i3">Recomendaciones personalizadas de acción</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="i4" onchange="updateProgress()">
+          <label for="i4">"Si haces X, tu patrimonio aumentará Y en Z años"</label>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Alertas y Notificaciones</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="i5" onchange="updateProgress()">
+          <label for="i5">Alerta: "Tu DTI subió a nivel peligroso"</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="i6" onchange="updateProgress()">
+          <label for="i6">Alerta: "Tu reserva bajó de 6 meses"</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="i7" onchange="updateProgress()">
+          <label for="i7">Felicitación: "Aumentaste tu tasa de ahorro"</label>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Score Financiero</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="i8" onchange="updateProgress()">
+          <label for="i8">Score general 0-100 basado en todos los ratios</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="i9" onchange="updateProgress()">
+          <label for="i9">Comparación con personas de tu edad</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="i10" onchange="updateProgress()">
+          <label for="i10">Ranking: Principiante → Intermedio → Avanzado → Experto</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: HERRAMIENTAS -->
+    <div class="section" id="herramientas">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="emoji">🛠️</span>
+          Nivel 5: Herramientas Adicionales
+        </h2>
+        <span class="section-badge priority-low">
+          Baja prioridad
+        </span>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Optimizadores</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="h1" onchange="updateProgress()">
+          <label for="h1">Optimizador de deudas: ¿Cuál pagar primero?</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="h2" onchange="updateProgress()">
+          <label for="h2">Análisis: Refinanciar vs Pagar</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="h3" onchange="updateProgress()">
+          <label for="h3">Calculadora de inflación</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="h4" onchange="updateProgress()">
+          <label for="h4">Análisis de inversiones (ROI, asset allocation)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="h5" onchange="updateProgress()">
+          <label for="h5">Calculadora de hipoteca/casa</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: EXPORTACIÓN -->
+    <div class="section" id="exportacion">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="emoji">📄</span>
+          Nivel 6: Exportación y Compartir
+        </h2>
+        <span class="section-badge priority-medium">
+          Media prioridad
+        </span>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Reportes Profesionales</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="e1" onchange="updateProgress()">
+          <label for="e1">PDF ejecutivo con gráficos (1-2 páginas)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="e2" onchange="updateProgress()">
+          <label for="e2">Reporte completo detallado (5-10 páginas)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="e3" onchange="updateProgress()">
+          <label for="e3">Exportar datos a Excel (XLSX)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="e4" onchange="updateProgress()">
+          <label for="e4">Exportar datos a CSV</label>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Compartir</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="e5" onchange="updateProgress()">
+          <label for="e5">Generar link para compartir (read-only)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="e6" onchange="updateProgress()">
+          <label for="e6">Link con password protection</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: AVANZADO -->
+    <div class="section" id="avanzado">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="emoji">🔐</span>
+          Nivel 7: Funcionalidades Avanzadas
+        </h2>
+        <span class="section-badge priority-low">
+          Baja prioridad
+        </span>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Cloud y Sincronización</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="a1" onchange="updateProgress()">
+          <label for="a1">Guardar datos en la nube (Firebase/Supabase)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="a2" onchange="updateProgress()">
+          <label for="a2">Sincronización automática entre dispositivos</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="a3" onchange="updateProgress()">
+          <label for="a3">Backup automático diario/semanal</label>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Seguridad</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="a4" onchange="updateProgress()">
+          <label for="a4">Autenticación de usuario (email/password)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="a5" onchange="updateProgress()">
+          <label for="a5">Autenticación con Google/Apple</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="a6" onchange="updateProgress()">
+          <label for="a6">Cifrado de datos sensibles</label>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Mobile y PWA</h3>
+        <div class="checkbox-item">
+          <input type="checkbox" id="a7" onchange="updateProgress()">
+          <label for="a7">Progressive Web App (PWA)</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="a8" onchange="updateProgress()">
+          <label for="a8">App nativa iOS/Android (React Native)</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: PERSONALIZADO -->
+    <div class="section" id="custom">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="emoji">✨</span>
+          Features Personalizados
+        </h2>
+        <span class="section-badge" style="background: var(--success); color: white;">
+          Tus ideas
+        </span>
+      </div>
+
+      <div class="custom-items" id="customItemsContainer">
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">
+          Agrega tus propias ideas y funcionalidades aquí:
+        </p>
+        <div class="add-item-input">
+          <input type="text" id="customItemInput" placeholder="Escribe tu idea aquí...">
+          <button class="btn btn-primary" onclick="addCustomItem()">+ Agregar</button>
+        </div>
+        <div id="customItemsList" style="margin-top: 1rem;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p><strong>Xavier Serbia Money Map</strong> | Roadmap v1.0</p>
+    <p>Tu progreso se guarda automáticamente en localStorage</p>
+  </div>
+
+  <script>
+    // Initialize
+    let customItems = JSON.parse(localStorage.getItem('roadmapCustomItems') || '[]');
+    
+    // Load saved progress
+    function loadProgress() {
+      const saved = localStorage.getItem('roadmapProgress');
+      if (saved) {
+        const progress = JSON.parse(saved);
+        Object.keys(progress).forEach(id => {
+          const checkbox = document.getElementById(id);
+          if (checkbox && !checkbox.disabled) {
+            checkbox.checked = progress[id];
+            if (progress[id]) {
+              checkbox.parentElement.classList.add('completed');
+            }
+          }
+        });
+      }
+      loadCustomItems();
+      updateProgress();
+    }
+
+    // Save progress
+    function saveProgress() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]:not([disabled])');
+      const progress = {};
+      checkboxes.forEach(cb => {
+        progress[cb.id] = cb.checked;
+      });
+      localStorage.setItem('roadmapProgress', JSON.stringify(progress));
+    }
+
+    // Update stats
+    function updateProgress() {
+      const all = document.querySelectorAll('input[type="checkbox"]');
+      const completed = document.querySelectorAll('input[type="checkbox"]:checked');
+      const uncompleted = document.querySelectorAll('input[type="checkbox"]:not([disabled])');
+      const uncompletedChecked = document.querySelectorAll('input[type="checkbox"]:not([disabled]):checked');
+      
+      const totalItems = all.length;
+      const completedItems = completed.length;
+      const percent = Math.round((completedItems / totalItems) * 100);
+      
+      document.getElementById('totalItems').textContent = totalItems;
+      document.getElementById('completedItems').textContent = completedItems;
+      document.getElementById('progressPercent').textContent = percent + '%';
+      document.getElementById('progressBar').style.width = percent + '%';
+      
+      // Update checkbox styles
+      document.querySelectorAll('.checkbox-item').forEach(item => {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        if (checkbox && checkbox.checked && !checkbox.disabled) {
+          item.classList.add('completed');
+        } else {
+          item.classList.remove('completed');
+        }
+      });
+      
+      saveProgress();
+    }
+
+    // Mark all complete
+    function markAllComplete() {
+      if (confirm('¿Marcar TODOS los items como completados?')) {
+        document.querySelectorAll('input[type="checkbox"]:not([disabled])').forEach(cb => {
+          cb.checked = true;
+        });
+        updateProgress();
+      }
+    }
+
+    // Mark all incomplete
+    function markAllIncomplete() {
+      if (confirm('¿Desmarcar TODOS los items?')) {
+        document.querySelectorAll('input[type="checkbox"]:not([disabled])').forEach(cb => {
+          cb.checked = false;
+        });
+        updateProgress();
+      }
+    }
+
+    // Reset progress
+    function resetProgress() {
+      if (confirm('⚠️ ¿Estás seguro de que quieres RESETEAR todo el progreso?\n\nEsta acción no se puede deshacer.')) {
+        localStorage.removeItem('roadmapProgress');
+        localStorage.removeItem('roadmapCustomItems');
+        customItems = [];
+        document.querySelectorAll('input[type="checkbox"]:not([disabled])').forEach(cb => {
+          cb.checked = false;
+        });
+        document.getElementById('customItemsList').innerHTML = '';
+        updateProgress();
+      }
+    }
+
+    // Export progress
+    function exportProgress() {
+      const all = document.querySelectorAll('input[type="checkbox"]');
+      const completed = document.querySelectorAll('input[type="checkbox"]:checked');
+      const percent = Math.round((completed.length / all.length) * 100);
+      
+      let report = `Xavier Serbia Money Map - Progreso del Roadmap\n`;
+      report += `Fecha: ${new Date().toLocaleDateString()}\n`;
+      report += `Progreso: ${completed.length}/${all.length} (${percent}%)\n\n`;
+      
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => {
+        const title = section.querySelector('.section-title').textContent.trim();
+        const items = section.querySelectorAll('input[type="checkbox"]');
+        const completedInSection = section.querySelectorAll('input[type="checkbox"]:checked');
+        
+        report += `\n${title}\n`;
+        report += `Completado: ${completedInSection.length}/${items.length}\n`;
+        report += `─────────────────────────────\n`;
+        
+        items.forEach(item => {
+          const label = item.nextElementSibling.textContent;
+          const status = item.checked ? '[✓]' : '[ ]';
+          report += `${status} ${label}\n`;
+        });
+      });
+      
+      // Download as text file
+      const blob = new Blob([report], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `money-map-roadmap-progress-${new Date().toISOString().split('T')[0]}.txt`;
+      a.click();
+    }
+
+    // Scroll to section
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Custom items
+    function addCustomItem() {
+      const input = document.getElementById('customItemInput');
+      const text = input.value.trim();
+      
+      if (!text) return;
+      
+      customItems.push({ text, completed: false, id: Date.now() });
+      localStorage.setItem('roadmapCustomItems', JSON.stringify(customItems));
+      input.value = '';
+      loadCustomItems();
+      updateProgress();
+    }
+
+    function loadCustomItems() {
+      const container = document.getElementById('customItemsList');
+      container.innerHTML = '';
+      
+      customItems.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'checkbox-item' + (item.completed ? ' completed' : '');
+        div.innerHTML = `
+          <input type="checkbox" id="custom-${item.id}" ${item.completed ? 'checked' : ''} onchange="toggleCustomItem(${item.id})">
+          <label for="custom-${item.id}">${item.text}</label>
+          <button onclick="deleteCustomItem(${item.id})" style="margin-left: auto; padding: 0.25rem 0.5rem; background: var(--danger); color: white; border: none; border-radius: 4px; cursor: pointer;">🗑️</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function toggleCustomItem(id) {
+      const item = customItems.find(i => i.id === id);
+      if (item) {
+        item.completed = !item.completed;
+        localStorage.setItem('roadmapCustomItems', JSON.stringify(customItems));
+        loadCustomItems();
+        updateProgress();
+      }
+    }
+
+    function deleteCustomItem(id) {
+      if (confirm('¿Eliminar este item?')) {
+        customItems = customItems.filter(i => i.id !== id);
+        localStorage.setItem('roadmapCustomItems', JSON.stringify(customItems));
+        loadCustomItems();
+        updateProgress();
+      }
+    }
+
+    // Allow Enter key to add custom item
+    document.getElementById('customItemInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        addCustomItem();
+      }
+    });
+
+    // Initialize on load
+    window.addEventListener('load', loadProgress);
+  </script>
+</body>
+</html>
