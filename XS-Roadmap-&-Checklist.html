@@ -1,0 +1,429 @@
+# 🗺️ Xavier Serbia Money Map - Roadmap & Checklist
+
+**Versión:** 1.0  
+**Última actualización:** 30 de enero, 2026
+
+---
+
+## ✅ COMPLETADO (v1.0)
+
+### Core Funcionalidad
+- [x] Dashboard principal con 6 tabs
+- [x] Vista General con resumen visual
+- [x] Inventario de Activos (5 categorías)
+- [x] Inventario de Pasivos (7 categorías)
+- [x] Ingresos y Gastos (5 categorías de gastos)
+- [x] Patrimonio Neto (Hoja de Balance)
+- [x] Ratios Financieros completos (11 ratios)
+- [x] Auto-cálculo de valores desde otras pestañas
+- [x] Campos read-only con indicadores de origen
+- [x] Tooltips explicativos en todos los ratios
+- [x] Benchmarks por edad (inversión, riqueza, retiro)
+- [x] Modal de benchmarks con tablas detalladas
+- [x] Modal de recomendaciones de reserva de emergencia
+
+### UI/UX
+- [x] Onboarding modal (primera vez)
+- [x] Perfil de usuario con avatar personalizable
+- [x] Análisis conjunto para parejas (2 avatares)
+- [x] Selector de 10 monedas (USD, EUR, MXN, COP, etc.)
+- [x] Modo cálculo mensual/anual
+- [x] Modal de ayuda ("Cómo usar")
+- [x] Click para cerrar modales (backdrop + X)
+- [x] Logos personalizados (header y modal)
+- [x] Color scheme: Primary blue (#3956E8)
+
+### Persistencia
+- [x] localStorage para todos los datos
+- [x] Auto-guardado en tiempo real
+- [x] Recuperación automática al recargar
+- [x] Botón "Limpiar Datos" con confirmación
+
+### Export
+- [x] Footer con disclaimer legal
+- [x] Botón "Imprimir Reporte"
+- [x] Botón "Exportar PDF" (placeholder)
+
+---
+
+## 📊 NIVEL 1: VISUALIZACIÓN
+
+### Gráficos y Charts
+- [ ] **Pie Chart:** Distribución de activos por categoría
+- [ ] **Pie Chart:** Distribución de gastos por categoría
+- [ ] **Bar Chart:** Ingresos vs Gastos (comparación visual)
+- [ ] **Waterfall Chart:** Flujo completo (Ingreso → Gastos → Ahorro → Patrimonio)
+- [ ] **Line Chart:** Proyección de patrimonio a 5, 10, 20 años
+- [ ] **Radar Chart:** Tus ratios vs benchmarks recomendados
+- [ ] **Donut Chart:** Asset allocation (efectivo, inversiones, retiro, etc.)
+- [ ] Biblioteca de charts integrada (Chart.js ya incluido)
+
+### Dashboard Visual Mejorado
+- [ ] KPIs principales con sparklines (mini gráficos de tendencia)
+- [ ] Heat map de salud financiera (rojo/amarillo/verde por categoría)
+- [ ] Progress bars hacia benchmarks (visual de % logrado)
+- [ ] Cards expandibles con detalles on-demand
+- [ ] Vista móvil optimizada (responsive)
+
+---
+
+## 💡 NIVEL 2: SIMULADORES Y PROYECCIONES
+
+### Calculadora de Retiro/FIRE
+- [ ] Calculadora: ¿Cuánto necesitas para retirarte? (Regla 25x)
+- [ ] Calculadora: ¿A qué edad puedes retirarte? (según ahorro actual)
+- [ ] Calculadora: ¿Cuánto ahorrar mensual para retirarte a X edad?
+- [ ] Simulador FIRE (Financial Independence, Retire Early)
+- [ ] Gráfico de timeline hasta retiro
+- [ ] Diferentes escenarios de retiro (conservador, moderado, agresivo)
+- [ ] Considerar Seguro Social / Pensión
+- [ ] Ajuste por inflación en proyecciones
+
+### Simulador de Pago de Deudas
+- [ ] Método bola de nieve (Snowball)
+- [ ] Método avalancha (Avalanche)
+- [ ] Comparación lado a lado: Snowball vs Avalanche
+- [ ] Timeline: Cuándo estarás libre de deudas
+- [ ] Calculadora de ahorro por pagar en diferente orden
+- [ ] Simulador de pagos extra (¿qué pasa si pago $500 extra?)
+- [ ] Gráfico de reducción de deuda mes a mes
+- [ ] Total de intereses ahorrados
+
+### Escenarios "What If"
+- [ ] Simulador: "¿Qué pasa si pierdo el trabajo?"
+- [ ] Simulador: "¿Qué pasa si me suben el salario X%?"
+- [ ] Simulador: "¿Qué pasa si compro una casa?"
+- [ ] Simulador: "¿Qué pasa si tengo un bebé?"
+- [ ] Simulador: "¿Qué pasa si abro un negocio?"
+- [ ] Comparar múltiples escenarios lado a lado
+- [ ] Guardar escenarios favoritos
+- [ ] Compartir escenarios (link)
+
+---
+
+## 📈 NIVEL 3: TRACKING Y PROGRESO
+
+### Histórico Mensual
+- [ ] Guardar snapshot mensual automático
+- [ ] Gráfico de evolución del patrimonio neto (line chart)
+- [ ] Comparar mes actual vs meses anteriores (table)
+- [ ] Identificar tendencias (mejorando/empeorando)
+- [ ] Ver ratios históricos (cómo han cambiado)
+- [ ] Exportar histórico a CSV
+- [ ] Eliminar snapshots individuales
+
+### Metas Financieras
+- [ ] Crear metas personalizadas (Casa, Auto, Viaje, etc.)
+- [ ] Definir monto objetivo y fecha límite
+- [ ] Progress bar hacia cada meta
+- [ ] Fecha estimada de logro según ahorro actual
+- [ ] Calculadora: "Cuánto ahorrar mensual para lograr meta en X meses"
+- [ ] Notificación cuando logras una meta
+- [ ] Editar/eliminar metas
+- [ ] Priorizar metas (orden de importancia)
+
+### Hábitos de Ahorro
+- [ ] Tracker de ahorro mensual (¿cumpliste tu meta?)
+- [ ] Racha (streak) de meses consecutivos ahorrando
+- [ ] Badges/logros por hitos alcanzados
+- [ ] Calendario visual de ahorro
+
+---
+
+## 🧠 NIVEL 4: INTELIGENCIA Y RECOMENDACIONES
+
+### Análisis Inteligente
+- [ ] Top 3 problemas financieros detectados (automático)
+- [ ] Top 3 oportunidades de mejora
+- [ ] Recomendaciones personalizadas de acción
+- [ ] "Si haces X, tu patrimonio aumentará Y en Z años"
+- [ ] Análisis de gastos: categorías donde más gastas
+- [ ] Detección de gastos inusuales
+- [ ] Sugerencias de optimización
+
+### Alertas y Notificaciones
+- [ ] Alerta: "Tu DTI subió a nivel peligroso"
+- [ ] Alerta: "Tu reserva bajó de 6 meses"
+- [ ] Felicitación: "Aumentaste tu tasa de ahorro"
+- [ ] Recordatorio: "Actualiza tus datos mensuales"
+- [ ] Alerta: "Nueva deuda agregada"
+- [ ] Sistema de preferencias de notificaciones
+
+### Score Financiero
+- [ ] Score general 0-100 basado en todos los ratios
+- [ ] Desglose del score por categoría
+- [ ] Comparación con personas de tu edad
+- [ ] Ranking: Principiante → Intermedio → Avanzado → Experto
+- [ ] Consejos para mejorar tu score
+- [ ] Histórico del score (cómo ha evolucionado)
+
+---
+
+## 🛠️ NIVEL 5: HERRAMIENTAS ADICIONALES
+
+### Optimizador de Deudas
+- [ ] Calculadora: ¿Cuál deuda pagar primero? (mayor impacto)
+- [ ] Análisis: Refinanciar vs Pagar
+- [ ] Simulador de consolidación de deudas
+- [ ] Calcular ahorro por refinanciar a menor APR
+- [ ] Balance transfer: ¿conviene?
+
+### Calculadora de Inflación
+- [ ] Ajustar todos los valores por inflación
+- [ ] Selector de tasa de inflación (manual o automático)
+- [ ] Patrimonio neto en "dólares de hoy"
+- [ ] Todas las proyecciones ajustadas por inflación
+- [ ] Comparar poder adquisitivo año a año
+
+### Análisis de Inversiones
+- [ ] ROI de cada inversión individual
+- [ ] Asset allocation actual (% acciones, bonos, cash, RE, etc.)
+- [ ] Asset allocation recomendado según edad
+- [ ] Sugerencias de rebalanceo
+- [ ] Score de diversificación (0-100)
+- [ ] Análisis de riesgo del portafolio
+- [ ] Calculadora de compound interest
+
+### Calculadora de Impuestos
+- [ ] Estimador de impuestos anuales
+- [ ] Calculadora de deducciones
+- [ ] Bracket de impuestos según ingreso
+- [ ] Estrategias de optimización fiscal
+- [ ] Comparar diferentes jurisdicciones
+
+---
+
+## 📄 NIVEL 6: EXPORTACIÓN Y COMPARTIR
+
+### Reportes Profesionales
+- [ ] PDF ejecutivo con gráficos (1-2 páginas)
+- [ ] Reporte completo detallado (5-10 páginas)
+- [ ] Reporte específico para asesor financiero
+- [ ] Exportar datos a Excel (XLSX)
+- [ ] Exportar datos a CSV
+- [ ] Exportar snapshots históricos
+
+### Compartir y Colaborar
+- [ ] Generar link para compartir (read-only)
+- [ ] Link con password protection
+- [ ] Expiración de links compartidos
+- [ ] Ver quién ha visto tu reporte
+- [ ] Modo presentación (para pantalla)
+
+### Impresión Optimizada
+- [ ] Versión print-friendly (CSS optimizado)
+- [ ] One-page summary
+- [ ] Reporte detallado multi-página
+- [ ] Opción blanco y negro (ahorrar tinta)
+
+---
+
+## 🔐 NIVEL 7: FUNCIONALIDADES AVANZADAS
+
+### Multi-usuario/Parejas
+- [ ] Análisis separado de cada persona
+- [ ] Vista conjunta (suma de ambos)
+- [ ] Comparación de contribuciones
+- [ ] Gráficos comparativos (Mi patrimonio vs Tu patrimonio vs Nuestro patrimonio)
+- [ ] Gestión de permisos (quién puede editar qué)
+
+### Cuentas Múltiples
+- [ ] Separar finanzas personales y de negocio
+- [ ] Múltiples perfiles (tú, tu empresa, tus padres)
+- [ ] Cambiar entre perfiles fácilmente
+- [ ] Consolidar múltiples perfiles en uno
+
+### Sincronización Cloud
+- [ ] Guardar datos en la nube (Firebase/Supabase)
+- [ ] Sincronización automática entre dispositivos
+- [ ] Backup automático diario/semanal
+- [ ] Restaurar desde backup
+- [ ] Conflictos de sincronización (merge strategy)
+- [ ] Modo offline (funciona sin internet)
+
+### Seguridad
+- [ ] Autenticación de usuario (email/password)
+- [ ] Autenticación con Google/Apple
+- [ ] Cifrado de datos sensibles
+- [ ] PIN/Touch ID para abrir app
+- [ ] 2FA (autenticación de dos factores)
+- [ ] Logs de acceso/cambios
+
+---
+
+## 🌐 NIVEL 8: INTEGRACIÓN CON SERVICIOS EXTERNOS
+
+### Open Banking / Plaid
+- [ ] Conectar cuentas bancarias automáticamente
+- [ ] Sincronización automática de transacciones
+- [ ] Categorización automática de gastos
+- [ ] Alertas de transacciones inusuales
+
+### APIs Financieras
+- [ ] Cotizaciones de acciones en tiempo real
+- [ ] Valores de criptomonedas
+- [ ] Tasas de interés actualizadas
+- [ ] Tipos de cambio en tiempo real
+
+### Integraciones
+- [ ] Exportar a Mint
+- [ ] Exportar a YNAB (You Need A Budget)
+- [ ] Exportar a Personal Capital
+- [ ] Importar desde otros servicios
+
+---
+
+## 📱 NIVEL 9: MOBILE Y PWA
+
+### Progressive Web App
+- [ ] Instalar como app nativa (PWA)
+- [ ] Funciona offline
+- [ ] Notificaciones push
+- [ ] Icono en home screen
+
+### Optimización Mobile
+- [ ] UI completamente responsive
+- [ ] Gestos táctiles (swipe, pinch to zoom)
+- [ ] Bottom navigation para mobile
+- [ ] Teclado numérico optimizado para inputs
+
+---
+
+## 🎓 NIVEL 10: EDUCACIÓN FINANCIERA
+
+### Centro de Aprendizaje
+- [ ] Artículos educativos sobre cada ratio
+- [ ] Videos explicativos
+- [ ] Glosario de términos financieros
+- [ ] Cursos básicos de finanzas personales
+- [ ] Quiz de conocimientos financieros
+
+### Recursos
+- [ ] Calculadoras adicionales (mortgage, car loan, etc.)
+- [ ] Links a recursos externos confiables
+- [ ] Blog con consejos financieros
+- [ ] Casos de estudio (ejemplos reales anonimizados)
+
+---
+
+## 🚀 NIVEL 11: GAMIFICACIÓN
+
+### Sistema de Puntos
+- [ ] Ganar puntos por acciones positivas
+- [ ] Niveles de usuario (1-100)
+- [ ] Leaderboard (comparar con otros usuarios)
+- [ ] Achievements/Trofeos desbloqueables
+
+### Desafíos
+- [ ] Desafío: "Ahorra $500 este mes"
+- [ ] Desafío: "Reduce gastos en 10%"
+- [ ] Desafío: "Actualiza datos 7 días seguidos"
+- [ ] Recompensas por completar desafíos
+
+---
+
+## 🔧 MEJORAS TÉCNICAS
+
+### Performance
+- [ ] Lazy loading de componentes
+- [ ] Optimizar cálculos pesados
+- [ ] Service Worker para caching
+- [ ] Minimizar re-renders innecesarios
+
+### Testing
+- [ ] Unit tests para cálculos críticos
+- [ ] Integration tests para flujos completos
+- [ ] End-to-end tests
+- [ ] Test coverage > 80%
+
+### Accesibilidad
+- [ ] ARIA labels completos
+- [ ] Navegación por teclado
+- [ ] Screen reader compatible
+- [ ] Alto contraste para visión reducida
+- [ ] WCAG 2.1 AA compliant
+
+### Internacionalización
+- [ ] Soporte multi-idioma (ES, EN, PT)
+- [ ] Formatos de fecha/moneda por región
+- [ ] Traducciones profesionales
+
+---
+
+## 💼 FUNCIONALIDADES DE NEGOCIO
+
+### Modelo de Suscripción
+- [ ] Plan Free (funcionalidad básica)
+- [ ] Plan Pro (todas las funcionalidades)
+- [ ] Plan Business (múltiples usuarios)
+- [ ] Página de pricing
+- [ ] Integración con Stripe
+
+### Marketing
+- [ ] Landing page profesional
+- [ ] SEO optimizado
+- [ ] Blog para SEO
+- [ ] Programa de referidos
+- [ ] Email marketing (onboarding, tips)
+
+---
+
+## 📝 CUSTOM FEATURES (Agrega aquí tus ideas)
+
+- [ ] _Tu idea aquí..._
+- [ ] _Tu idea aquí..._
+- [ ] _Tu idea aquí..._
+- [ ] _Tu idea aquí..._
+- [ ] _Tu idea aquí..._
+
+---
+
+## 🎯 PRIORIDADES SUGERIDAS
+
+### SPRINT 1 (Alta prioridad)
+1. [ ] Gráficos básicos (Pie y Bar charts)
+2. [ ] Calculadora de Retiro/FIRE
+3. [ ] Simulador de pago de deudas
+4. [ ] Histórico mensual
+5. [ ] Score financiero
+
+### SPRINT 2 (Media prioridad)
+1. [ ] Metas financieras
+2. [ ] Escenarios "What If"
+3. [ ] Análisis inteligente con recomendaciones
+4. [ ] Optimizador de deudas
+5. [ ] Reportes PDF mejorados
+
+### SPRINT 3 (Baja prioridad)
+1. [ ] Sincronización cloud
+2. [ ] PWA
+3. [ ] Multi-usuario
+4. [ ] Gamificación
+5. [ ] Open Banking
+
+---
+
+## 📊 MÉTRICAS DE ÉXITO
+
+- [ ] 1,000 usuarios activos
+- [ ] 10,000 cálculos de ratios realizados
+- [ ] 5,000 snapshots mensuales guardados
+- [ ] 500 reportes PDF generados
+- [ ] 100 usuarios de pago (Pro)
+- [ ] NPS (Net Promoter Score) > 50
+- [ ] Tasa de retención 30 días > 40%
+
+---
+
+**Última actualización:** 30 de enero, 2026  
+**Próxima revisión:** [Fecha]  
+**Responsable:** Xavier Serbia
+
+---
+
+## 📌 NOTAS
+
+- Este roadmap es un documento vivo y debe actualizarse regularmente
+- Prioridades pueden cambiar según feedback de usuarios
+- Marcar items como completados con fecha y versión
+- Agregar notas de implementación cuando sea relevante
