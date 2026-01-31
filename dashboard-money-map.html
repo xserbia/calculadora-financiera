@@ -1343,6 +1343,10 @@ function App() {
         localStorage.setItem('hasSeenOnboarding', 'true');
         localStorage.setItem('loadedDemoTab', 'graficos');
         
+        // Debug check
+        console.log('✅ Data saved to localStorage');
+        console.log('Activos total items:', demoActivos.efectivo.length + demoActivos.inversiones.length + demoActivos.retiro.length + demoActivos.bienesRaices.length + demoActivos.bienesPersonales.length);
+        
         // Reload page to load demo data
         window.location.reload();
     }
@@ -1370,13 +1374,15 @@ function App() {
   // ===== SHARED STATE WITH LOCALSTORAGE PERSISTENCE =====
   const [activos, setActivos] = useState(() => {
     const saved = localStorage.getItem('activos');
-    return saved ? JSON.parse(saved) : {
+    const parsed = saved ? JSON.parse(saved) : {
       efectivo: [],
       inversiones: [],
       retiro: [],
       bienesRaices: [],
       bienesPersonales: []
     };
+    console.log('📊 Loading activos from localStorage:', parsed);
+    return parsed;
   });
   
   const [deudas, setDeudas] = useState(() => {
