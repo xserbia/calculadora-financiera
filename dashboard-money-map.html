@@ -605,6 +605,147 @@ tbody tr:hover {
 <body>
 <div id="root"></div>
 
+<!-- Backup button in case React fails to load -->
+<div id="backup-controls" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: none;">
+  <button onclick="window.loadDemoDataVanilla()" style="padding: 15px 25px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    🎲 Cargar Ejemplo (Backup)
+  </button>
+</div>
+
+<script>
+// Vanilla JS version of load demo data (backup if React fails)
+window.loadDemoDataVanilla = function() {
+  console.log('Vanilla loadDemoData called');
+  
+  if (confirm('🎲 ¿Cargar datos de ejemplo?\n\nEsto reemplazará tus datos actuales.')) {
+    const demoProfile = {
+      nombre: 'María',
+      apellido: 'García',
+      edad: '35',
+      avatar: '👩‍💼',
+      estadoCivil: 'soltero',
+      dependientes: '0'
+    };
+    
+    const demoActivos = {
+      efectivo: [
+        { concepto: 'Cuenta de Cheques', monto: '5000' },
+        { concepto: 'Cuenta de Ahorros', monto: '15000' },
+        { concepto: 'Fondo de Emergencia', monto: '20000' }
+      ],
+      inversiones: [
+        { concepto: 'Acciones S&P 500', monto: '45000' },
+        { concepto: 'Bonos', monto: '25000' },
+        { concepto: 'ETFs Internacionales', monto: '30000' }
+      ],
+      retiro: [
+        { concepto: '401(k)', monto: '85000' },
+        { concepto: 'IRA Roth', monto: '35000' }
+      ],
+      bienesRaices: [
+        { concepto: 'Casa Principal', monto: '350000' }
+      ],
+      bienesPersonales: [
+        { concepto: 'Auto', monto: '25000' },
+        { concepto: 'Muebles y Electrónicos', monto: '15000' }
+      ]
+    };
+    
+    const demoDeudas = {
+      tarjetas: [
+        { concepto: 'Visa', balance: '3500', tasaInteres: '18.5', pagoMinimo: '105' },
+        { concepto: 'Mastercard', balance: '2200', tasaInteres: '16.9', pagoMinimo: '66' }
+      ],
+      lineaPersonal: [],
+      lineaPropiedad: [],
+      casa: [
+        { concepto: 'Hipoteca Casa', balance: '280000', tasaInteres: '3.5', pagoMensual: '1500' }
+      ],
+      auto: [
+        { concepto: 'Préstamo Auto', balance: '18000', tasaInteres: '4.2', pagoMensual: '450' }
+      ],
+      educacion: [
+        { concepto: 'Student Loans', balance: '35000', tasaInteres: '5.5', pagoMensual: '380' }
+      ],
+      otros: []
+    };
+    
+    const demoIngresos = [
+      { concepto: 'Salario', monto: '7500' }
+    ];
+    
+    const demoGastos = {
+      diarios: [
+        { concepto: 'Renta/Hipoteca', monto: '1500' },
+        { concepto: 'Comida/Supermercado', monto: '600' },
+        { concepto: 'Transporte/Gasolina', monto: '300' },
+        { concepto: 'Servicios (luz, agua, internet)', monto: '250' },
+        { concepto: 'Entretenimiento', monto: '200' },
+        { concepto: 'Ropa', monto: '150' },
+        { concepto: 'Salud/Gym', monto: '100' },
+        { concepto: 'Teléfono', monto: '80' }
+      ],
+      deuda: [
+        { concepto: 'Pago Hipoteca', monto: '1500' },
+        { concepto: 'Pago Auto', monto: '450' },
+        { concepto: 'Pago Estudiante', monto: '380' },
+        { concepto: 'Pago Tarjetas', monto: '171' }
+      ],
+      ahorro: [
+        { concepto: 'Ahorro Mensual', monto: '800' },
+        { concepto: '401(k) Contribution', monto: '500' }
+      ],
+      impuestos: [
+        { concepto: 'Impuestos Federales', monto: '1200' },
+        { concepto: 'Impuestos Estatales', monto: '400' },
+        { concepto: 'FICA/Social Security', monto: '465' }
+      ],
+      seguros: [
+        { concepto: 'Seguro Médico', monto: '350' },
+        { concepto: 'Seguro Auto', monto: '120' },
+        { concepto: 'Seguro Vida', monto: '50' }
+      ]
+    };
+    
+    const demoRatiosData = {
+      edad: '35',
+      ingresoBruto: 90000,
+      ingresoNeto: 65430,
+      ahorroAnual: 15600,
+      impuestosAnual: 24780,
+      segurosAnual: 6240,
+      deudaAnual: 30012,
+      gastosAnual: 37560,
+      pagoDeudaMensual: 2501,
+      gastosEsencialesMensuales: 3180,
+      reserva: 40000,
+      pasivosCorrientes: 5700
+    };
+    
+    localStorage.setItem('userProfile', JSON.stringify(demoProfile));
+    localStorage.setItem('activos', JSON.stringify(demoActivos));
+    localStorage.setItem('deudas', JSON.stringify(demoDeudas));
+    localStorage.setItem('ingresos', JSON.stringify(demoIngresos));
+    localStorage.setItem('gastos', JSON.stringify(demoGastos));
+    localStorage.setItem('ratiosData', JSON.stringify(demoRatiosData));
+    localStorage.setItem('currency', 'USD');
+    localStorage.setItem('modoCalculo', 'mensual');
+    localStorage.setItem('hasSeenOnboarding', 'true');
+    localStorage.setItem('loadedDemoTab', 'graficos');
+    
+    window.location.reload();
+  }
+};
+
+// Show backup button if React doesn't load within 3 seconds
+setTimeout(function() {
+  if (!document.querySelector('.tabs-container')) {
+    document.getElementById('backup-controls').style.display = 'block';
+    console.warn('React may not have loaded. Backup button shown.');
+  }
+}, 3000);
+</script>
+
 <script type="text/babel">
 const { useState, useEffect, useRef, useMemo } = React;
 
@@ -1026,7 +1167,14 @@ function OnboardingModal({ isOpen, onClose, onSave, initialProfile }) {
 
 // ============= MAIN APP COMPONENT =============
 function App() {
-  const [activeTab, setActiveTab] = useState('vistaGeneral');
+  const [activeTab, setActiveTab] = useState(() => {
+    const demoTab = localStorage.getItem('loadedDemoTab');
+    if (demoTab) {
+      localStorage.removeItem('loadedDemoTab');
+      return demoTab;
+    }
+    return 'vistaGeneral';
+  });
   const [currency, setCurrency] = useState(() => {
     const saved = localStorage.getItem('currency');
     return saved || 'USD';
@@ -1069,6 +1217,150 @@ function App() {
     // Sync age to ratiosData
     if (profile.edad) {
       setRatiosData(prev => ({ ...prev, edad: profile.edad }));
+    }
+  };
+
+  // Load demo data
+  const loadDemoData = () => {
+    console.log('loadDemoData clicked!');
+    
+    const confirmLoad = confirm('🎲 ¿Cargar datos de ejemplo?\n\nEsto reemplazará tus datos actuales con un caso de ejemplo completo.');
+    console.log('User confirmed:', confirmLoad);
+    
+    if (confirmLoad) {
+      try {
+        // Demo user profile
+        const demoProfile = {
+          nombre: 'María',
+          apellido: 'García',
+          edad: '35',
+          avatar: '👩‍💼',
+          estadoCivil: 'soltero',
+          dependientes: '0'
+        };
+        
+        // Demo activos
+        const demoActivos = {
+          efectivo: [
+            { concepto: 'Cuenta de Cheques', monto: '5000' },
+            { concepto: 'Cuenta de Ahorros', monto: '15000' },
+            { concepto: 'Fondo de Emergencia', monto: '20000' }
+          ],
+          inversiones: [
+            { concepto: 'Acciones S&P 500', monto: '45000' },
+            { concepto: 'Bonos', monto: '25000' },
+            { concepto: 'ETFs Internacionales', monto: '30000' }
+          ],
+          retiro: [
+            { concepto: '401(k)', monto: '85000' },
+            { concepto: 'IRA Roth', monto: '35000' }
+          ],
+          bienesRaices: [
+            { concepto: 'Casa Principal', monto: '350000' }
+          ],
+          bienesPersonales: [
+            { concepto: 'Auto', monto: '25000' },
+            { concepto: 'Muebles y Electrónicos', monto: '15000' }
+          ]
+        };
+        
+        // Demo deudas
+        const demoDeudas = {
+          tarjetas: [
+            { concepto: 'Visa', balance: '3500', tasaInteres: '18.5', pagoMinimo: '105' },
+            { concepto: 'Mastercard', balance: '2200', tasaInteres: '16.9', pagoMinimo: '66' }
+          ],
+          lineaPersonal: [],
+          lineaPropiedad: [],
+          casa: [
+            { concepto: 'Hipoteca Casa', balance: '280000', tasaInteres: '3.5', pagoMensual: '1500' }
+          ],
+          auto: [
+            { concepto: 'Préstamo Auto', balance: '18000', tasaInteres: '4.2', pagoMensual: '450' }
+          ],
+          educacion: [
+            { concepto: 'Student Loans', balance: '35000', tasaInteres: '5.5', pagoMensual: '380' }
+          ],
+          otros: []
+        };
+        
+        // Demo ingresos
+        const demoIngresos = [
+          { concepto: 'Salario', monto: '7500' }
+        ];
+        
+        // Demo gastos
+        const demoGastos = {
+          diarios: [
+            { concepto: 'Renta/Hipoteca', monto: '1500' },
+            { concepto: 'Comida/Supermercado', monto: '600' },
+            { concepto: 'Transporte/Gasolina', monto: '300' },
+            { concepto: 'Servicios (luz, agua, internet)', monto: '250' },
+            { concepto: 'Entretenimiento', monto: '200' },
+            { concepto: 'Ropa', monto: '150' },
+            { concepto: 'Salud/Gym', monto: '100' },
+            { concepto: 'Teléfono', monto: '80' }
+          ],
+          deuda: [
+            { concepto: 'Pago Hipoteca', monto: '1500' },
+            { concepto: 'Pago Auto', monto: '450' },
+            { concepto: 'Pago Estudiante', monto: '380' },
+            { concepto: 'Pago Tarjetas', monto: '171' }
+          ],
+          ahorro: [
+            { concepto: 'Ahorro Mensual', monto: '800' },
+            { concepto: '401(k) Contribution', monto: '500' }
+          ],
+          impuestos: [
+            { concepto: 'Impuestos Federales', monto: '1200' },
+            { concepto: 'Impuestos Estatales', monto: '400' },
+            { concepto: 'FICA/Social Security', monto: '465' }
+          ],
+          seguros: [
+            { concepto: 'Seguro Médico', monto: '350' },
+            { concepto: 'Seguro Auto', monto: '120' },
+            { concepto: 'Seguro Vida', monto: '50' }
+          ]
+        };
+        
+        // Demo ratios data
+        const demoRatiosData = {
+          edad: '35',
+          ingresoBruto: 90000,
+          ingresoNeto: 65430,
+          ahorroAnual: 15600,
+          impuestosAnual: 24780,
+          segurosAnual: 6240,
+          deudaAnual: 30012,
+          gastosAnual: 37560,
+          pagoDeudaMensual: 2501,
+          gastosEsencialesMensuales: 3180,
+          reserva: 40000,
+          pasivosCorrientes: 5700
+        };
+        
+        console.log('Saving to localStorage...');
+        
+        // Save to localStorage
+        localStorage.setItem('userProfile', JSON.stringify(demoProfile));
+        localStorage.setItem('activos', JSON.stringify(demoActivos));
+        localStorage.setItem('deudas', JSON.stringify(demoDeudas));
+        localStorage.setItem('ingresos', JSON.stringify(demoIngresos));
+        localStorage.setItem('gastos', JSON.stringify(demoGastos));
+        localStorage.setItem('ratiosData', JSON.stringify(demoRatiosData));
+        localStorage.setItem('currency', 'USD');
+        localStorage.setItem('modoCalculo', 'mensual');
+        localStorage.setItem('hasSeenOnboarding', 'true');
+        localStorage.setItem('loadedDemoTab', 'graficos');
+        
+        console.log('Data saved! Reloading page...');
+        
+        // Reload page to load demo data
+        window.location.reload();
+      } catch (error) {
+        console.error('Error loading demo data:', error);
+        alert('Error al cargar datos de ejemplo: ' + error.message);
+      }
     }
   };
 
@@ -1324,6 +1616,26 @@ function App() {
             </button>
             
             <button
+              onClick={loadDemoData}
+              style={{
+                padding: '0.5rem 1.25rem',
+                borderRadius: '8px',
+                border: '2px solid rgba(16, 185, 129, 0.5)',
+                background: 'rgba(16, 185, 129, 0.15)',
+                color: 'white',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+              title="Cargar datos de ejemplo para ver los gráficos"
+            >
+              🎲 Cargar Ejemplo
+            </button>
+            
+            <button
               onClick={clearAllData}
               style={{
                 padding: '0.5rem 1.25rem',
@@ -1350,6 +1662,12 @@ function App() {
               onClick={() => setActiveTab('vistaGeneral')}
             >
               📊 Vista General
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'graficos' ? 'active' : ''}`}
+              onClick={() => setActiveTab('graficos')}
+            >
+              📈 Gráficos
             </button>
             <button 
               className={`tab-button ${activeTab === 'ingresos' ? 'active' : ''}`}
@@ -1379,7 +1697,7 @@ function App() {
               className={`tab-button ${activeTab === 'ratios' ? 'active' : ''}`}
               onClick={() => setActiveTab('ratios')}
             >
-              📈 Ratios Financieros
+              📊 Ratios Financieros
             </button>
           </div>
         </div>
@@ -1395,6 +1713,17 @@ function App() {
             currency={currency}
             setActiveTab={setActiveTab}
             userProfile={userProfile}
+          />
+        )}
+        {activeTab === 'graficos' && (
+          <GraficosTab 
+            activos={activos}
+            deudas={deudas}
+            ingresos={ingresos}
+            gastos={gastos}
+            totales={totales}
+            ratiosData={ratiosData}
+            currency={currency}
           />
         )}
         {activeTab === 'activos' && (
@@ -2139,6 +2468,506 @@ function IngresosGastos({ ingresos, setIngresos, gastos, setGastos, modoCalculo,
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+// ============= GRÁFICOS TAB COMPONENT =============
+function GraficosTab({ activos, deudas, ingresos, gastos, totales, ratiosData, currency }) {
+  React.useEffect(() => {
+    // Destroy any existing charts to prevent memory leaks
+    const chartIds = ['pieActivos', 'pieGastos', 'barIngresosGastos', 'donutAssetAllocation', 'radarRatios', 'lineProyeccion'];
+    chartIds.forEach(id => {
+      const existingChart = Chart.getChart(id);
+      if (existingChart) {
+        existingChart.destroy();
+      }
+    });
+
+    // Calculate totals for charts
+    const totalEfectivo = activos.efectivo.reduce((sum, item) => sum + parseNumber(item.monto), 0);
+    const totalInversiones = activos.inversiones.reduce((sum, item) => sum + parseNumber(item.monto), 0);
+    const totalRetiro = activos.retiro.reduce((sum, item) => sum + parseNumber(item.monto), 0);
+    const totalBienesRaices = activos.bienesRaices.reduce((sum, item) => sum + parseNumber(item.monto), 0);
+    const totalBienesPersonales = activos.bienesPersonales.reduce((sum, item) => sum + parseNumber(item.monto), 0);
+
+    const mult = 12; // Annual
+    const totalIngresos = ingresos.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalGastosDiarios = gastos.diarios.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalGastosDeuda = gastos.deuda.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalGastosAhorro = gastos.ahorro.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalGastosImpuestos = gastos.impuestos.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalGastosSeguros = gastos.seguros.reduce((sum, item) => sum + parseNumber(item.monto), 0) * mult;
+    const totalGastos = totalGastosDiarios + totalGastosDeuda + totalGastosImpuestos + totalGastosSeguros;
+
+    // 1. PIE CHART - Distribución de Activos
+    if (totales.activosTotales > 0) {
+      const ctxActivos = document.getElementById('pieActivos');
+      if (ctxActivos) {
+        new Chart(ctxActivos, {
+          type: 'pie',
+          data: {
+            labels: ['Efectivo', 'Inversiones', 'Retiro', 'Bienes Raíces', 'Bienes Personales'],
+            datasets: [{
+              data: [totalEfectivo, totalInversiones, totalRetiro, totalBienesRaices, totalBienesPersonales],
+              backgroundColor: [
+                '#10b981', // green
+                '#3b82f6', // blue
+                '#8b5cf6', // purple
+                '#f59e0b', // orange
+                '#ec4899'  // pink
+              ],
+              borderWidth: 2,
+              borderColor: '#fff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  padding: 15,
+                  font: { size: 12 }
+                }
+              },
+              title: {
+                display: true,
+                text: 'Distribución de Activos',
+                font: { size: 16, weight: 'bold' }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const label = context.label || '';
+                    const value = context.parsed || 0;
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const percentage = ((value / total) * 100).toFixed(1);
+                    return `${label}: ${formatCurrency(value, currency)} (${percentage}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // 2. PIE CHART - Distribución de Gastos
+    if (totalGastos > 0) {
+      const ctxGastos = document.getElementById('pieGastos');
+      if (ctxGastos) {
+        new Chart(ctxGastos, {
+          type: 'pie',
+          data: {
+            labels: ['Gastos Diarios', 'Pagos de Deuda', 'Impuestos', 'Seguros'],
+            datasets: [{
+              data: [totalGastosDiarios, totalGastosDeuda, totalGastosImpuestos, totalGastosSeguros],
+              backgroundColor: [
+                '#ef4444', // red
+                '#f59e0b', // orange
+                '#eab308', // yellow
+                '#06b6d4'  // cyan
+              ],
+              borderWidth: 2,
+              borderColor: '#fff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  padding: 15,
+                  font: { size: 12 }
+                }
+              },
+              title: {
+                display: true,
+                text: 'Distribución de Gastos Anuales',
+                font: { size: 16, weight: 'bold' }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const label = context.label || '';
+                    const value = context.parsed || 0;
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const percentage = ((value / total) * 100).toFixed(1);
+                    return `${label}: ${formatCurrency(value, currency)} (${percentage}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // 3. BAR CHART - Ingresos vs Gastos
+    const ctxBar = document.getElementById('barIngresosGastos');
+    if (ctxBar) {
+      new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels: ['Ingresos', 'Gastos', 'Ahorro'],
+          datasets: [{
+            label: 'Anual',
+            data: [totalIngresos, totalGastos, totalGastosAhorro],
+            backgroundColor: [
+              'rgba(16, 185, 129, 0.8)', // green
+              'rgba(239, 68, 68, 0.8)',   // red
+              'rgba(59, 130, 246, 0.8)'   // blue
+            ],
+            borderColor: [
+              'rgb(16, 185, 129)',
+              'rgb(239, 68, 68)',
+              'rgb(59, 130, 246)'
+            ],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              display: false
+            },
+            title: {
+              display: true,
+              text: 'Ingresos vs Gastos vs Ahorro (Anual)',
+              font: { size: 16, weight: 'bold' }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return formatCurrency(context.parsed.y, currency);
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  return formatCurrency(value, currency);
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 4. DONUT CHART - Asset Allocation
+    if (totales.activosTotales > 0) {
+      const activosLiquidos = totalEfectivo + totalInversiones;
+      const activosIliquidos = totalBienesRaices + totalBienesPersonales;
+      
+      const ctxDonut = document.getElementById('donutAssetAllocation');
+      if (ctxDonut) {
+        new Chart(ctxDonut, {
+          type: 'doughnut',
+          data: {
+            labels: ['Activos Líquidos', 'Retiro', 'Activos Ilíquidos'],
+            datasets: [{
+              data: [activosLiquidos, totalRetiro, activosIliquidos],
+              backgroundColor: [
+                '#10b981', // green
+                '#8b5cf6', // purple
+                '#f59e0b'  // orange
+              ],
+              borderWidth: 2,
+              borderColor: '#fff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  padding: 15,
+                  font: { size: 12 }
+                }
+              },
+              title: {
+                display: true,
+                text: 'Asset Allocation',
+                font: { size: 16, weight: 'bold' }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const label = context.label || '';
+                    const value = context.parsed || 0;
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const percentage = ((value / total) * 100).toFixed(1);
+                    return `${label}: ${formatCurrency(value, currency)} (${percentage}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // 5. RADAR CHART - Ratios vs Benchmarks
+    const edad = parseNumber(ratiosData.edad);
+    const ingresoBruto = parseNumber(ratiosData.ingresoBruto);
+    const ingresoNeto = parseNumber(ratiosData.ingresoNeto);
+    
+    if (edad > 0 && ingresoBruto > 0) {
+      const tasaAhorro = ingresoBruto > 0 ? (parseNumber(ratiosData.ahorroAnual) / ingresoBruto) : 0;
+      const inversionRatio = ingresoBruto > 0 ? totales.inversiones / ingresoBruto : 0;
+      const riquezaNeta = ingresoBruto > 0 ? totales.patrimonioNeto / ingresoBruto : 0;
+      const ahorroRetiro = ingresoBruto > 0 ? totales.totalRetiro / ingresoBruto : 0;
+      
+      // Benchmarks (normalized to 0-100 scale)
+      const tasaAhorroBench = 0.15; // 15%
+      const inversionBench = edad <= 35 ? 0.25 : edad <= 50 ? 1.5 : 3.0;
+      const riquezaBench = edad <= 35 ? 1.0 : edad <= 50 ? 4.0 : 8.0;
+      const retiroBench = edad <= 35 ? 0.5 : edad <= 50 ? 2.5 : 6.0;
+      
+      const normalizeScore = (actual, benchmark) => {
+        const ratio = actual / benchmark;
+        return Math.min(ratio * 100, 100);
+      };
+      
+      const ctxRadar = document.getElementById('radarRatios');
+      if (ctxRadar) {
+        new Chart(ctxRadar, {
+          type: 'radar',
+          data: {
+            labels: ['Tasa de Ahorro', 'Inversiones', 'Riqueza Neta', 'Ahorro de Retiro'],
+            datasets: [
+              {
+                label: 'Tu Situación',
+                data: [
+                  normalizeScore(tasaAhorro, tasaAhorroBench),
+                  normalizeScore(inversionRatio, inversionBench),
+                  normalizeScore(riquezaNeta, riquezaBench),
+                  normalizeScore(ahorroRetiro, retiroBench)
+                ],
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                borderColor: 'rgb(59, 130, 246)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgb(59, 130, 246)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(59, 130, 246)'
+              },
+              {
+                label: 'Benchmark',
+                data: [100, 100, 100, 100],
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderColor: 'rgb(16, 185, 129)',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                pointBackgroundColor: 'rgb(16, 185, 129)',
+                pointBorderColor: '#fff'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  padding: 15,
+                  font: { size: 12 }
+                }
+              },
+              title: {
+                display: true,
+                text: 'Tus Ratios vs Benchmarks Recomendados',
+                font: { size: 16, weight: 'bold' }
+              }
+            },
+            scales: {
+              r: {
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                  stepSize: 25
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // 6. LINE CHART - Proyección de Patrimonio
+    if (totales.patrimonioNeto > 0 && totalGastosAhorro > 0) {
+      const patrimonioActual = totales.patrimonioNeto;
+      const ahorroAnual = totalGastosAhorro;
+      const retornoAnual = 0.07; // 7% annual return assumption
+      
+      const years = [0, 5, 10, 15, 20, 25, 30];
+      const proyeccion = years.map(year => {
+        // Future Value with annual contributions
+        const fv = patrimonioActual * Math.pow(1 + retornoAnual, year) + 
+                   ahorroAnual * ((Math.pow(1 + retornoAnual, year) - 1) / retornoAnual);
+        return fv;
+      });
+      
+      const ctxLine = document.getElementById('lineProyeccion');
+      if (ctxLine) {
+        new Chart(ctxLine, {
+          type: 'line',
+          data: {
+            labels: years.map(y => `Año ${y}`),
+            datasets: [{
+              label: 'Patrimonio Proyectado',
+              data: proyeccion,
+              borderColor: 'rgb(59, 130, 246)',
+              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+              borderWidth: 3,
+              fill: true,
+              tension: 0.4,
+              pointRadius: 5,
+              pointBackgroundColor: 'rgb(59, 130, 246)',
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+              legend: {
+                display: false
+              },
+              title: {
+                display: true,
+                text: `Proyección de Patrimonio (${formatCurrency(ahorroAnual, currency)}/año, 7% retorno)`,
+                font: { size: 16, weight: 'bold' }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return formatCurrency(context.parsed.y, currency);
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return formatCurrency(value, currency);
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+  }, [activos, deudas, ingresos, gastos, totales, ratiosData, currency]);
+
+  return (
+    <div style={{ padding: '2rem' }}>
+      <h2 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '1.5rem', color: '#1e293b' }}>
+        📈 Análisis Gráfico
+      </h2>
+      
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
+        gap: '2rem',
+        marginBottom: '2rem'
+      }}>
+        {/* Pie Chart - Activos */}
+        <div style={{ 
+          background: 'white', 
+          padding: '1.5rem', 
+          borderRadius: '12px', 
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)' 
+        }}>
+          <canvas id="pieActivos" style={{ maxHeight: '350px' }}></canvas>
+        </div>
+
+        {/* Pie Chart - Gastos */}
+        <div style={{ 
+          background: 'white', 
+          padding: '1.5rem', 
+          borderRadius: '12px', 
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)' 
+        }}>
+          <canvas id="pieGastos" style={{ maxHeight: '350px' }}></canvas>
+        </div>
+
+        {/* Bar Chart - Ingresos vs Gastos */}
+        <div style={{ 
+          background: 'white', 
+          padding: '1.5rem', 
+          borderRadius: '12px', 
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)' 
+        }}>
+          <canvas id="barIngresosGastos" style={{ maxHeight: '350px' }}></canvas>
+        </div>
+
+        {/* Donut Chart - Asset Allocation */}
+        <div style={{ 
+          background: 'white', 
+          padding: '1.5rem', 
+          borderRadius: '12px', 
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)' 
+        }}>
+          <canvas id="donutAssetAllocation" style={{ maxHeight: '350px' }}></canvas>
+        </div>
+      </div>
+
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', 
+        gap: '2rem'
+      }}>
+        {/* Radar Chart - Ratios */}
+        <div style={{ 
+          background: 'white', 
+          padding: '1.5rem', 
+          borderRadius: '12px', 
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)' 
+        }}>
+          <canvas id="radarRatios" style={{ maxHeight: '400px' }}></canvas>
+        </div>
+
+        {/* Line Chart - Proyección */}
+        <div style={{ 
+          background: 'white', 
+          padding: '1.5rem', 
+          borderRadius: '12px', 
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)' 
+        }}>
+          <canvas id="lineProyeccion" style={{ maxHeight: '400px' }}></canvas>
+        </div>
+      </div>
+
+      <div style={{ 
+        marginTop: '2rem', 
+        padding: '1rem', 
+        background: '#f0f9ff', 
+        borderLeft: '4px solid #3b82f6',
+        borderRadius: '8px'
+      }}>
+        <p style={{ fontSize: '0.875rem', color: '#1e40af', margin: 0 }}>
+          <strong>💡 Nota:</strong> La proyección de patrimonio asume un retorno anual del 7% y contribuciones anuales constantes de {formatCurrency(gastos.ahorro.reduce((sum, item) => sum + parseNumber(item.monto), 0) * 12, currency)}. Los resultados reales pueden variar según las condiciones del mercado.
+        </p>
+      </div>
     </div>
   );
 }
