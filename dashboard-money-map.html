@@ -615,8 +615,6 @@ tbody tr:hover {
 <script>
 // Vanilla JS version of load demo data (backup if React fails)
 window.loadDemoDataVanilla = function() {
-  console.log('Vanilla loadDemoData called');
-  
   if (confirm('🎲 ¿Cargar datos de ejemplo?\n\nEsto reemplazará tus datos actuales.')) {
     const demoProfile = {
       nombre: 'María',
@@ -1222,14 +1220,8 @@ function App() {
 
   // Load demo data
   const loadDemoData = () => {
-    console.log('loadDemoData clicked!');
-    
-    const confirmLoad = confirm('🎲 ¿Cargar datos de ejemplo?\n\nEsto reemplazará tus datos actuales con un caso de ejemplo completo.');
-    console.log('User confirmed:', confirmLoad);
-    
-    if (confirmLoad) {
-      try {
-        // Demo user profile
+    if (confirm('🎲 ¿Cargar datos de ejemplo?\n\nEsto reemplazará tus datos actuales con un caso de ejemplo completo.')) {
+      // Demo user profile
         const demoProfile = {
           nombre: 'María',
           apellido: 'García',
@@ -1339,8 +1331,6 @@ function App() {
           pasivosCorrientes: 5700
         };
         
-        console.log('Saving to localStorage...');
-        
         // Save to localStorage
         localStorage.setItem('userProfile', JSON.stringify(demoProfile));
         localStorage.setItem('activos', JSON.stringify(demoActivos));
@@ -1353,14 +1343,8 @@ function App() {
         localStorage.setItem('hasSeenOnboarding', 'true');
         localStorage.setItem('loadedDemoTab', 'graficos');
         
-        console.log('Data saved! Reloading page...');
-        
         // Reload page to load demo data
         window.location.reload();
-      } catch (error) {
-        console.error('Error loading demo data:', error);
-        alert('Error al cargar datos de ejemplo: ' + error.message);
-      }
     }
   };
 
