@@ -2464,9 +2464,11 @@ function IngresosGastos({ ingresos, setIngresos, gastos, setGastos, modoCalculo,
 
 // ============= GRÁFICOS TAB COMPONENT =============
 function GraficosTab({ activos, deudas, ingresos, gastos, totales, ratiosData, currency }) {
+  const [retornoAnual, setRetornoAnual] = React.useState(7); // Default 7%
+  
   React.useEffect(() => {
     // Destroy any existing charts to prevent memory leaks
-    const chartIds = ['pieActivos', 'pieGastos', 'barIngresosGastos', 'donutAssetAllocation', 'radarRatios', 'lineProyeccion'];
+    const chartIds = ['pieActivos', 'pieGastos', 'barIngresosGastos', 'donutAssetAllocation', 'lineProyeccion'];
     chartIds.forEach(id => {
       const existingChart = Chart.getChart(id);
       if (existingChart) {
@@ -2709,105 +2711,17 @@ function GraficosTab({ activos, deudas, ingresos, gastos, totales, ratiosData, c
       }
     }
 
-    // 5. RADAR CHART - Ratios vs Benchmarks
-    const edad = parseNumber(ratiosData.edad);
-    const ingresoBruto = parseNumber(ratiosData.ingresoBruto);
-    const ingresoNeto = parseNumber(ratiosData.ingresoNeto);
-    
-    if (edad > 0 && ingresoBruto > 0) {
-      const tasaAhorro = ingresoBruto > 0 ? (parseNumber(ratiosData.ahorroAnual) / ingresoBruto) : 0;
-      const inversionRatio = ingresoBruto > 0 ? totales.inversiones / ingresoBruto : 0;
-      const riquezaNeta = ingresoBruto > 0 ? totales.patrimonioNeto / ingresoBruto : 0;
-      const ahorroRetiro = ingresoBruto > 0 ? totales.totalRetiro / ingresoBruto : 0;
-      
-      // Benchmarks (normalized to 0-100 scale)
-      const tasaAhorroBench = 0.15; // 15%
-      const inversionBench = edad <= 35 ? 0.25 : edad <= 50 ? 1.5 : 3.0;
-      const riquezaBench = edad <= 35 ? 1.0 : edad <= 50 ? 4.0 : 8.0;
-      const retiroBench = edad <= 35 ? 0.5 : edad <= 50 ? 2.5 : 6.0;
-      
-      const normalizeScore = (actual, benchmark) => {
-        const ratio = actual / benchmark;
-        return Math.min(ratio * 100, 100);
-      };
-      
-      const ctxRadar = document.getElementById('radarRatios');
-      if (ctxRadar) {
-        new Chart(ctxRadar, {
-          type: 'radar',
-          data: {
-            labels: ['Tasa de Ahorro', 'Inversiones', 'Riqueza Neta', 'Ahorro de Retiro'],
-            datasets: [
-              {
-                label: 'Tu Situación',
-                data: [
-                  normalizeScore(tasaAhorro, tasaAhorroBench),
-                  normalizeScore(inversionRatio, inversionBench),
-                  normalizeScore(riquezaNeta, riquezaBench),
-                  normalizeScore(ahorroRetiro, retiroBench)
-                ],
-                backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                borderColor: 'rgb(59, 130, 246)',
-                borderWidth: 2,
-                pointBackgroundColor: 'rgb(59, 130, 246)',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgb(59, 130, 246)'
-              },
-              {
-                label: 'Benchmark',
-                data: [100, 100, 100, 100],
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                borderColor: 'rgb(16, 185, 129)',
-                borderWidth: 2,
-                borderDash: [5, 5],
-                pointBackgroundColor: 'rgb(16, 185, 129)',
-                pointBorderColor: '#fff'
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-              legend: {
-                position: 'bottom',
-                labels: {
-                  padding: 15,
-                  font: { size: 12 }
-                }
-              },
-              title: {
-                display: true,
-                text: 'Tus Ratios vs Benchmarks Recomendados',
-                font: { size: 16, weight: 'bold' }
-              }
-            },
-            scales: {
-              r: {
-                beginAtZero: true,
-                max: 100,
-                ticks: {
-                  stepSize: 25
-                }
-              }
-            }
-          }
-        });
-      }
-    }
-
-    // 6. LINE CHART - Proyección de Patrimonio
+    // 5. LINE CHART - Proyección de Patrimonio
     if (totales.patrimonioNeto > 0 && totalGastosAhorro > 0) {
       const patrimonioActual = totales.patrimonioNeto;
       const ahorroAnual = totalGastosAhorro;
-      const retornoAnual = 0.07; // 7% annual return assumption
+      const retornoDecimal = retornoAnual / 100; // Convert percentage to decimal
       
       const years = [0, 5, 10, 15, 20, 25, 30];
       const proyeccion = years.map(year => {
         // Future Value with annual contributions
-        const fv = patrimonioActual * Math.pow(1 + retornoAnual, year) + 
-                   ahorroAnual * ((Math.pow(1 + retornoAnual, year) - 1) / retornoAnual);
+        const fv = patrimonioActual * Math.pow(1 + retornoDecimal, year) + 
+                   ahorroAnual * ((Math.pow(1 + retornoDecimal, year) - 1) / retornoDecimal);
         return fv;
       });
       
@@ -2840,7 +2754,7 @@ function GraficosTab({ activos, deudas, ingresos, gastos, totales, ratiosData, c
               },
               title: {
                 display: true,
-                text: `Proyección de Patrimonio (${formatCurrency(ahorroAnual, currency)}/año, 7% retorno)`,
+                text: `Proyección de Patrimonio (${formatCurrency(ahorroAnual, currency)}/año, ${retornoAnual}% retorno)`,
                 font: { size: 16, weight: 'bold' }
               },
               tooltip: {
@@ -2866,7 +2780,7 @@ function GraficosTab({ activos, deudas, ingresos, gastos, totales, ratiosData, c
       }
     }
 
-  }, [activos, deudas, ingresos, gastos, totales, ratiosData, currency]);
+  }, [activos, deudas, ingresos, gastos, totales, ratiosData, currency, retornoAnual]);
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -2874,12 +2788,87 @@ function GraficosTab({ activos, deudas, ingresos, gastos, totales, ratiosData, c
         📈 Análisis Gráfico
       </h2>
       
+      {/* Control de Retorno Anual */}
+      <div style={{ 
+        background: 'white', 
+        padding: '1.5rem', 
+        borderRadius: '12px', 
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        marginBottom: '2rem'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+          <div style={{ flex: '1', minWidth: '200px' }}>
+            <label style={{ 
+              display: 'block', 
+              fontSize: '0.875rem', 
+              fontWeight: '600', 
+              color: '#64748b',
+              marginBottom: '0.5rem'
+            }}>
+              Retorno Anual Esperado para Proyección
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="20"
+              step="0.5"
+              value={retornoAnual}
+              onChange={(e) => setRetornoAnual(parseFloat(e.target.value))}
+              style={{
+                width: '100%',
+                height: '8px',
+                borderRadius: '4px',
+                outline: 'none',
+                cursor: 'pointer'
+              }}
+            />
+          </div>
+          <div style={{
+            background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+            color: 'white',
+            padding: '1rem 2rem',
+            borderRadius: '12px',
+            textAlign: 'center',
+            minWidth: '120px'
+          }}>
+            <div style={{ fontSize: '0.875rem', opacity: 0.9, marginBottom: '0.25rem' }}>
+              Retorno
+            </div>
+            <div style={{ fontSize: '2.5rem', fontWeight: '800' }}>
+              {retornoAnual}%
+            </div>
+          </div>
+        </div>
+        <div style={{ 
+          marginTop: '1rem', 
+          fontSize: '0.75rem', 
+          color: '#64748b',
+          display: 'flex',
+          justifyContent: 'space-between'
+        }}>
+          <span>0% (Conservador)</span>
+          <span>7% (Histórico S&P 500)</span>
+          <span>20% (Muy Agresivo)</span>
+        </div>
+      </div>
+      
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
         gap: '2rem',
         marginBottom: '2rem'
       }}>
+        {/* Line Chart - Proyección (MOVED UP) */}
+        <div style={{ 
+          background: 'white', 
+          padding: '1.5rem', 
+          borderRadius: '12px', 
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          gridColumn: 'span 2'
+        }}>
+          <canvas id="lineProyeccion" style={{ maxHeight: '400px' }}></canvas>
+        </div>
+        
         {/* Pie Chart - Activos */}
         <div style={{ 
           background: 'white', 
@@ -2922,32 +2911,6 @@ function GraficosTab({ activos, deudas, ingresos, gastos, totales, ratiosData, c
       </div>
 
       <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', 
-        gap: '2rem'
-      }}>
-        {/* Radar Chart - Ratios */}
-        <div style={{ 
-          background: 'white', 
-          padding: '1.5rem', 
-          borderRadius: '12px', 
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)' 
-        }}>
-          <canvas id="radarRatios" style={{ maxHeight: '400px' }}></canvas>
-        </div>
-
-        {/* Line Chart - Proyección */}
-        <div style={{ 
-          background: 'white', 
-          padding: '1.5rem', 
-          borderRadius: '12px', 
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)' 
-        }}>
-          <canvas id="lineProyeccion" style={{ maxHeight: '400px' }}></canvas>
-        </div>
-      </div>
-
-      <div style={{ 
         marginTop: '2rem', 
         padding: '1rem', 
         background: '#f0f9ff', 
@@ -2955,7 +2918,7 @@ function GraficosTab({ activos, deudas, ingresos, gastos, totales, ratiosData, c
         borderRadius: '8px'
       }}>
         <p style={{ fontSize: '0.875rem', color: '#1e40af', margin: 0 }}>
-          <strong>💡 Nota:</strong> La proyección de patrimonio asume un retorno anual del 7% y contribuciones anuales constantes de {formatCurrency(gastos.ahorro.reduce((sum, item) => sum + parseNumber(item.monto), 0) * 12, currency)}. Los resultados reales pueden variar según las condiciones del mercado.
+          <strong>💡 Nota:</strong> La proyección de patrimonio asume un retorno anual del {retornoAnual}% y contribuciones anuales constantes de {formatCurrency(gastos.ahorro.reduce((sum, item) => sum + parseNumber(item.monto), 0) * 12, currency)}. Los resultados reales pueden variar según las condiciones del mercado. Ajusta el porcentaje de retorno arriba para ver diferentes escenarios.
         </p>
       </div>
     </div>
