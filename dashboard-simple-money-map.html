@@ -694,6 +694,8 @@ function App() {
   const [currency, setCurrency] = useState('USD');
   const [showOnboardingModal, setShowOnboardingModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showPdfModal, setShowPdfModal] = useState(false);
+  const [showPDFModal, setShowPDFModal] = useState(false);
   
   // User profile
   const [userProfile, setUserProfile] = useState({
@@ -916,6 +918,44 @@ function App() {
               }}
             >
               ❓ Cómo usar
+            </button>
+            
+            <button
+              onClick={() => setShowPdfModal(true)}
+              style={{
+                padding: '0.5rem 1.25rem',
+                borderRadius: '8px',
+                border: '2px solid rgba(16, 185, 129, 0.5)',
+                background: 'rgba(16, 185, 129, 0.2)',
+                color: 'white',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              📄 PDF Worksheets
+            </button>
+
+            <button
+              onClick={() => setShowPDFModal(true)}
+              style={{
+                padding: '0.5rem 1.25rem',
+                borderRadius: '8px',
+                border: '2px solid rgba(16, 185, 129, 0.5)',
+                background: 'rgba(16, 185, 129, 0.2)',
+                color: 'white',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              📄 Descargar Worksheets
             </button>
             
             <button
@@ -1160,6 +1200,511 @@ function App() {
               <div style={{background: '#f8fafc', padding: '20px', borderRadius: '12px', borderLeft: '4px solid var(--slate)'}}>
                 <p style={{margin: 0, fontSize: '14px', lineHeight: '1.6', color: 'var(--text)'}}>
                   <strong>Sé honesto y completo.</strong> Los datos más precisos te darán el análisis más útil. Esta herramienta es educativa y no constituye asesoramiento financiero profesional. Para decisiones importantes, consulta con un asesor financiero certificado.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PDF Modal */}
+      {showPDFModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.7)',
+          zIndex: 2000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          backdropFilter: 'blur(8px)'
+        }} onClick={() => setShowPDFModal(false)}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '20px',
+            maxWidth: '700px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 70px rgba(0,0,0,0.5)'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{padding: '24px 28px', background: 'var(--emerald)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <div style={{fontSize: '24px', fontWeight: '800', color: 'white'}}>📄 Descargar PDF Worksheets</div>
+              <button onClick={() => setShowPDFModal(false)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', fontSize: '22px', cursor: 'pointer', color: 'white'}}>×</button>
+            </div>
+            <div style={{padding: '32px', overflowY: 'auto'}}>
+              <p style={{color: 'var(--text-muted)', marginBottom: '24px', fontSize: '15px', lineHeight: '1.6'}}>
+                Descarga los worksheets en PDF para llenar tus datos financieros de forma detallada. Luego ingresa solo los <strong>TOTALES</strong> en la calculadora.
+              </p>
+
+              <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                {/* PDF 1 */}
+                <div style={{
+                  background: 'white',
+                  border: '2px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.2s',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--emerald)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
+                >
+                  <div style={{flex: 1}}>
+                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
+                      📊 Worksheet Completo
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
+                      Todas las categorías en un solo PDF
+                    </div>
+                  </div>
+                  <a 
+                    href="URL_DEL_PDF_1_AQUI" 
+                    download
+                    style={{
+                      padding: '10px 20px',
+                      background: 'var(--emerald)',
+                      color: 'white',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    ⬇️ Descargar
+                  </a>
+                </div>
+
+                {/* PDF 2 */}
+                <div style={{
+                  background: 'white',
+                  border: '2px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.2s',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--emerald)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
+                >
+                  <div style={{flex: 1}}>
+                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
+                      💵 Ingresos y Gastos
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
+                      Desglose detallado de flujo de caja
+                    </div>
+                  </div>
+                  <a 
+                    href="URL_DEL_PDF_2_AQUI" 
+                    download
+                    style={{
+                      padding: '10px 20px',
+                      background: 'var(--emerald)',
+                      color: 'white',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    ⬇️ Descargar
+                  </a>
+                </div>
+
+                {/* PDF 3 */}
+                <div style={{
+                  background: 'white',
+                  border: '2px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.2s',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--emerald)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
+                >
+                  <div style={{flex: 1}}>
+                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
+                      💰 Activos
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
+                      Inventario completo de tus activos
+                    </div>
+                  </div>
+                  <a 
+                    href="URL_DEL_PDF_3_AQUI" 
+                    download
+                    style={{
+                      padding: '10px 20px',
+                      background: 'var(--emerald)',
+                      color: 'white',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    ⬇️ Descargar
+                  </a>
+                </div>
+
+                {/* PDF 4 */}
+                <div style={{
+                  background: 'white',
+                  border: '2px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.2s',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--emerald)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
+                >
+                  <div style={{flex: 1}}>
+                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
+                      💳 Pasivos
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
+                      Inventario completo de tus deudas
+                    </div>
+                  </div>
+                  <a 
+                    href="URL_DEL_PDF_4_AQUI" 
+                    download
+                    style={{
+                      padding: '10px 20px',
+                      background: 'var(--emerald)',
+                      color: 'white',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    ⬇️ Descargar
+                  </a>
+                </div>
+
+                {/* PDF 5 */}
+                <div style={{
+                  background: 'white',
+                  border: '2px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.2s',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--emerald)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
+                >
+                  <div style={{flex: 1}}>
+                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
+                      📋 Guía de Uso
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
+                      Instrucciones paso a paso
+                    </div>
+                  </div>
+                  <a 
+                    href="URL_DEL_PDF_5_AQUI" 
+                    download
+                    style={{
+                      padding: '10px 20px',
+                      background: 'var(--emerald)',
+                      color: 'white',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    ⬇️ Descargar
+                  </a>
+                </div>
+              </div>
+
+              <div style={{background: '#f0f9ff', padding: '16px', borderRadius: '12px', borderLeft: '4px solid var(--emerald)', marginTop: '24px'}}>
+                <p style={{margin: 0, fontSize: '14px', lineHeight: '1.6', color: 'var(--text)'}}>
+                  <strong>💡 Tip:</strong> Descarga los PDFs, imprímelos y llénalos con calma. Luego usa esta calculadora solo para ingresar los totales y ver tus resultados visuales.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PDF Modal */}
+      {showPdfModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0,0,0,0.7)',
+          zIndex: 2000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          backdropFilter: 'blur(8px)'
+        }} onClick={() => setShowPdfModal(false)}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '20px',
+            maxWidth: '700px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 25px 70px rgba(0,0,0,0.5)'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div style={{padding: '24px 28px', background: 'var(--emerald)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+              <div style={{fontSize: '24px', fontWeight: '800', color: 'white'}}>📄 Descargar PDF Worksheets</div>
+              <button onClick={() => setShowPdfModal(false)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', fontSize: '22px', cursor: 'pointer', color: 'white'}}>×</button>
+            </div>
+            <div style={{padding: '32px', overflowY: 'auto'}}>
+              <p style={{color: 'var(--text-muted)', marginBottom: '24px', fontSize: '15px', lineHeight: '1.6'}}>
+                Descarga los worksheets en PDF para llenar tus datos financieros de forma detallada. Luego ingresa solo los <strong>TOTALES</strong> en la calculadora.
+              </p>
+
+              <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                {/* PDF 1 */}
+                <div style={{
+                  background: 'white',
+                  border: '2px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.2s'
+                }}>
+                  <div style={{flex: 1}}>
+                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
+                      📊 Worksheet Completo
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
+                      Todas las categorías en un solo PDF
+                    </div>
+                  </div>
+                  <a 
+                    href="TU_URL_PDF_1_AQUI" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      padding: '10px 20px',
+                      background: 'var(--emerald)',
+                      color: 'white',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    ⬇️ Descargar
+                  </a>
+                </div>
+
+                {/* PDF 2 */}
+                <div style={{
+                  background: 'white',
+                  border: '2px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.2s'
+                }}>
+                  <div style={{flex: 1}}>
+                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
+                      💵 Ingresos y Gastos
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
+                      Desglose detallado de flujo de caja
+                    </div>
+                  </div>
+                  <a 
+                    href="TU_URL_PDF_2_AQUI" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      padding: '10px 20px',
+                      background: 'var(--emerald)',
+                      color: 'white',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    ⬇️ Descargar
+                  </a>
+                </div>
+
+                {/* PDF 3 */}
+                <div style={{
+                  background: 'white',
+                  border: '2px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.2s'
+                }}>
+                  <div style={{flex: 1}}>
+                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
+                      💰 Activos
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
+                      Inventario completo de tus activos
+                    </div>
+                  </div>
+                  <a 
+                    href="TU_URL_PDF_3_AQUI" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      padding: '10px 20px',
+                      background: 'var(--emerald)',
+                      color: 'white',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    ⬇️ Descargar
+                  </a>
+                </div>
+
+                {/* PDF 4 */}
+                <div style={{
+                  background: 'white',
+                  border: '2px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.2s'
+                }}>
+                  <div style={{flex: 1}}>
+                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
+                      💳 Pasivos
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
+                      Inventario completo de tus deudas
+                    </div>
+                  </div>
+                  <a 
+                    href="TU_URL_PDF_4_AQUI" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      padding: '10px 20px',
+                      background: 'var(--emerald)',
+                      color: 'white',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    ⬇️ Descargar
+                  </a>
+                </div>
+
+                {/* PDF 5 */}
+                <div style={{
+                  background: 'white',
+                  border: '2px solid var(--border)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.2s'
+                }}>
+                  <div style={{flex: 1}}>
+                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
+                      📋 Guía de Uso
+                    </div>
+                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
+                      Instrucciones paso a paso
+                    </div>
+                  </div>
+                  <a 
+                    href="TU_URL_PDF_5_AQUI" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      padding: '10px 20px',
+                      background: 'var(--emerald)',
+                      color: 'white',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    ⬇️ Descargar
+                  </a>
+                </div>
+              </div>
+
+              <div style={{background: '#f0fdf4', padding: '16px', borderRadius: '12px', borderLeft: '4px solid var(--emerald)', marginTop: '24px'}}>
+                <p style={{margin: 0, fontSize: '14px', lineHeight: '1.6', color: 'var(--text)'}}>
+                  <strong>💡 Tip:</strong> Descarga los PDFs, imprímelos y llénalos con calma. Luego usa esta calculadora solo para ingresar los totales y ver tus resultados visuales.
                 </p>
               </div>
             </div>
