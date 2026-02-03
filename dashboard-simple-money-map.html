@@ -694,7 +694,6 @@ function App() {
   const [currency, setCurrency] = useState('USD');
   const [showOnboardingModal, setShowOnboardingModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
-  const [showPdfModal, setShowPdfModal] = useState(false);
   const [showPDFModal, setShowPDFModal] = useState(false);
   
   // User profile
@@ -866,48 +865,16 @@ function App() {
                   outline: 'none'
                 }}
               >
-                {/* 🇺🇸 Referencia común */}
                 <option value="USD" style={{background: '#2845d9', color: 'white'}}>🇺🇸 USD - Dólar</option>
                 <option value="EUR" style={{background: '#2845d9', color: 'white'}}>🇪🇺 EUR - Euro</option>
                 <option value="GBP" style={{background: '#2845d9', color: 'white'}}>🇬🇧 GBP - Libra</option>
+                <option value="MXN" style={{background: '#2845d9', color: 'white'}}>🇲🇽 MXN - Peso Mexicano</option>
+                <option value="COP" style={{background: '#2845d9', color: 'white'}}>🇨🇴 COP - Peso Colombiano</option>
+                <option value="ARS" style={{background: '#2845d9', color: 'white'}}>🇦🇷 ARS - Peso Argentino</option>
+                <option value="CLP" style={{background: '#2845d9', color: 'white'}}>🇨🇱 CLP - Peso Chileno</option>
+                <option value="PEN" style={{background: '#2845d9', color: 'white'}}>🇵🇪 PEN - Sol Peruano</option>
+                <option value="BRL" style={{background: '#2845d9', color: 'white'}}>🇧🇷 BRL - Real Brasileño</option>
                 <option value="CAD" style={{background: '#2845d9', color: 'white'}}>🇨🇦 CAD - Dólar Canadiense</option>
-                
-{/* 🇲🇽 México */}
-<option value="MXN" style={{background:'#2845d9',color:'white'}}>🇲🇽 MXN - Peso mexicano</option>
-
-{/* 🇬🇹 Centroamérica */}
-<option value="GTQ" style={{background:'#2845d9',color:'white'}}>🇬🇹 GTQ - Quetzal guatemalteco</option>
-<option value="HNL" style={{background:'#2845d9',color:'white'}}>🇭🇳 HNL - Lempira hondureña</option>
-<option value="NIO" style={{background:'#2845d9',color:'white'}}>🇳🇮 NIO - Córdoba nicaragüense</option>
-<option value="CRC" style={{background:'#2845d9',color:'white'}}>🇨🇷 CRC - Colón costarricense</option>
-<option value="PAB" style={{background:'#2845d9',color:'white'}}>🇵🇦 PAB - Balboa panameño</option>
-
-{/* 🇸🇻 / 🇪🇨 Dolarizados */}
-<option value="USD" style={{background:'#2845d9',color:'white'}}>🇸🇻 USD - Dólar (El Salvador)</option>
-<option value="USD" style={{background:'#2845d9',color:'white'}}>🇪🇨 USD - Dólar (Ecuador)</option>
-
-{/* 🇨🇴 Región Andina */}
-<option value="COP" style={{background:'#2845d9',color:'white'}}>🇨🇴 COP - Peso colombiano</option>
-<option value="PEN" style={{background:'#2845d9',color:'white'}}>🇵🇪 PEN - Sol peruano</option>
-<option value="BOB" style={{background:'#2845d9',color:'white'}}>🇧🇴 BOB - Boliviano</option>
-<option value="VES" style={{background:'#2845d9',color:'white'}}>🇻🇪 VES - Bolívar venezolano</option>
-
-{/* 🇨🇱 Cono Sur */}
-<option value="CLP" style={{background:'#2845d9',color:'white'}}>🇨🇱 CLP - Peso chileno</option>
-<option value="ARS" style={{background:'#2845d9',color:'white'}}>🇦🇷 ARS - Peso argentino</option>
-<option value="UYU" style={{background:'#2845d9',color:'white'}}>🇺🇾 UYU - Peso uruguayo</option>
-<option value="PYG" style={{background:'#2845d9',color:'white'}}>🇵🇾 PYG - Guaraní paraguayo</option>
-
-{/* 🇧🇷 Brasil */}
-<option value="BRL" style={{background:'#2845d9',color:'white'}}>🇧🇷 BRL - Real brasileño</option>
-
-{/* 🇩🇴 Caribe */}
-<option value="DOP" style={{background:'#2845d9',color:'white'}}>🇩🇴 DOP - Peso dominicano</option>
-<option value="CUP" style={{background:'#2845d9',color:'white'}}>🇨🇺 CUP - Peso cubano</option>
-<option value="HTG" style={{background:'#2845d9',color:'white'}}>🇭🇹 HTG - Gourde haitiano</option>
-<option value="JMD" style={{background:'#2845d9',color:'white'}}>🇯🇲 JMD - Dólar jamaiquino</option>
-<option value="TTD" style={{background:'#2845d9',color:'white'}}>🇹🇹 TTD - Dólar de Trinidad y Tobago</option>
-
               </select>
             </div>
             
@@ -950,6 +917,25 @@ function App() {
               }}
             >
               ❓ Cómo usar
+            </button>
+            
+            <button
+              onClick={() => setShowPdfModal(true)}
+              style={{
+                padding: '0.5rem 1.25rem',
+                borderRadius: '8px',
+                border: '2px solid rgba(16, 185, 129, 0.5)',
+                background: 'rgba(16, 185, 129, 0.2)',
+                color: 'white',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              📄 PDF Worksheets
             </button>
 
             <button
@@ -1254,7 +1240,7 @@ function App() {
               </p>
 
               <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-                {/* PDF 2 */}
+                {/* PDF 1: Ingresos y Gastos */}
                 <div style={{
                   background: 'white',
                   border: '2px solid var(--border)',
@@ -1297,7 +1283,7 @@ function App() {
                   </a>
                 </div>
 
-                {/* PDF 3 */}
+                {/* PDF 2: Activos */}
                 <div style={{
                   background: 'white',
                   border: '2px solid var(--border)',
@@ -1340,7 +1326,7 @@ function App() {
                   </a>
                 </div>
 
-                {/* PDF 4 */}
+                {/* PDF 3: Pasivos */}
                 <div style={{
                   background: 'white',
                   border: '2px solid var(--border)',
@@ -1394,210 +1380,6 @@ function App() {
         </div>
       )}
 
-      {/* PDF Modal */}
-      {showPdfModal && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.7)',
-          zIndex: 2000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '20px',
-          backdropFilter: 'blur(8px)'
-        }} onClick={() => setShowPdfModal(false)}>
-          <div style={{
-            background: '#fff',
-            borderRadius: '20px',
-            maxWidth: '700px',
-            width: '100%',
-            maxHeight: '90vh',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-            boxShadow: '0 25px 70px rgba(0,0,0,0.5)'
-          }} onClick={(e) => e.stopPropagation()}>
-            <div style={{padding: '24px 28px', background: 'var(--emerald)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-              <div style={{fontSize: '24px', fontWeight: '800', color: 'white'}}>📄 Descargar PDF Worksheets</div>
-              <button onClick={() => setShowPdfModal(false)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', fontSize: '22px', cursor: 'pointer', color: 'white'}}>×</button>
-            </div>
-            <div style={{padding: '32px', overflowY: 'auto'}}>
-              <p style={{color: 'var(--text-muted)', marginBottom: '24px', fontSize: '15px', lineHeight: '1.6'}}>
-                Descarga los worksheets en PDF para llenar tus datos financieros de forma detallada. Luego ingresa solo los <strong>TOTALES</strong> en la calculadora.
-              </p>
-
-              <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-                {/* PDF 1 */}
-                <div style={{
-                  background: 'white',
-                  border: '2px solid var(--border)',
-                  borderRadius: '12px',
-                  padding: '20px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  transition: 'all 0.2s'
-                }}>
-                  <div style={{flex: 1}}>
-                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
-                      📊 Worksheet Completo
-                    </div>
-                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
-                      Todas las categorías en un solo PDF
-                    </div>
-                  </div>
-                  <a 
-                    href="TU_URL_PDF_1_AQUI" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      padding: '10px 20px',
-                      background: 'var(--emerald)',
-                      color: 'white',
-                      borderRadius: '8px',
-                      textDecoration: 'none',
-                      fontWeight: '600',
-                      fontSize: '14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}
-                  >
-                    ⬇️ Descargar
-                  </a>
-                </div>
-
-                {/* PDF 2 */}
-                <div style={{
-                  background: 'white',
-                  border: '2px solid var(--border)',
-                  borderRadius: '12px',
-                  padding: '20px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  transition: 'all 0.2s'
-                }}>
-                  <div style={{flex: 1}}>
-                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
-                      💵 Ingresos y Gastos
-                    </div>
-                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
-                      Desglose detallado de flujo de caja
-                    </div>
-                  </div>
-                  <a 
-                    href="https://51fe6aff-6c63-452e-ae29-61aa710bd777.usrfiles.com/ugd/51fe6a_dab0ffbb1c2e4187bcf10787e8a86a9b.pdf" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      padding: '10px 20px',
-                      background: 'var(--emerald)',
-                      color: 'white',
-                      borderRadius: '8px',
-                      textDecoration: 'none',
-                      fontWeight: '600',
-                      fontSize: '14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}
-                  >
-                    ⬇️ Descargar
-                  </a>
-                </div>
-
-                {/* PDF 3 */}
-                <div style={{
-                  background: 'white',
-                  border: '2px solid var(--border)',
-                  borderRadius: '12px',
-                  padding: '20px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  transition: 'all 0.2s'
-                }}>
-                  <div style={{flex: 1}}>
-                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
-                      💰 Activos
-                    </div>
-                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
-                      Inventario completo de tus activos
-                    </div>
-                  </div>
-                  <a 
-                    href="https://51fe6aff-6c63-452e-ae29-61aa710bd777.usrfiles.com/ugd/51fe6a_b0e0da8a0823447692c16e04b8eee03a.pdf" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      padding: '10px 20px',
-                      background: 'var(--emerald)',
-                      color: 'white',
-                      borderRadius: '8px',
-                      textDecoration: 'none',
-                      fontWeight: '600',
-                      fontSize: '14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}
-                  >
-                    ⬇️ Descargar
-                  </a>
-                </div>
-
-                {/* PDF 4 */}
-                <div style={{
-                  background: 'white',
-                  border: '2px solid var(--border)',
-                  borderRadius: '12px',
-                  padding: '20px',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  transition: 'all 0.2s'
-                }}>
-                  <div style={{flex: 1}}>
-                    <div style={{fontWeight: '700', fontSize: '16px', marginBottom: '4px', color: 'var(--text)'}}>
-                      💳 Pasivos
-                    </div>
-                    <div style={{fontSize: '13px', color: 'var(--text-muted)'}}>
-                      Inventario completo de tus deudas
-                    </div>
-                  </div>
-                  <a 
-                    href="https://51fe6aff-6c63-452e-ae29-61aa710bd777.usrfiles.com/ugd/51fe6a_da33d073988e43c8badae5c178c58e56.pdf" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      padding: '10px 20px',
-                      background: 'var(--emerald)',
-                      color: 'white',
-                      borderRadius: '8px',
-                      textDecoration: 'none',
-                      fontWeight: '600',
-                      fontSize: '14px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}
-                  >
-                    ⬇️ Descargar
-                  </a>
-                </div>
-              </div>
-
-              <div style={{background: '#f0fdf4', padding: '16px', borderRadius: '12px', borderLeft: '4px solid var(--emerald)', marginTop: '24px'}}>
-                <p style={{margin: 0, fontSize: '14px', lineHeight: '1.6', color: 'var(--text)'}}>
-                  <strong>💡 Tip:</strong> Descarga los PDFs, imprímelos y llénalos con calma. Luego usa esta calculadora solo para ingresar los totales y ver tus resultados visuales.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <footer className="export-footer">
         <div className="export-footer-content">
