@@ -715,14 +715,6 @@ tbody tr:hover {
     window.location.reload();
   }
 };
-
-// Show backup button if React doesn't load within 3 seconds
-setTimeout(function() {
-  if (!document.querySelector('.tabs-container')) {
-    document.getElementById('backup-controls').style.display = 'block';
-    console.warn('React may not have loaded. Backup button shown.');
-  }
-}, 3000);
 </script>
 
 <script type="text/babel">
