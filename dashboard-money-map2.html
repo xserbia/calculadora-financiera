@@ -605,26 +605,7 @@ tbody tr:hover {
 <body>
 <div id="root"></div>
 
-<!-- Backup button in case React fails to load -->
-<div id="backup-controls" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: none;">
-  <button onclick="window.loadDemoDataVanilla()" style="padding: 15px 25px; background: #10b981; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-    🎲 Cargar Ejemplo (Backup)
-  </button>
-</div>
-
 <script>
-// Vanilla JS version of load demo data (backup if React fails)
-window.loadDemoDataVanilla = function() {
-  if (confirm('🎲 ¿Cargar datos de ejemplo?\n\nEsto reemplazará tus datos actuales.')) {
-    const demoProfile = {
-      nombre: 'María',
-      apellido: 'García',
-      edad: '35',
-      avatar: '👩‍💼',
-      estadoCivil: 'soltero',
-      dependientes: '0'
-    };
-    
     const demoActivos = {
       efectivo: [
         { concepto: 'Cuenta de Cheques', monto: '5000' },
