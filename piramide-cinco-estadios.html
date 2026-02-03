@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Mapa – 5 Etapas Financieras (Resultados + Pruebas)</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
+<style>
+  :root{
+    --primary:#3956E8; --secondary:#7459D9; --accent:#E8C239;
+    --ok:#10b981; --ok-ink:#065f46; --warn:#f59e0b; --warn-ink:#92400e;
+    --bad:#ef4444; --bad-ink:#991b1b; --ink:#0f172a; --muted:#64748b;
+    --line:#e5e7eb; --soft:#f5f7ff; --card:#ffffff; --bg:#FAFBFF;
+    --shadow:0 10px 28px rgba(15,23,42,.08); --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:"Nunito",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .wrap{max-width:980px;margin:24px auto;padding:0 16px}
+  h1{font-size:28px;margin:0 0 6px}
+  .sub{color:var(--muted);margin:0 0 16px}
+
+  /* Barra de etapas */
+  .stage-rail{display:none;background:#ffffff;border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:var(--shadow);margin-top:14px}
+  .rail{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-items:center}
+  .seg{position:relative;height:14px;border-radius:10px;overflow:hidden;background:#eef2ff;border:1px solid #e5e7ff;transition:all .18s ease}
+  .seg.active{background:linear-gradient(90deg,var(--primary),var(--secondary));border-color:transparent}
+  .seg.current{outline:2px solid #3956E8;box-shadow:0 0 0 4px rgba(57,86,232,.12), 0 6px 16px rgba(57,86,232,.22)}
+  .labels{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:6px;font-size:11px;color: #475569}
+  .labels span{text-align:center;font-weight:800;transition:color .18s ease}
+  .labels .on{color:#111827}
+  .labels .done{color:var(--ok-ink)}
+  .marker{position:relative;height:10px;margin-top:6px}
+  .marker .pin{position:absolute;left:0;top:0;transform:translateX(-50%);width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid var(--primary)}
+  .marker .pin.shadow{border-top-color:rgba(57,86,232,.25);filter:blur(2px);top:1px}
+
+  /* Panel */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .panel h2{font-size:18px;margin:0 0 12px}
+  .row{display:grid;grid-template-columns:1fr 220px;gap:10px;align-items:center;margin-bottom:10px}
+  .row label{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .row .input-wrap{display:flex;align-items:center;gap:6px}
+  input[type="number"]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+  .hint{font-size:12px;color:var(--muted);margin:4px 0 10px}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  button{background:var(--primary);color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+  button.secondary{background:var(--secondary)}
+  button.small{padding:6px 10px;font-size:12px;border-radius:10px}
+  button.ghost{background:#fff;color:#3956E8;border:1px solid #3956E8}
+
+  /* Resultado */
+  .result{display:none;margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+  .result .stage{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 10px;font-size:12px;border:1px solid #e9ecff;background:#f5f7ff;font-weight:800}
+
+  /* Bandera “Siguiente meta” */
+  .next-flag{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 12px;border-radius:999px;
+    border:1px solid var(--line);background:#F7F8FE;
+    font-size:13px;font-weight:800;box-shadow:var(--shadow);width:max-content
+  }
+  .next-flag .dot{width:10px;height:10px;border-radius:999px}
+  .next-flag.stage-2{border-color:#c7f3d6;background:#f0fdf4}
+  .next-flag.stage-3{border-color:#fde68a;background:#fffbeb}
+  .next-flag.stage-4{border-color:#bfdbfe;background:#eff6ff}
+  .next-flag.stage-5{border-color:#ddd6fe;background:#f5f3ff}
+  .next-flag.stage-2 .dot{background:var(--ok)}
+  .next-flag.stage-3 .dot{background:var(--warn)}
+  .next-flag.stage-4 .dot{background:#60a5fa}
+  .next-flag.stage-5 .dot{background:#a78bfa}
+
+  .focus ul{margin:8px 0 0;padding-left:0;list-style:none}
+  .focus li{display:flex;align-items:flex-start;gap:10px;margin:10px 0;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fafbff}
+  .dot{width:12px;height:12px;border-radius:50%;margin-top:4px;flex:0 0 12px}
+  .dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)}
+  .tag{display:inline-block;font-size:11px;padding:2px 6px;border-radius:999px;border:1px solid var(--line);background:#fff;margin-left:8px;color:#334155}
+  .sev-ok{color:var(--ok-ink)} .sev-warn{color:var(--warn-ink)} .sev-bad{color:var(--bad-ink);font-weight:700}
+
+  /* Tooltip */
+  .tip{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#eef2ff;color:#334155;font-size:12px;font-weight:800;cursor:help;border:1px solid #e5e7ff;position:relative}
+  .tip:hover .tiptext{opacity:1;transform:translateY(0);pointer-events:auto;}
+  .tiptext{position:absolute;left:50%;top:-8px;transform:translate(-50%,-6px);background:#111827;color:#fff;padding:10px 12px;border-radius:10px;min-width:220px;max-width:320px;font-size:12px;line-height:1.35;opacity:0;pointer-events:none;transition:.18s ease;box-shadow:0 10px 24px rgba(0,0,0,.18);z-index:20}
+  .tiptext::after{content:"";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);border-width:6px;border-style:solid;border-color:#111827 transparent transparent transparent;}
+
+  /* Modales */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:50}
+  .modal{background:#fff;border-radius:16px;box-shadow:var(--shadow);width:96%;max-width:620px;border:1px solid var(--line)}
+  .modal header{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .modal header h4{margin:0;font-size:16px}
+  .modal .content{padding:16px}
+  .modal .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .modal .row{grid-template-columns:1fr;gap:8px;margin-bottom:12px}
+  .modal footer{padding:12px 16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .close-x{background:#fff;border:1px solid var(--line);color:#0f172a;border-radius:10px;padding:6px 10px;cursor:pointer}
+  .btn-primary{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:8px 12px;cursor:pointer}
+  .btn-secondary{background:var(--secondary);color:#fff;border:none;border-radius:10px;cursor:pointer;padding:8px 12px}
+
+  /* Pruebas */
+  .tests{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+  .tests h3{margin:0 0 10px;font-size:16px}
+  .test-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+  .tbl{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .tbl th,.tbl td{font-size:12px;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .tbl th{background:#F7F8FE;text-align:left}
+  .tbl tr:last-child td{border-bottom:none}
+
+  /* ===== PIRÁMIDE PINTADA ===== */
+  .pyramid-wrap{
+    margin-top:12px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px;
+    box-shadow:var(--shadow);
+  }
+  .pyramid-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin:0 0 10px;
+    font-size:13px;
+    font-weight:900;
+    color:#334155;
+  }
+  .pyrSvg{
+    width:100%;
+    max-width:520px;
+    display:block;
+    margin:0 auto;
+  }
+  .pyrLayer{
+    opacity:.18;
+    transition:opacity .18s ease, filter .18s ease, stroke-width .18s ease;
+  }
+  .pyrLayer.on{opacity:1}
+  .pyrLayer.current{
+    filter: drop-shadow(0 10px 16px rgba(57,86,232,.25));
+    stroke-width:2.5;
+  }
+  .pyrText{
+    font-size:14px;
+    font-weight:900;
+    fill:#ffffff;
+    letter-spacing:.5px;
+  }
+  .pyrLegend{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top:10px;
+    font-size:11px;
+    color:var(--muted);
+  }
+  .pyrLegend .item{display:flex;align-items:center;gap:6px}
+  .pyrLegend .sw{width:10px;height:10px;border-radius:3px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Mapa de Progreso – 5 Etapas Financieras</h1>
+    <p class="sub">Diagnóstico del estadio y plan de enfoque (uso online, sin exportar).</p>
+
+    <!-- PANEL -->
+    <div class="panel">
+      <h2>Entrada rápida</h2>
+
+      <div class="row"><label>Edad actual</label><input id="edad" type="number" min="16" max="100" step="1" placeholder="Ej. 35"/></div>
+      <div class="row"><label>Edad objetivo (longevidad)</label><input id="edadObj" type="number" min="70" max="110" step="1" placeholder="Ej. 90"/></div>
+
+      <div class="row"><label>Ingreso <strong>mensual neto</strong></label><input id="ingresoNeto" type="number" min="0" step="100" placeholder="Ej. 4000"/></div>
+      <div class="row"><label>Gastos <strong>esenciales mensuales</strong></label><input id="gastosEsenciales" type="number" min="0" step="100" placeholder="Ej. 2500"/></div>
+      <div class="row"><label>Gasto <strong>total anual</strong></label><input id="gastoAnual" type="number" min="0" step="500" placeholder="Ej. 60000"/></div>
+
+      <div class="row">
+        <label>
+          Reserva disponible (meses)
+          <span class="tip">i
+            <span class="tiptext">Meses de gastos <b>esenciales</b> que puedes cubrir con tu efectivo y equivalentes. Fórmula simplificada: <i>Efectivo ÷ Gastos esenciales mensuales</i>.</span>
+          </span>
+        </label>
+        <input id="reservaMeses" type="number" min="0" step="0.5" placeholder="Ej. 6"/>
+      </div>
+
+      <div class="row">
+        <label>
+          DTI (servicio deuda / ingreso <u>neto</u>) %
+          <span class="tip">i
+            <span class="tiptext">Porcentaje del ingreso <b>neto</b> mensual destinado a pagos de deuda. Meta general: ≤ 36% (óptimo). Señal de alerta: > 50%.</span>
+          </span>
+        </label>
+        <input id="dti" type="number" min="0" max="200" step="0.1" placeholder="Ej. 28"/>
+      </div>
+
+      <div class="row">
+        <label>
+          Pasivos / Activos %
+          <span class="tip">i
+            <span class="tiptext">Qué parte de tus activos está financiada con deuda. <i>Pasivos totales ÷ Activos totales × 100</i>. Meta: &lt; 50%.</span>
+          </span>
+        </label>
+        <input id="pp" type="number" min="0" max="200" step="0.1" placeholder="Ej. 45"/>
+      </div>
+
+      <hr class="hint" style="border:none;height:1px;background:var(--line)">
+
+      <div class="row">
+        <label>
+          Ahorro total (% ingreso bruto)
+          <span class="tip">i
+            <span class="tiptext">Porcentaje del ingreso <b>bruto</b> que se ahorra e invierte (incluye aportes patronales si aplican). Óptimo: ≥ 30%; aceptable: 15–29%.</span>
+          </span>
+        </label>
+        <input id="tasaAhorro" type="number" min="0" max="100" step="0.1" placeholder="Ej. 18"/>
+      </div>
+
+      <div class="row">
+        <label>
+          Control de ingresos y gastos (0–100)
+          <span class="tip">i
+            <span class="tiptext">Autoevaluación del control financiero. 0 = sin control; 100 = control total con monitoreo y conciliación mensual.</span>
+          </span>
+        </label>
+        <div class="input-wrap"><input id="controlScore" type="number" min="0" max="100" step="1" placeholder="Ej. 65"/></div>
+      </div>
+
+      <div class="row">
+        <label>
+          Patrimonio / Ingreso anual (×)
+          <span class="tip">i
+            <span class="tiptext"><b>Cómo:</b> Patrimonio neto ÷ Ingreso anual neto. Referencias: 7–14× (Acumulación), 15–24× (Independencia), ≥25× (Libertad).</span>
+          </span>
+          <button class="small ghost" data-open="modalPatrIngreso">Calcular</button>
+        </label>
+        <div class="input-wrap"><input id="multPatrIngreso" type="number" min="0" step="0.1" placeholder="Ej. 9.5"/></div>
+      </div>
+
+      <div class="row">
+        <label>
+          Patrimonio / Gasto anual (×)
+          <span class="tip">i
+            <span class="tiptext"><b>Cómo:</b> Patrimonio neto ÷ Gasto anual total. Útil para metas por tasa segura de retiro (SWR).</span>
+          </span>
+          <button class="small ghost" data-open="modalPatrGasto">Calcular</button>
+        </label>
+        <div class="input-wrap"><input id="multPatrGasto" type="number" min="0" step="0.1" placeholder="Ej. 26"/></div>
+      </div>
+
+      <div class="row">
+        <label>
+          Ingresos pasivos / Gasto total (×)
+          <span class="tip">i
+            <span class="tiptext">Ingresos pasivos anuales ÷ Gasto anual total. Metas: ≥1.0× (Independencia), ≥1.2× (Libertad).</span>
+          </span>
+          <button class="small ghost" data-open="modalPasivo">Calcular</button>
+        </label>
+        <div class="input-wrap"><input id="ratioPasivo" type="number" min="0" step="0.1" placeholder="Ej. 1.0"/></div>
+      </div>
+
+      <div class="row">
+        <label>
+          Retiros anuales / Patrimonio (%)
+          <span class="tip">i
+            <span class="tiptext">(Retiros anuales ÷ Patrimonio invertible) × 100. La meta segura depende del horizonte: 2.8%–4.0% aprox.</span>
+          </span>
+          <button class="small ghost" data-open="modalRetiros">Calcular</button>
+        </label>
+        <div class="input-wrap"><input id="retiroPct" type="number" min="0" step="0.1" placeholder="Ej. 3.8"/></div>
+      </div>
+
+      <div class="row">
+        <label>
+          Ahorro para retiro (× ingreso bruto anual)
+          <span class="tip">i
+            <span class="tiptext">Saldo total en cuentas de retiro ÷ Ingreso bruto anual. Meta por edad (referencial): ~0.5× a los 30; ~6× a los 50; ~10× a los 67.</span>
+          </span>
+          <button class="small ghost" data-open="modalMultRetiro">Calcular</button>
+        </label>
+        <div class="input-wrap"><input id="multRetiro" type="number" min="0" step="0.1" placeholder="Ej. 4.2"/></div>
+      </div>
+
+      <div class="btns">
+        <button id="calc">Calcular estadio</button>
+        <button class="secondary" id="demo">Demo</button>
+      </div>
+
+      <!-- RESULTADO -->
+      <div class="result" id="bloqueResultado">
+        <div class="stage-rail" id="railView">
+          <div class="rail">
+            <div class="seg" data-seg="1" title="Supervivencia"></div>
+            <div class="seg" data-seg="2" title="Seguridad"></div>
+            <div class="seg" data-seg="3" title="Acumulación"></div>
+            <div class="seg" data-seg="4" title="Independencia"></div>
+            <div class="seg" data-seg="5" title="Libertad"></div>
+          </div>
+          <div class="labels">
+            <span data-lab="1">SUPERVIVENCIA</span>
+            <span data-lab="2">SEGURIDAD</span>
+            <span data-lab="3">ACUMULACIÓN</span>
+            <span data-lab="4">INDEPENDENCIA</span>
+            <span data-lab="5">LIBERTAD</span>
+          </div>
+          <div class="marker">
+            <div class="pin shadow" id="pinShadow"></div>
+            <div class="pin" id="pin"></div>
+          </div>
+        </div>
+
+        <!-- ===== PIRÁMIDE PINTADA ===== -->
+        <div class="pyramid-wrap" id="pyramidBox" style="display:none">
+          <div class="pyramid-title">
+            <span>Tu pirámide (se pinta según tu estadio)</span>
+            <span class="tag" id="pyrTag">Estadio —</span>
+          </div>
+
+          <!-- SVG: 5 capas, se encienden con JS -->
+          <svg class="pyrSvg" viewBox="0 0 520 320" role="img" aria-label="Pirámide de 5 etapas">
+            <!-- Base -->
+            <polygon id="pyr1" class="pyrLayer" points="60,280 460,280 390,220 130,220"
+              fill="#0b1f4b" stroke="rgba(255,255,255,.65)"/>
+            <!-- Seguridad -->
+            <polygon id="pyr2" class="pyrLayer" points="130,220 390,220 340,170 180,170"
+              fill="#0f5f7a" stroke="rgba(255,255,255,.65)"/>
+            <!-- Acumulación -->
+            <polygon id="pyr3" class="pyrLayer" points="180,170 340,170 310,130 210,130"
+              fill="#f2b327" stroke="rgba(255,255,255,.65)"/>
+            <!-- Independencia -->
+            <polygon id="pyr4" class="pyrLayer" points="210,130 310,130 292,95 228,95"
+              fill="#f57f17" stroke="rgba(255,255,255,.65)"/>
+            <!-- Libertad -->
+            <polygon id="pyr5" class="pyrLayer" points="228,95 292,95 260,55"
+              fill="#e11d48" stroke="rgba(255,255,255,.65)"/>
+
+            <!-- Labels -->
+            <text class="pyrText" x="260" y="260" text-anchor="middle">SUPERVIVENCIA</text>
+            <text class="pyrText" x="260" y="205" text-anchor="middle">SEGURIDAD</text>
+            <text class="pyrText" x="260" y="155" text-anchor="middle">ACUMULACIÓN</text>
+            <text class="pyrText" x="260" y="118" text-anchor="middle">INDEPENDENCIA</text>
+            <text class="pyrText" x="260" y="82"  text-anchor="middle">LIBERTAD</text>
+          </svg>
+
+          <div class="pyrLegend">
+            <div class="item"><span class="sw" style="background:#0b1f4b"></span> 1</div>
+            <div class="item"><span class="sw" style="background:#0f5f7a"></span> 2</div>
+            <div class="item"><span class="sw" style="background:#f2b327"></span> 3</div>
+            <div class="item"><span class="sw" style="background:#f57f17"></span> 4</div>
+            <div class="item"><span class="sw" style="background:#e11d48"></span> 5</div>
+          </div>
+        </div>
+        <!-- ===== /PIRÁMIDE ===== -->
+
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <div class="stage" id="chipEstadio">Estadio: —</div>
+          <div class="stage" id="chipRiesgo" style="background:#fff;border-color:var(--line);color:#334155">Riesgo: —</div>
+          <div class="hint" id="metaDinamica">Meta dinámica: —</div>
+        </div>
+
+        <div id="nextFlag" class="next-flag" style="display:none;margin-top:10px">
+          <span class="dot"></span>
+          <strong id="nextFlagLabel">Siguiente meta: —</strong>
+        </div>
+
+        <div id="stageDetails" style="margin-top:12px"></div>
+
+        <div class="focus" style="margin-top:12px">
+          <h4 style="margin:10px 0 6px;font-size:14px">En qué enfocarte ahora</h4>
+          <ul id="listaEnfoque"></ul>
+        </div>
+      </div>
+      <!-- /resultado -->
+    </div>
+    <!-- /panel -->
+
+    <!-- ======= BLOQUE DE PRUEBAS ======= -->
+    <div class="tests">
+      <h3>Pruebas rápidas</h3>
+      <div class="test-btns">
+        <button class="ghost small" id="runAll">Correr todas</button>
+        <button class="ghost small" data-case="A">Caso A</button>
+        <button class="ghost small" data-case="B">Caso B</button>
+        <button class="ghost small" data-case="C">Caso C</button>
+        <button class="ghost small" data-case="D">Caso D</button>
+        <button class="ghost small" data-case="E">Caso E</button>
+        <button class="small" id="clearRows">Limpiar resultados</button>
+      </div>
+      <div style="overflow:auto">
+        <table class="tbl" id="tablaTests">
+          <thead>
+            <tr>
+              <th>Caso</th>
+              <th>Estadio</th>
+              <th>Riesgo</th>
+              <th>
+                CF ratio
+                <span class="tip">i
+                  <span class="tiptext"><b>Cash-flow ratio:</b> (Ingreso neto mensual × 12) ÷ Gasto anual total. ≥ 1.0× indica flujo no negativo.</span>
+                </span>
+              </th>
+              <th>
+                Reserva (m)
+                <span class="tip">i
+                  <span class="tiptext">Meses de gastos esenciales cubiertos por tu efectivo y equivalentes.</span>
+                </span>
+              </th>
+              <th>
+                DTI %
+                <span class="tip">i
+                  <span class="tiptext">Porcentaje del ingreso neto destinado a deuda. Meta ≤ 36%.</span>
+                </span>
+              </th>
+              <th>
+                P/A %
+                <span class="tip">i
+                  <span class="tiptext">Pasivos ÷ Activos × 100. Meta &lt; 50%.</span>
+                </span>
+              </th>
+              <th>
+                Patr/Ing ×
+                <span class="tip">i
+                  <span class="tiptext">Patrimonio neto ÷ Ingreso anual neto.</span>
+                </span>
+              </th>
+              <th>
+                Pasivo/Gasto ×
+                <span class="tip">i
+                  <span class="tiptext">Ingresos pasivos anuales ÷ Gasto anual total.</span>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="hint">CF ratio = (ingreso neto mensual × 12) ÷ gasto anual total.</p>
+    </div>
+  </div>
+
+  <!-- ===== MODALES DE CÁLCULO RÁPIDO ===== -->
+  <div class="modal-backdrop" id="modalPatrIngreso">
+    <div class="modal" role="dialog" aria-labelledby="ttl-pi" aria-modal="true">
+      <header><h4 id="ttl-pi">Calcular Patrimonio / Ingreso anual (×)</h4><button class="close-x" data-close>✕</button></header>
+      <div class="content">
+        <div class="grid2">
+          <div class="row">
+            <label>Patrimonio neto
+              <span class="tip">i
+                <span class="tiptext">Activos totales − Pasivos totales. Incluye efectivo, inversiones, propiedades menos deudas.</span>
+              </span>
+            </label>
+            <input id="pi_patr" type="number" min="0" step="1000" placeholder="Ej. 1,200,000"/>
+          </div>
+          <div class="row">
+            <label>Ingreso <b>anual neto</b>
+              <span class="tip">i
+                <span class="tiptext">Ingreso luego de impuestos y deducciones obligatorias. Usa el valor anual.</span>
+              </span>
+            </label>
+            <input id="pi_ing" type="number" min="0" step="500" placeholder="Ej. 120,000"/>
+          </div>
+        </div>
+        <div class="row"><label>Resultado (×)</label><input id="pi_res" type="number" step="0.01" readonly/></div>
+        <div class="hint">Fórmula: Patrimonio neto ÷ Ingreso anual neto.</div>
+      </div>
+      <footer><button class="btn-secondary" id="pi_calc">Calcular</button><button class="btn-primary" id="pi_set">Usar en formulario</button></footer>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalPatrGasto">
+    <div class="modal" role="dialog" aria-labelledby="ttl-pg" aria-modal="true">
+      <header><h4 id="ttl-pg">Calcular Patrimonio / Gasto anual (×)</h4><button class="close-x" data-close>✕</button></header>
+      <div class="content">
+        <div class="grid2">
+          <div class="row">
+            <label>Patrimonio neto
+              <span class="tip">i
+                <span class="tiptext">Activos totales − Pasivos totales. Usa la cifra más reciente.</span>
+              </span>
+            </label>
+            <input id="pg_patr" type="number" min="0" step="1000" placeholder="Ej. 1,560,000"/>
+          </div>
+          <div class="row">
+            <label>Gasto <b>anual</b> total
+              <span class="tip">i
+                <span class="tiptext">Incluye todos los gastos del año (esenciales + no esenciales + deuda + seguros + impuestos).</span>
+              </span>
+            </label>
+            <input id="pg_gasto" type="number" min="0" step="500" placeholder="Ej. 60,000"/>
+          </div>
+        </div>
+        <div class="row"><label>Resultado (×)</label><input id="pg_res" type="number" step="0.01" readonly/></div>
+        <div class="hint">Fórmula: Patrimonio neto ÷ Gasto anual total.</div>
+      </div>
+      <footer><button class="btn-secondary" id="pg_calc">Calcular</button><button class="btn-primary" id="pg_set">Usar en formulario</button></footer>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalPasivo">
+    <div class="modal" role="dialog" aria-labelledby="ttl-ip" aria-modal="true">
+      <header><h4 id="ttl-ip">Calcular Ingresos pasivos / Gasto total (×)</h4><button class="close-x" data-close>✕</button></header>
+      <div class="content">
+        <div class="grid2">
+          <div class="row">
+            <label>Ingresos pasivos <b>anuales</b>
+              <span class="tip">i
+                <span class="tiptext">Rentas, dividendos, intereses, regalías u otros ingresos no laborales, sin contar retiros de capital.</span>
+              </span>
+            </label>
+            <input id="ip_pasivo" type="number" min="0" step="500" placeholder="Ej. 60,000"/>
+          </div>
+          <div class="row">
+            <label>Gasto <b>anual</b> total
+              <span class="tip">i
+                <span class="tiptext">Todos los gastos del año. Debe ser consistente con la cifra del panel principal.</span>
+              </span>
+            </label>
+            <input id="ip_gasto" type="number" min="0" step="500" placeholder="Ej. 60,000"/>
+          </div>
+        </div>
+        <div class="row"><label>Resultado (×)</label><input id="ip_res" type="number" step="0.01" readonly/></div>
+        <div class="hint">Fórmula: Ingresos pasivos anuales ÷ Gasto anual total.</div>
+      </div>
+      <footer><button class="btn-secondary" id="ip_calc">Calcular</button><button class="btn-primary" id="ip_set">Usar en formulario</button></footer>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalRetiros">
+    <div class="modal" role="dialog" aria-labelledby="ttl-rp" aria-modal="true">
+      <header><h4 id="ttl-rp">Calcular Retiros anuales / Patrimonio (%)</h4><button class="close-x" data-close>✕</button></header>
+      <div class="content">
+        <div class="grid2">
+          <div class="row">
+            <label>Retiros anuales (de inversiones)
+              <span class="tip">i
+                <span class="tiptext">Monto que planeas retirar de tus inversiones en un año para vivir (excluye reinversiones).</span>
+              </span>
+            </label>
+            <input id="rp_retiro" type="number" min="0" step="500" placeholder="Ej. 45,000"/>
+          </div>
+          <div class="row">
+            <label>Patrimonio <b>invertible</b>
+              <span class="tip">i
+                <span class="tiptext">Activos financieros líquidos o con liquidez razonable (cuentas de inversión/retirement). No incluyas vivienda de uso.</span>
+              </span>
+            </label>
+            <input id="rp_patr" type="number" min="0" step="1000" placeholder="Ej. 1,180,000"/>
+          </div>
+        </div>
+        <div class="row"><label>Resultado (%)</label><input id="rp_res" type="number" step="0.01" readonly/></div>
+        <div class="hint">Fórmula: (Retiros anuales ÷ Patrimonio invertible) × 100.</div>
+      </div>
+      <footer><button class="btn-secondary" id="rp_calc">Calcular</button><button class="btn-primary" id="rp_set">Usar en formulario</button></footer>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalMultRetiro">
+    <div class="modal" role="dialog" aria-labelledby="ttl-mr" aria-modal="true">
+      <header><h4 id="ttl-mr">Calcular Ahorro para retiro (× ingreso bruto anual)</h4><button class="close-x" data-close>✕</button></header>
+      <div class="content">
+        <div class="grid2">
+          <div class="row">
+            <label>Saldo acumulado para retiro
+              <span class="tip">i
+                <span class="tiptext">Suma de todas tus cuentas de retiro (401k, IRA, pensiones individuales, etc.).</span>
+              </span>
+            </label>
+            <input id="mr_saldo" type="number" min="0" step="500" placeholder="Ej. 240,000"/>
+          </div>
+          <div class="row">
+            <label>Ingreso <b>bruto anual</b> actual
+              <span class="tip">i
+                <span class="tiptext">Ingreso antes de impuestos y deducciones. Incluye salario y otras fuentes brutas.</span>
+              </span>
+            </label>
+            <input id="mr_ingreso" type="number" min="0" step="500" placeholder="Ej. 60,000"/>
+          </div>
+        </div>
+        <div class="row"><label>Resultado (×)</label><input id="mr_res" type="number" step="0.01" readonly/></div>
+        <div class="hint">Fórmula: Saldo para retiro ÷ Ingreso bruto anual.</div>
+      </div>
+      <footer><button class="btn-secondary" id="mr_calc">Calcular</button><button class="btn-primary" id="mr_set">Usar en formulario</button></footer>
+    </div>
+  </div>
+
+  <!-- ===== MODAL DE EDICIÓN DE CASOS ===== (sin cambios de lógica) -->
+  <div class="modal-backdrop" id="modalCaseEdit">
+    <div class="modal" role="dialog" aria-labelledby="ttl-case" aria-modal="true">
+      <header>
+        <h4 id="ttl-case">Editar variables del caso</h4>
+        <button class="close-x" data-close>✕</button>
+      </header>
+      <div class="content">
+        <div id="caseForm" class="grid2"></div>
+        <div class="hint">Edita lo que necesites y aplica para calcular con estos datos.</div>
+      </div>
+      <footer>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-secondary" id="caseReset">Restaurar valores del caso</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="close-x" data-close>Cancelar</button>
+          <button class="btn-primary" id="caseApply">Aplicar y calcular</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+<script>
+  const $ = (id)=>document.getElementById(id);
+
+  // KPI con tooltips dentro de STAGE_INFO (HTML embebido)
+  const KPI = {
+    RES:'Reserva (meses) <span class="tip">i<span class="tiptext">Meses de esenciales cubiertos por efectivo.</span></span>',
+    DTI:'DTI <span class="tip">i<span class="tiptext">Servicio de deuda / ingreso neto mensual.</span></span>',
+    PA:'Pasivos/Activos <span class="tip">i<span class="tiptext">Endeudamiento relativo a tus activos.</span></span>',
+    CTRL:'Score de control <span class="tip">i<span class="tiptext">Autoevaluación 0–100 del control financiero.</span></span>',
+    SAVE:'Tasa de ahorro <span class="tip">i<span class="tiptext">% del ingreso bruto destinado a ahorro/inversión.</span></span>',
+    MPI:'Patr/Ingreso <span class="tip">i<span class="tiptext">Patrimonio neto ÷ Ingreso anual neto.</span></span>',
+    MPG:'Patr/Gasto <span class="tip">i<span class="tiptext">Patrimonio neto ÷ Gasto anual total.</span></span>',
+    PASS:'Pasivo/Gasto <span class="tip">i<span class="tiptext">Ingresos pasivos ÷ Gasto anual.</span></span>',
+    CF:'Cash-flow ratio <span class="tip">i<span class="tiptext">(Ingreso neto × 12) ÷ Gasto anual.</span></span>'
+  };
+
+  const STAGE_INFO = {
+    1:{titulo:"🆘 1. SUPERVIVENCIA",proposito:"Recuperar control y cubrir necesidades básicas sin usar deuda.",mentalidad:"“Primero estabilizo el flujo y dejo de hundirme.”",objetivos:["Asegurar ingreso estable.","Cubrir esenciales sin crédito.","Crear mini reserva (≥1m).","Documentar info básica."],kpis:[KPI.RES,KPI.DTI,KPI.CF],metas:["Ingreso/Gasto ≥ 1.0","Reserva ≥ 1 mes","DTI ≤ 50%"]},
+    2:{titulo:"🛡️ 2. SEGURIDAD",proposito:"Construir estabilidad y protección ante imprevistos financieros.",mentalidad:"“Protejo lo que tengo.”",objetivos:["Elevar reserva hacia 12 meses.","Bajar DTI a ≤ 36%.","Bajar Pasivos/Activos a < 50%.","Mejorar control (score ≥ 40)."],kpis:[KPI.RES,KPI.DTI,KPI.PA,KPI.CTRL,KPI.SAVE],metas:["Reserva ≥ 12m","DTI ≤ 36%","P/A < 50%","Control ≥ 40"]},
+    3:{titulo:"💰 3. ACUMULACIÓN",proposito:"Hacer crecer el patrimonio y crear activos productivos.",mentalidad:"“Mi dinero y mis habilidades trabajan para mí.”",objetivos:["Ahorro ≥ 15% del ingreso bruto.","Patrimonio 7–14× ingreso neto.","Liquidez > 12 meses.","Mantener DTI ≤ 36% y P/A < 50%."],kpis:[KPI.SAVE,KPI.MPI,KPI.DTI,KPI.PA,KPI.RES],metas:["Ahorro ≥ 15%","Patr 7–14×","Reserva > 12m","DTI ≤ 36%","P/A < 50%"]},
+    4:{titulo:"🟩 4. INDEPENDENCIA",proposito:"Sostener el estilo de vida con ingresos pasivos.",mentalidad:"“Ya no dependo del trabajo activo.”",objetivos:["Patrimonio 15–24× ingreso neto o pasivo/gasto ≥ 1.0×.","Reserva ≥ 24 meses; P/A ≤ 30%.","Flujo no negativo."],kpis:[KPI.MPI,KPI.PASS,KPI.RES,KPI.PA,KPI.CF],metas:["Patr ≥ 15× o Pasivo ≥ 1.0×","Reserva ≥ 24m","P/A ≤ 30%","CF ≥ 1.0×"]},
+    5:{titulo:"🟦 5. LIBERTAD",proposito:"Mantener riqueza multigeneracional y vivir con propósito.",mentalidad:"“Multiplico y transfiero mi legado.”",objetivos:["Patrimonio ≥ 25× ingreso neto.","Reserva 24–36m; P/A ≤ 10%.","Pasivo/Gasto ≥ 1.2× y CF ≥ 1.0×."],kpis:[KPI.MPI,KPI.PASS,KPI.RES,KPI.PA,KPI.CF],metas:["Patr ≥ 25×","Reserva 24–36m","P/A ≤ 10%","Pasivo ≥ 1.2×","CF ≥ 1.0×"]}
+  };
+
+  function swrPorHorizonte(years){
+    const y = Math.max(20, Math.min(70, years||40));
+    if(y <= 25) return 4.0;
+    if(y <= 30) return 3.7;
+    if(y <= 40) return 3.4;
+    if(y <= 50) return 3.1;
+    if(y <= 60) return 3.0;
+    return 2.8;
+  }
+
+  function showRail(){ $('railView').style.display='block'; }
+
+  function setStageVisual(stage){
+    document.querySelectorAll('.seg').forEach((s,i)=>{
+      s.classList.remove('active','current');
+      if(i <= stage-1) s.classList.add('active');
+      if(i === stage-1) s.classList.add('current');
+    });
+    document.querySelectorAll('.labels span').forEach((l,i)=>{
+      l.classList.remove('on','done');
+      if(i < stage-1) l.classList.add('done');
+      if(i === stage-1) l.classList.add('on');
+    });
+    const pin = $('pin'), pinShadow = $('pinShadow');
+    const rect = document.querySelector('.rail').getBoundingClientRect();
+    const posPct = [0.1,0.3,0.5,0.7,0.9][stage-1] || 0.1;
+    const left = rect.width * posPct;
+    pin.style.left = left + 'px';
+    pinShadow.style.left = left + 'px';
+  }
+
+  function renderStageDetails(stage){
+    const box = $('stageDetails');
+    const data = STAGE_INFO[stage]; if(!box||!data) return;
+    const metas = data.metas || [];
+    box.innerHTML = `
+      <div style="border:1px dashed var(--line);border-radius:12px;padding:12px;background:#F7F8FE">
+        <div style="font-weight:800;margin-bottom:6px">${data.titulo}${window.__riesgoFlag ? ' <span style="color:#b91c1c;font-weight:900">· CON RIESGO</span>':''}</div>
+        <div style="color:#334155;font-size:13px;margin-bottom:8px"><b>Propósito:</b> ${data.proposito}</div>
+        <div style="color:#334155;font-size:13px;margin-bottom:10px"><b>Mentalidad:</b> ${data.mentalidad}</div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+          <div>
+            <div style="font-weight:800;font-size:12px;margin-bottom:6px">Principales objetivos</div>
+            <ul style="margin:0;padding-left:16px;font-size:13px;line-height:1.4">
+              ${data.objetivos.map(o=>`<li>${o}</li>`).join("")}
+            </ul>
+          </div>
+          <div>
+            <div style="font-weight:800;font-size:12px;margin-bottom:6px">Indicadores clave (KPI)</div>
+            <ul style="margin:0;padding-left:16px;font-size:13px;line-height:1.4">
+              ${data.kpis.map(k=>`<li>${k}</li>`).join("")}
+            </ul>
+          </div>
+          <div>
+            <div style="font-weight:800;font-size:12px;margin-bottom:6px">Umbrales / Metas</div>
+            <ul style="margin:0;padding-left:16px;font-size:13px;line-height:1.4">
+              ${metas.map(m=>`<li>${m}</li>`).join("")}
+            </ul>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function riskLabel(score){
+    if(score >= 0.6) return ['ALTO','bad'];
+    if(score >= 0.35) return ['MEDIO','warn'];
+    return ['BAJO','ok'];
+  }
+
+  // ===== PIRÁMIDE: pintar según estadio =====
+  function paintPyramid(stage){
+    const box = $('pyramidBox');
+    if(box) box.style.display = 'block';
+
+    const tag = $('pyrTag');
+    if(tag) tag.textContent = `Estadio ${stage}/5`;
+
+    // layers 1..5
+    for(let i=1;i<=5;i++){
+      const el = document.getElementById('pyr'+i);
+      if(!el) continue;
+      el.classList.remove('on','current');
+      if(i <= stage) el.classList.add('on');
+      if(i === stage) el.classList.add('current');
+    }
+  }
+
+  function demoFill(){
+    $('edad').value = 40; $('edadObj').value = 90;
+    $('ingresoNeto').value = 5000; $('gastosEsenciales').value = 3000;
+    $('gastoAnual').value = 90000; $('reservaMeses').value = 24;
+    $('dti').value = 28; $('pp').value = 25; $('tasaAhorro').value = 18;
+    $('controlScore').value = 65;
+    $('multPatrIngreso').value = 16;
+    $('multRetiro').value = 5.2; $('multPatrGasto').value = 22;
+    $('ratioPasivo').value = 0.9; $('retiroPct').value = 3.4;
+    calc();
+  }
+
+  function calc(){
+    const edad = +$('edad').value||0, edadObj = +$('edadObj').value||90;
+    const yearsLeft = Math.max(0, (edadObj||90) - (edad||0));
+    const swr = swrPorHorizonte(yearsLeft);
+    const metaMultIndep = +(100 / swr).toFixed(1);
+    const metaMultLib = metaMultIndep + 5;
+    const swrLib = Math.max(0, +(swr - 0.5).toFixed(1));
+
+    const ingresoN = +$('ingresoNeto').value || 0;
+    const gastoAnual = +$('gastoAnual').value || 0;
+    const gastosE = +$('gastosEsenciales').value || 0;
+    const reservaM = +$('reservaMeses').value || 0;
+    const dti = +$('dti').value || 0;
+    const pp = +$('pp').value || 0;
+    const ahorro = +$('tasaAhorro').value || 0;
+    const controlScore = +$('controlScore').value || 0;
+
+    const multPatrIngreso = +$('multPatrIngreso').value || 0;
+    const multRetiro = +$('multRetiro').value || 0;
+    const multPatrGasto = +$('multPatrGasto').value || 0;
+    const ratioPasivo = +$('ratioPasivo').value || 0;
+    const retiroPct = +$('retiroPct').value || 0;
+
+    const cfRatio = gastoAnual>0 ? ((ingresoN*12)/gastoAnual) : 2;
+
+    // Risk score
+    const wDTI=0.35, wPA=0.35, wLiq=0.2, wCF=0.1;
+    const sDTI = Math.min(1, dti/60);
+    const sPA  = Math.min(1, pp/90);
+    const sLiq = (reservaM>=12)? 0 : (reservaM>=6? 0.4 : (reservaM>=1? 0.7 : 1));
+    const sCF  = (cfRatio>=1)? 0 : (cfRatio>=0.8? 0.4 : (cfRatio>=0.6? 0.7:1));
+    const riskScore = +(wDTI*sDTI + wPA*sPA + wLiq*sLiq + wCF*sCF).toFixed(2);
+    const [riskTxt, riskCls] = riskLabel(riskScore);
+
+    // Gates
+    const gateSuper = (reservaM < 1) || (cfRatio < 0.6) || (dti > 60) || (pp >= 90) || (ingresoN < (gastosE||0));
+    const gateSeg   = (reservaM >= 1) && !gateSuper;
+    const gateAcum  = (reservaM >= 12) && (dti <= 36) && (pp < 50) && (ahorro >= 15);
+    const gateInd   = (reservaM >= 24) && (pp <= 30) && ( (multPatrIngreso >= 15) || (ratioPasivo >= 1.0) );
+    const gateLib   = (multPatrIngreso >= 25) && (reservaM >= 24 && reservaM <= 36) && (pp <= 10) && (ratioPasivo >= 1.2) && (cfRatio >= 1.0);
+
+    let stage = 1;
+    let riesgoFlag = false;
+
+    if(gateLib){
+      stage = 5;
+    } else if(gateInd){
+      stage = 4;
+      if(cfRatio < 1.0 && ratioPasivo < 0.8){ riesgoFlag = true; }
+    } else if(gateAcum && (multPatrIngreso > 7 && multPatrIngreso <= 14)){
+      stage = 3;
+      if(cfRatio < 1.0 || riskTxt === 'ALTO'){ riesgoFlag = true; }
+    } else if(gateSeg){
+      stage = 2;
+    } else {
+      stage = 1;
+    }
+
+    // Caso especial: Patr/Gasto alto con CF negativo -> Independencia con riesgo
+    const metaMultIndepAlt = +(100/swr).toFixed(1);
+    if(stage<4 && multPatrGasto >= metaMultIndepAlt && !gateLib){
+      stage = 4;
+      riesgoFlag = (cfRatio < 1.0 && ratioPasivo < 0.8);
+    }
+
+    window.__riesgoFlag = riesgoFlag;
+
+    // UI
+    $('bloqueResultado').style.display = 'block';
+    showRail(); setStageVisual(stage);
+
+    // Pintar pirámide según estadio
+    paintPyramid(stage);
+
+    const nombres = {1:'🆘 Supervivencia',2:'🛡️ Seguridad',3:'💰 Acumulación',4:'🟩 Independencia',5:'🟦 Libertad'};
+    $('chipEstadio').textContent = `Estadio: ${nombres[stage]}${riesgoFlag?' · CON RIESGO':''}`;
+
+    const chipR = $('chipRiesgo');
+    chipR.textContent = `Riesgo: ${riskTxt}`;
+    chipR.style.borderColor = riskCls==='bad'?'#fecaca':(riskCls==='warn'?'#fde68a':'#bbf7d0');
+    chipR.style.background = riskCls==='bad'?'#fef2f2':(riskCls==='warn'?'#fffbeb':'#f0fdf4');
+    chipR.style.color = riskCls==='bad'?'#991b1b':(riskCls==='warn'?'#92400e':'#065f46');
+
+    $('metaDinamica').textContent =
+      `Independencia (Patrimonio/Gasto): ≥ ${metaMultIndep.toFixed(1)}× y retiros ≤ ${swr.toFixed(1)}%. ` +
+      `Libertad: ≥ ${metaMultLib.toFixed(1)}× y retiros ≤ ${swrLib.toFixed(1)}%.`;
+
+    renderStageDetails(stage);
+
+    // Siguiente meta
+    const nextFlag = document.getElementById('nextFlag');
+    const nextLabel = document.getElementById('nextFlagLabel');
+    let nextStage = stage < 5 ? stage + 1 : null;
+    if(nextStage){
+      nextFlag.style.display = 'inline-flex';
+      nextFlag.className = 'next-flag stage-'+nextStage;
+      nextLabel.textContent = `Siguiente meta: ${nombres[nextStage]}`;
+    } else {
+      nextFlag.style.display = 'none';
+    }
+  }
+
+  // Modales open/close
+  function openModal(id){ document.getElementById(id).style.display='flex'; }
+  function closeModal(el){ el.closest('.modal-backdrop').style.display='none'; }
+  document.addEventListener('click', (e)=>{
+    const openId = e.target.getAttribute('data-open');
+    if(openId){ openModal(openId); }
+    if(e.target.matches('[data-close]')){ closeModal(e.target); }
+    if(e.target.classList.contains('modal-backdrop') && !e.target.closest('.modal')){ e.target.style.display='none'; }
+  });
+
+  // Cálculos modales
+  document.getElementById('pi_calc').addEventListener('click', ()=>{
+    const patr = +$('pi_patr').value||0, ing = +$('pi_ing').value||0;
+    $('pi_res').value = ing? (patr/ing).toFixed(2): 0;
+  });
+  document.getElementById('pi_set').addEventListener('click', ()=>{
+    const v = +$('pi_res').value||0; if(v>0) $('multPatrIngreso').value=v;
+    closeModal(document.querySelector('#modalPatrIngreso .close-x')); calc();
+  });
+
+  document.getElementById('pg_calc').addEventListener('click', ()=>{
+    const patr = +$('pg_patr').value||0, gast = +$('pg_gasto').value||0;
+    $('pg_res').value = gast? (patr/gast).toFixed(2): 0;
+  });
+  document.getElementById('pg_set').addEventListener('click', ()=>{
+    const v = +$('pg_res').value||0; if(v>0) $('multPatrGasto').value=v;
+    closeModal(document.querySelector('#modalPatrGasto .close-x')); calc();
+  });
+
+  document.getElementById('ip_calc').addEventListener('click', ()=>{
+    const p = +$('ip_pasivo').value||0, g = +$('ip_gasto').value||0;
+    $('ip_res').value = g? (p/g).toFixed(2): 0;
+  });
+  document.getElementById('ip_set').addEventListener('click', ()=>{
+    const v = +$('ip_res').value||0; if(v>0) $('ratioPasivo').value=v;
+    closeModal(document.querySelector('#modalPasivo .close-x')); calc();
+  });
+
+  document.getElementById('rp_calc').addEventListener('click', ()=>{
+    const r = +$('rp_retiro').value||0, p = +$('rp_patr').value||0;
+    $('rp_res').value = p? ((r/p)*100).toFixed(2): 0;
+  });
+  document.getElementById('rp_set').addEventListener('click', ()=>{
+    const v = +$('rp_res').value||0; if(v>0) $('retiroPct').value=v;
+    closeModal(document.querySelector('#modalRetiros .close-x')); calc();
+  });
+
+  document.getElementById('mr_calc').addEventListener('click', ()=>{
+    const s = +$('mr_saldo').value||0, i = +$('mr_ingreso').value||0;
+    $('mr_res').value = i? (s/i).toFixed(2): 0;
+  });
+  document.getElementById('mr_set').addEventListener('click', ()=>{
+    const v = +$('mr_res').value||0; if(v>0) $('multRetiro').value=v;
+    closeModal(document.querySelector('#modalMultRetiro .close-x')); calc();
+  });
+
+  // ====== PRUEBAS (casos + modal edición) ======
+  const CASES = {
+    A:{edad:45, edadObj:90, ingresoNeto:5000, gastosEsenciales:8000, gastoAnual:200000, reservaMeses:36, dti:10, pp:10, tasaAhorro:20, controlScore:70, multPatrIngreso:26, multPatrGasto:25, ratioPasivo:0.3, retiroPct:3.2, multRetiro:6},
+    B:{edad:40, edadObj:90, ingresoNeto:4000, gastosEsenciales:2500, gastoAnual:90000, reservaMeses:12, dti:30, pp:40, tasaAhorro:18, controlScore:60, multPatrIngreso:10, multPatrGasto:12, ratioPasivo:0.4, retiroPct:3.6, multRetiro:4},
+    C:{edad:35, edadObj:90, ingresoNeto:6000, gastosEsenciales:3500, gastoAnual:60000, reservaMeses:6, dti:45, pp:55, tasaAhorro:10, controlScore:35, multPatrIngreso:5, multPatrGasto:7, ratioPasivo:0.3, retiroPct:4.0, multRetiro:2},
+    D:{edad:55, edadObj:95, ingresoNeto:7000, gastosEsenciales:3000, gastoAnual:70000, reservaMeses:30, dti:10, pp:8, tasaAhorro:30, controlScore:85, multPatrIngreso:28, multPatrGasto:30, ratioPasivo:1.3, retiroPct:3.0, multRetiro:10},
+    E:{edad:30, edadObj:90, ingresoNeto:2000, gastosEsenciales:2500, gastoAnual:80000, reservaMeses:0.3, dti:80, pp:120, tasaAhorro:0, controlScore:10, multPatrIngreso:1, multPatrGasto:2, ratioPasivo:0.0, retiroPct:0, multRetiro:0}
+  };
+
+  const CASE_FIELDS = [
+    {key:'edad', label:'Edad actual', min:16, max:100, step:1},
+    {key:'edadObj', label:'Edad objetivo', min:70, max:110, step:1},
+    {key:'ingresoNeto', label:'Ingreso mensual neto', min:0, step:100},
+    {key:'gastosEsenciales', label:'Gastos esenciales mensuales', min:0, step:100},
+    {key:'gastoAnual', label:'Gasto total anual', min:0, step:500},
+    {key:'reservaMeses', label:'Reserva (meses)', min:0, step:0.5},
+    {key:'dti', label:'DTI % (neto)', min:0, max:200, step:0.1},
+    {key:'pp', label:'Pasivos/Activos %', min:0, max:200, step:0.1},
+    {key:'tasaAhorro', label:'Ahorro total % (bruto)', min:0, max:100, step:0.1},
+    {key:'controlScore', label:'Control (0–100)', min:0, max:100, step:1},
+    {key:'multPatrIngreso', label:'Patrimonio/Ingreso ×', min:0, step:0.1},
+    {key:'multPatrGasto', label:'Patrimonio/Gasto ×', min:0, step:0.1},
+    {key:'ratioPasivo', label:'Ingresos pasivos/Gasto ×', min:0, step:0.1},
+    {key:'retiroPct', label:'Retiros/Patrimonio %', min:0, step:0.1},
+    {key:'multRetiro', label:'Ahorro retiro × ingreso', min:0, step:0.1},
+  ];
+
+  let currentCaseKey = null;
+  let workingCase = null;
+
+  function renderCaseForm(values){
+    const cont = $('caseForm');
+    cont.innerHTML = '';
+    CASE_FIELDS.forEach(f=>{
+      const wrap = document.createElement('div');
+      wrap.className = 'row';
+      const input = document.createElement('input');
+      input.type = 'number';
+      if(f.min!=null) input.min = f.min;
+      if(f.max!=null) input.max = f.max;
+      if(f.step!=null) input.step = f.step;
+      input.value = values[f.key] ?? 0;
+      input.setAttribute('data-key', f.key);
+      input.addEventListener('input', (e)=>{
+        const k = e.target.getAttribute('data-key');
+        workingCase[k] = +e.target.value || 0;
+      });
+
+      // Etiqueta con tooltip contextual por KPI
+      const label = document.createElement('label');
+      label.innerHTML = (()=> {
+        const base = f.label;
+        const tips = {
+          edad:'Edad actual de la persona.',
+          edadObj:'Horizonte de vida estimado (longevidad).',
+          ingresoNeto:'Ingreso mensual ya neto de impuestos y deducciones.',
+          gastosEsenciales:'Gastos necesarios para vivir (vivienda, servicios, comida, transporte...).',
+          gastoAnual:'Todos los gastos del año (esenciales y no esenciales).',
+          reservaMeses:'Meses de esenciales cubiertos por tu efectivo.',
+          dti:'% del ingreso neto destinado a deuda (meta ≤ 36%).',
+          pp:'Pasivos/Activos × 100. Meta < 50%.',
+          tasaAhorro:'% del ingreso bruto que se ahorra/invierte.',
+          controlScore:'Autoevaluación del control financiero (0–100).',
+          multPatrIngreso:'Patrimonio neto ÷ Ingreso anual neto.',
+          multPatrGasto:'Patrimonio neto ÷ Gasto anual total.',
+          ratioPasivo:'Ingresos pasivos anuales ÷ Gasto anual.',
+          retiroPct:'(Retiros anuales ÷ Patrimonio invertible) × 100.',
+          multRetiro:'Saldo de retiro ÷ Ingreso bruto anual.'
+        };
+        return `${base} <span class="tip">i<span class="tiptext">${tips[f.key]||''}</span></span>`;
+      })();
+
+      wrap.appendChild(label);
+      wrap.appendChild(input);
+      cont.appendChild(wrap);
+    });
+  }
+
+  function openCaseModal(k){
+    currentCaseKey = k;
+    workingCase = {...CASES[k]};
+    $('ttl-case').textContent = `Editar variables – Caso ${k}`;
+    renderCaseForm(workingCase);
+    openModal('modalCaseEdit');
+  }
+
+  document.querySelectorAll('[data-case]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const k = btn.getAttribute('data-case');
+      openCaseModal(k);
+    });
+  });
+
+  document.getElementById('caseReset').addEventListener('click', ()=>{
+    if(!currentCaseKey) return;
+    workingCase = {...CASES[currentCaseKey]};
+    renderCaseForm(workingCase);
+  });
+
+  document.getElementById('caseApply').addEventListener('click', ()=>{
+    if(!workingCase) return;
+    fillInputs(workingCase);
+    calc();
+    addRow(`Caso ${currentCaseKey} (editado)`);
+    closeModal(document.querySelector('#modalCaseEdit .close-x'));
+  });
+
+  function fillInputs(obj){
+    $('edad').value=obj.edad; $('edadObj').value=obj.edadObj;
+    $('ingresoNeto').value=obj.ingresoNeto; $('gastosEsenciales').value=obj.gastosEsenciales;
+    $('gastoAnual').value=obj.gastoAnual; $('reservaMeses').value=obj.reservaMeses;
+    $('dti').value=obj.dti; $('pp').value=obj.pp; $('tasaAhorro').value=obj.tasaAhorro;
+    $('controlScore').value=obj.controlScore;
+    $('multPatrIngreso').value=obj.multPatrIngreso; $('multPatrGasto').value=obj.multPatrGasto;
+    $('ratioPasivo').value=obj.ratioPasivo; $('retiroPct').value=obj.retiroPct; $('multRetiro').value=obj.multRetiro;
+  }
+
+  function readStage(){
+    const est = document.getElementById('chipEstadio').textContent.replace('Estadio: ','').trim() || '—';
+    const riesgo = document.getElementById('chipRiesgo').textContent.replace('Riesgo: ','').trim() || '—';
+    return {est, riesgo};
+  }
+
+  function currentMetrics(){
+    const ingresoN = +$('ingresoNeto').value||0;
+    const gastoAnual = +$('gastoAnual').value||0;
+    const cfRatio = gastoAnual>0 ? ((ingresoN*12)/gastoAnual) : 0;
+    return {
+      reserva:+$('reservaMeses').value||0,
+      dti:+$('dti').value||0,
+      pa:+$('pp').value||0,
+      mpi:+$('multPatrIngreso').value||0,
+      pasivo:+$('ratioPasivo').value||0,
+      cf:cfRatio
+    };
+  }
+
+  function addRow(name){
+    const {est, riesgo} = readStage();
+    const m = currentMetrics();
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${name}</td><td>${est}</td><td>${riesgo}</td>
+                    <td>${(isFinite(m.cf)?m.cf:0).toFixed(2)}×</td><td>${m.reserva.toFixed(1)}</td>
+                    <td>${m.dti.toFixed(0)}%</td><td>${m.pa.toFixed(0)}%</td>
+                    <td>${m.mpi.toFixed(1)}×</td><td>${m.pasivo.toFixed(2)}×</td>`;
+    document.querySelector('#tablaTests tbody').appendChild(tr);
+  }
+
+  document.getElementById('runAll').addEventListener('click', ()=>{
+    document.querySelector('#tablaTests tbody').innerHTML='';
+    ['A','B','C','D','E'].forEach(k=>{
+      fillInputs(CASES[k]); calc(); addRow(`Caso ${k}`);
+    });
+  });
+  document.getElementById('clearRows').addEventListener('click', ()=>{
+    document.querySelector('#tablaTests tbody').innerHTML='';
+  });
+
+  // ====== BOTONES PRINCIPALES (FALTABAN) ======
+  document.getElementById('calc').addEventListener('click', calc);
+  document.getElementById('demo').addEventListener('click', demoFill);
+
+  // (Opcional) Enter para calcular (cuando no hay modales abiertos)
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter'){
+      const anyModalOpen = Array.from(document.querySelectorAll('.modal-backdrop'))
+        .some(m => getComputedStyle(m).display !== 'none');
+      if(!anyModalOpen) calc();
+    }
+  });
+</script>
+</body>
+</html>
