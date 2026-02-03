@@ -920,25 +920,6 @@ function App() {
             </button>
             
             <button
-              onClick={() => setShowPdfModal(true)}
-              style={{
-                padding: '0.5rem 1.25rem',
-                borderRadius: '8px',
-                border: '2px solid rgba(16, 185, 129, 0.5)',
-                background: 'rgba(16, 185, 129, 0.2)',
-                color: 'white',
-                fontWeight: '600',
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}
-            >
-              📄 PDF Worksheets
-            </button>
-
-            <button
               onClick={() => setShowPDFModal(true)}
               style={{
                 padding: '0.5rem 1.25rem',
@@ -954,7 +935,7 @@ function App() {
                 gap: '0.5rem'
               }}
             >
-              📄 Descargar Worksheets
+              📄 PDF Worksheets
             </button>
             
             <button
@@ -1090,6 +1071,13 @@ function App() {
             seguros={parseNumber(seguros)}
             impuestos={parseNumber(impuestos)}
             modoCalculo={modoCalculo}
+            tarjetas={parseNumber(tarjetas)}
+            lineaPersonal={parseNumber(lineaPersonal)}
+            lineaPropiedad={parseNumber(lineaPropiedad)}
+            hipoteca={parseNumber(hipoteca)}
+            prestamoAuto={parseNumber(prestamoAuto)}
+            prestamosEducativos={parseNumber(prestamosEducativos)}
+            otrosPrestamos={parseNumber(otrosPrestamos)}
           />
         )}
         {activeTab === 'ratios' && (
@@ -1379,6 +1367,7 @@ function App() {
           </div>
         </div>
       )}
+
 
 
       <footer className="export-footer">
@@ -1997,7 +1986,7 @@ function VistaGeneral({ totales, userProfile, currency, setActiveTab }) {
 }
 
 // ============= GRÁFICOS TAB =============
-function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDiarios, seguros, impuestos, modoCalculo }) {
+function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDiarios, seguros, impuestos, modoCalculo, tarjetas, lineaPersonal, lineaPropiedad, hipoteca, prestamoAuto, prestamosEducativos, otrosPrestamos }) {
   const [retornoAnual, setRetornoAnual] = useState(7);
   
   useEffect(() => {
@@ -2101,16 +2090,16 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
       }
     }
 
-    // 3. BAR CHART - Ingresos vs Gastos
+    // 3. BAR CHART - Activos vs Pasivos vs Patrimonio
     const ctxBar = document.getElementById('barIngresosGastos');
     if (ctxBar) {
       new Chart(ctxBar, {
         type: 'bar',
         data: {
-          labels: ['Ingresos', 'Gastos', 'Ahorro'],
+          labels: ['Activos', 'Pasivos', 'Patrimonio Neto'],
           datasets: [{
-            label: 'Anual',
-            data: [totalIngresos, totalGastos, totalAhorro],
+            label: 'Balance General',
+            data: [totales.activosTotales, totales.pasivosTotales, totales.patrimonioNeto],
             backgroundColor: ['rgba(16, 185, 129, 0.8)', 'rgba(239, 68, 68, 0.8)', 'rgba(59, 130, 246, 0.8)'],
             borderColor: ['rgb(16, 185, 129)', 'rgb(239, 68, 68)', 'rgb(59, 130, 246)'],
             borderWidth: 2
@@ -2121,7 +2110,7 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
           maintainAspectRatio: true,
           plugins: {
             legend: { display: false },
-            title: { display: true, text: 'Ingresos vs Gastos vs Ahorro (Anual)', font: { size: 16, weight: 'bold' } },
+            title: { display: true, text: 'Balance General: Activos vs Pasivos vs Patrimonio', font: { size: 16, weight: 'bold' } },
             tooltip: {
               callbacks: {
                 label: function(context) {
@@ -2144,20 +2133,17 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
       });
     }
 
-    // 4. DONUT CHART - Asset Allocation
-    if (totales.activosTotales > 0) {
-      const activosLiquidos = totales.totalEfectivo + totales.totalInversiones;
-      const activosIliquidos = totales.totalBienesRaices + totales.totalBienesPersonales;
-      
-      const ctxDonut = document.getElementById('donutAssetAllocation');
-      if (ctxDonut) {
-        new Chart(ctxDonut, {
-          type: 'doughnut',
+    // 4. PIE CHART - Distribución de Pasivos
+    if (totales.pasivosTotales > 0) {
+      const ctxPasivos = document.getElementById('donutAssetAllocation');
+      if (ctxPasivos) {
+        new Chart(ctxPasivos, {
+          type: 'pie',
           data: {
-            labels: ['Activos Líquidos', 'Retiro', 'Activos Ilíquidos'],
+            labels: ['Tarjetas', 'Línea Personal', 'Línea Propiedad', 'Hipoteca', 'Préstamo Auto', 'Préstamos Educativos', 'Otros'],
             datasets: [{
-              data: [activosLiquidos, totales.totalRetiro, activosIliquidos],
-              backgroundColor: ['#10b981', '#8b5cf6', '#f59e0b'],
+              data: [tarjetas, lineaPersonal, lineaPropiedad, hipoteca, prestamoAuto, prestamosEducativos, otrosPrestamos],
+              backgroundColor: ['#ef4444', '#f59e0b', '#eab308', '#f97316', '#ec4899', '#8b5cf6', '#6366f1'],
               borderWidth: 2,
               borderColor: '#fff'
             }]
@@ -2167,7 +2153,7 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
             maintainAspectRatio: true,
             plugins: {
               legend: { position: 'bottom', labels: { padding: 15, font: { size: 12 } } },
-              title: { display: true, text: 'Asset Allocation', font: { size: 16, weight: 'bold' } },
+              title: { display: true, text: 'Distribución de Pasivos', font: { size: 16, weight: 'bold' } },
               tooltip: {
                 callbacks: {
                   label: function(context) {
@@ -2247,7 +2233,7 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
       }
     }
 
-  }, [totales, currency, retornoAnual, ingresoBruto, ahorro, deudas, gastosDiarios, seguros, impuestos, modoCalculo]);
+  }, [totales, currency, retornoAnual, ingresoBruto, ahorro, deudas, gastosDiarios, seguros, impuestos, modoCalculo, tarjetas, lineaPersonal, lineaPropiedad, hipoteca, prestamoAuto, prestamosEducativos, otrosPrestamos]);
 
   return (
     <div style={{ padding: '2rem' }}>
