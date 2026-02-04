@@ -1394,7 +1394,13 @@ function App() {
       <footer className="export-footer">
         <div className="export-footer-content">
           <div className="export-info">
-            <div className="font-bold">Xavier Serbia Money Map</div>
+            <div className="font-bold">
+              {userProfile.nombre && userProfile.apellido 
+                ? `Money Map de ${userProfile.nombre} ${userProfile.apellido}`
+                : userProfile.nombre
+                ? `Money Map de ${userProfile.nombre}`
+                : 'Xavier Serbia Money Map'}
+            </div>
             <div className="text-muted" style={{fontSize: '0.85rem', marginTop: '0.25rem'}}>
               Patrimonio Neto: <span className="currency font-bold" style={{color: totales.patrimonioNeto >= 0 ? 'var(--success)' : 'var(--danger)'}}>
                 {formatCurrency(totales.patrimonioNeto, currency)}
