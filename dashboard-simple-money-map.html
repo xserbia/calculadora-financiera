@@ -416,14 +416,19 @@ function OnboardingModal({ isOpen, onClose, onSave, initialProfile }) {
   return (
     <div style={{
       position: 'absolute',
-      inset: 0,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
       background: 'rgba(0,0,0,0.7)',
       zIndex: 2000,
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       justifyContent: 'center',
       padding: '20px',
-      backdropFilter: 'blur(8px)'
+      paddingTop: '40px',
+      backdropFilter: 'blur(8px)',
+      overflowY: 'auto'
     }} onClick={onClose}>
       <div style={{
         background: '#fff',
@@ -720,6 +725,18 @@ function App() {
       setShowOnboardingModal(true);
     }
   }, []);
+
+  // Scroll to top when modals open (para embeds en Wix/iframes)
+  useEffect(() => {
+    if (showOnboardingModal || showHelpModal || showPDFModal) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // También intentar scroll del contenedor
+      const container = document.querySelector('.app-container');
+      if (container) {
+        container.scrollTop = 0;
+      }
+    }
+  }, [showOnboardingModal, showHelpModal, showPDFModal]);
 
   // Financial data - NO localStorage
   const [modoCalculo, setModoCalculo] = useState('mensual');
@@ -1119,14 +1136,19 @@ function App() {
       {showHelpModal && (
         <div style={{
           position: 'absolute',
-          inset: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           background: 'rgba(0,0,0,0.7)',
           zIndex: 2000,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
           padding: '20px',
-          backdropFilter: 'blur(8px)'
+          paddingTop: '40px',
+          backdropFilter: 'blur(8px)',
+          overflowY: 'auto'
         }} onClick={() => setShowHelpModal(false)}>
           <div style={{
             background: '#fff',
@@ -1216,14 +1238,19 @@ function App() {
       {showPDFModal && (
         <div style={{
           position: 'absolute',
-          inset: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           background: 'rgba(0,0,0,0.7)',
           zIndex: 2000,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
           padding: '20px',
-          backdropFilter: 'blur(8px)'
+          paddingTop: '40px',
+          backdropFilter: 'blur(8px)',
+          overflowY: 'auto'
         }} onClick={() => setShowPDFModal(false)}>
           <div style={{
             background: '#fff',
@@ -2410,6 +2437,18 @@ function RatiosFinancieros({ totales, userProfile, currency, ingresoBruto, ahorr
   const [showReservaModal, setShowReservaModal] = useState(false);
   const [showBenchmarkModal, setShowBenchmarkModal] = useState(false);
   
+  // Scroll to top when modals open (para embeds en Wix/iframes)
+  useEffect(() => {
+    if (showReservaModal || showBenchmarkModal) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // También intentar scroll del contenedor
+      const container = document.querySelector('.app-container');
+      if (container) {
+        container.scrollTop = 0;
+      }
+    }
+  }, [showReservaModal, showBenchmarkModal]);
+  
   const mult = modoCalculo === 'anual' ? 1 : 12;
   
   const ingresoBrutoAnual = ingresoBruto * mult;
@@ -2607,14 +2646,19 @@ function RatiosFinancieros({ totales, userProfile, currency, ingresoBruto, ahorr
       {showReservaModal && (
         <div style={{
           position: 'absolute',
-          inset: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           background: 'rgba(0,0,0,0.7)',
           zIndex: 1001,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
           padding: '20px',
-          backdropFilter: 'blur(8px)'
+          paddingTop: '40px',
+          backdropFilter: 'blur(8px)',
+          overflowY: 'auto'
         }} onClick={() => setShowReservaModal(false)}>
           <div style={{
             background: '#fff',
@@ -2703,14 +2747,19 @@ function RatiosFinancieros({ totales, userProfile, currency, ingresoBruto, ahorr
       {showBenchmarkModal && (
         <div style={{
           position: 'absolute',
-          inset: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           background: 'rgba(0,0,0,0.7)',
           zIndex: 1001,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
           padding: '20px',
-          backdropFilter: 'blur(8px)'
+          paddingTop: '40px',
+          backdropFilter: 'blur(8px)',
+          overflowY: 'auto'
         }} onClick={() => setShowBenchmarkModal(false)}>
           <div style={{
             background: '#fff',
