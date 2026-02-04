@@ -63,6 +63,21 @@
   .optBtn:hover{border-color:var(--primary);background:#f0f4ff}
   .optBtn.selected{background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;border-color:transparent}
 
+  .niIdeaBtn{
+    width:100%;padding:10px 16px;
+    border:2px dashed var(--line);background:#fafafa;
+    border-radius:12px;cursor:pointer;
+    font-family:inherit;font-weight:700;font-size:13px;
+    color:var(--muted);transition:.2s ease;
+  }
+  .niIdeaBtn:hover{
+    background:#f1f5f9;border-color:var(--muted);
+    color:#334155;
+  }
+  .niIdeaBtn:active{
+    transform:scale(0.98);
+  }
+
   .modalFooter{display:flex;gap:12px;margin-top:28px}
   .btn{
     flex:1;padding:14px 24px;border:none;border-radius:14px;
@@ -432,6 +447,7 @@
         <div style="font-size:12px;color:var(--muted);margin-top:6px">
           Si no tienes reserva, escribe 0
         </div>
+        <button class="niIdeaBtn" data-default="0" style="margin-top:8px">🤷 Ni idea (usaremos 0)</button>
       </div>
 
       <!-- Question 2 -->
@@ -441,6 +457,7 @@
         <div style="font-size:12px;color:var(--muted);margin-top:6px">
           Incluye tarjetas, préstamos, hipoteca, etc.
         </div>
+        <button class="niIdeaBtn" data-default="35" style="margin-top:8px">🤷 Ni idea (usaremos 35%)</button>
       </div>
 
       <!-- Question 3 -->
@@ -460,6 +477,7 @@
         <div style="font-size:12px;color:var(--muted);margin-top:6px">
           Si no ahorras, escribe 0
         </div>
+        <button class="niIdeaBtn" data-default="5" style="margin-top:8px">🤷 Ni idea (usaremos 5%)</button>
       </div>
 
       <!-- Question 5 -->
@@ -901,6 +919,26 @@
     });
   });
 
+  // "Ni idea" buttons
+  document.querySelectorAll('.niIdeaBtn').forEach(btn => {
+    btn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const defaultVal = btn.dataset.default;
+      const question = btn.closest('.question');
+      const input = question.querySelector('.qInput');
+      
+      if(input){
+        input.value = defaultVal;
+        input.style.borderColor = 'var(--ok)';
+        input.style.boxShadow = '0 0 0 4px rgba(16,185,129,.1)';
+        setTimeout(()=>{
+          input.style.borderColor = '';
+          input.style.boxShadow = '';
+        }, 1000);
+      }
+    });
+  });
+
   // Allow Enter key to advance on number inputs
   document.querySelectorAll('.qInput').forEach(input => {
     input.addEventListener('keypress', (e)=>{
@@ -1126,6 +1164,11 @@
   function retakeQuiz(){
     currentQ = 1;
     answers = {};
+    
+    // Clear all inputs and selections
+    document.querySelectorAll('.qInput').forEach(input => input.value = '');
+    document.querySelectorAll('.optBtn').forEach(btn => btn.classList.remove('selected'));
+    
     modal.classList.add('show');
     results.classList.remove('show');
     document.querySelectorAll('.question').forEach(q => q.style.display = 'block');
