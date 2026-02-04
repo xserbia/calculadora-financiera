@@ -41,6 +41,11 @@
   .question{margin-bottom:24px;display:none}
   .question.active{display:block;animation:slideIn .3s ease}
   @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes shake{
+    0%, 100% {transform:translateX(0)}
+    25% {transform:translateX(-8px)}
+    75% {transform:translateX(8px)}
+  }
 
   .qLabel{font-weight:900;font-size:16px;margin-bottom:12px;display:block;color:#1e293b}
   .qInput{
@@ -423,7 +428,10 @@
       <!-- Question 1 -->
       <div class="question active" data-q="1">
         <label class="qLabel">1. ¿Cuántos meses de gastos esenciales tienes ahorrados?</label>
-        <input type="number" class="qInput" id="q1" placeholder="Ej: 3" min="0" max="60" step="0.5">
+        <input type="number" class="qInput" id="q1" placeholder="Ej: 3 (escribe 0 si no tienes)" min="0" max="60" step="0.5">
+        <div style="font-size:12px;color:var(--muted);margin-top:6px">
+          Si no tienes reserva, escribe 0
+        </div>
       </div>
 
       <!-- Question 2 -->
@@ -448,7 +456,10 @@
       <!-- Question 4 -->
       <div class="question" data-q="4">
         <label class="qLabel">4. ¿Qué porcentaje de tu ingreso ahorras/inviertes mensualmente?</label>
-        <input type="number" class="qInput" id="q4" placeholder="Ej: 15" min="0" max="100" step="1">
+        <input type="number" class="qInput" id="q4" placeholder="Ej: 15 (escribe 0 si no ahorras)" min="0" max="100" step="1">
+        <div style="font-size:12px;color:var(--muted);margin-top:6px">
+          Si no ahorras, escribe 0
+        </div>
       </div>
 
       <!-- Question 5 -->
@@ -817,29 +828,58 @@
   }
 
   btnNext.addEventListener('click', ()=>{
+    console.log('Button clicked, currentQ:', currentQ);
     if(currentQ <= totalQ){
       // Validate & save answer
       const q = document.querySelector(`.question[data-q="${currentQ}"]`);
-      const input = q.querySelector('input');
+      const input = q.querySelector('input.qInput');
       const selected = q.querySelector('.optBtn.selected');
       
+      console.log('Input:', input, 'Selected:', selected);
+      
       if(input){
-        if(!input.value || input.value === ''){
+        const val = input.value.trim();
+        console.log('Input value:', val);
+        // Accept 0 as valid, but reject empty/invalid
+        if(val === '' || val === null || isNaN(parseFloat(val))){
+          console.log('Invalid input, showing error');
           input.style.borderColor = 'var(--bad)';
-          setTimeout(()=> input.style.borderColor = '', 1500);
+          input.style.boxShadow = '0 0 0 4px rgba(239,68,68,.2)';
+          input.focus();
+          setTimeout(()=> {
+            input.style.borderColor = '';
+            input.style.boxShadow = '';
+          }, 2000);
           return;
         }
-        answers[`q${currentQ}`] = parseFloat(input.value);
+        answers[`q${currentQ}`] = parseFloat(val);
+        console.log('Saved answer:', answers[`q${currentQ}`]);
       } else if(selected){
         answers[`q${currentQ}`] = selected.dataset.value;
+        console.log('Saved selection:', answers[`q${currentQ}`]);
       } else {
-        return; // No selection
+        console.log('No selection made');
+        // No selection made - highlight all options briefly
+        const opts = q.querySelectorAll('.optBtn');
+        opts.forEach(opt => {
+          opt.style.borderColor = 'var(--bad)';
+          opt.style.animation = 'shake 0.5s';
+        });
+        setTimeout(()=> {
+          opts.forEach(opt => {
+            opt.style.borderColor = '';
+            opt.style.animation = '';
+          });
+        }, 1000);
+        return;
       }
       
       if(currentQ === totalQ){
+        console.log('Last question, calculating stage');
         calculateStage();
         showResults();
       } else {
+        console.log('Advancing to next question');
         currentQ++;
         showQuestion(currentQ);
       }
@@ -858,6 +898,16 @@
     btn.addEventListener('click', ()=>{
       btn.parentElement.querySelectorAll('.optBtn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
+    });
+  });
+
+  // Allow Enter key to advance on number inputs
+  document.querySelectorAll('.qInput').forEach(input => {
+    input.addEventListener('keypress', (e)=>{
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        btnNext.click();
+      }
     });
   });
 
