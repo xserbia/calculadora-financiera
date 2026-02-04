@@ -415,7 +415,7 @@ function OnboardingModal({ isOpen, onClose, onSave, initialProfile }) {
   
   return (
     <div style={{
-      position: 'fixed',
+      position: 'absolute',
       inset: 0,
       background: 'rgba(0,0,0,0.7)',
       zIndex: 2000,
@@ -834,7 +834,7 @@ function App() {
   }, [ingresoBruto, ahorro, deudas, gastosDiarios, seguros, impuestos, efectivo, inversiones, retiro, bienesRaices, bienesPersonales, tarjetas, lineaPersonal, lineaPropiedad, hipoteca, prestamoAuto, prestamosEducativos, otrosPrestamos, modoCalculo]);
 
   return (
-    <div className="app-container">
+    <div className="app-container" style={{position: 'relative', minHeight: '100vh'}}>
       {/* Onboarding Modal */}
       <OnboardingModal
         isOpen={showOnboardingModal}
@@ -1118,7 +1118,7 @@ function App() {
       {/* Help Modal */}
       {showHelpModal && (
         <div style={{
-          position: 'fixed',
+          position: 'absolute',
           inset: 0,
           background: 'rgba(0,0,0,0.7)',
           zIndex: 2000,
@@ -1215,7 +1215,7 @@ function App() {
       {/* PDF Modal */}
       {showPDFModal && (
         <div style={{
-          position: 'fixed',
+          position: 'absolute',
           inset: 0,
           background: 'rgba(0,0,0,0.7)',
           zIndex: 2000,
@@ -2606,7 +2606,7 @@ function RatiosFinancieros({ totales, userProfile, currency, ingresoBruto, ahorr
       {/* Modal de Sugerencias de Reserva */}
       {showReservaModal && (
         <div style={{
-          position: 'fixed',
+          position: 'absolute',
           inset: 0,
           background: 'rgba(0,0,0,0.7)',
           zIndex: 1001,
@@ -2702,7 +2702,7 @@ function RatiosFinancieros({ totales, userProfile, currency, ingresoBruto, ahorr
       {/* Modal de Benchmarks */}
       {showBenchmarkModal && (
         <div style={{
-          position: 'fixed',
+          position: 'absolute',
           inset: 0,
           background: 'rgba(0,0,0,0.7)',
           zIndex: 1001,
