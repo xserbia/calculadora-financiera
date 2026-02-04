@@ -1087,6 +1087,7 @@ function App() {
             currency={currency}
             ingresoBruto={parseNumber(ingresoBruto)}
             ahorro={parseNumber(ahorro)}
+            deudas={parseNumber(deudas)}
             seguros={parseNumber(seguros)}
             impuestos={parseNumber(impuestos)}
             gastosEsenciales={parseNumber(gastosEsenciales)}
@@ -1478,6 +1479,9 @@ function DatosTab({
               value={deudas}
               onChange={(e) => setDeudas(e.target.value)}
             />
+            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>
+              Total de pagos mensuales/anuales de todas tus deudas (se usa para calcular DTI)
+            </div>
           </div>
 
           <div className="form-group">
@@ -1680,7 +1684,7 @@ function DatosTab({
           </div>
         </div>
 
-        <div className="grid-3">
+        <div className="grid-2">
           <div className="form-group">
             <label className="form-label">Gastos Esenciales Mensuales</label>
             <input
@@ -1706,20 +1710,6 @@ function DatosTab({
             />
             <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>
               Efectivo disponible para emergencias
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Pago Mensual de Deudas</label>
-            <input
-              type="number"
-              className="form-input"
-              placeholder={`${formatCurrency(0, currency)}/mes`}
-              value={pagoMensualDeudas}
-              onChange={(e) => setPagoMensualDeudas(e.target.value)}
-            />
-            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem'}}>
-              Para calcular DTI (Debt-to-Income)
             </div>
           </div>
         </div>
@@ -2172,16 +2162,22 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
     }
 
     // 5. LINE CHART - Proyección de Patrimonio
-    if (totales.patrimonioNeto > 0 && totalAhorro > 0) {
+    if (totales.patrimonioNeto > 0) {
       const patrimonioActual = totales.patrimonioNeto;
       const ahorroAnual = totalAhorro;
       const retornoDecimal = retornoAnual / 100;
       
       const years = [0, 5, 10, 15, 20, 25, 30];
       const proyeccion = years.map(year => {
-        const fv = patrimonioActual * Math.pow(1 + retornoDecimal, year) + 
-                   ahorroAnual * ((Math.pow(1 + retornoDecimal, year) - 1) / retornoDecimal);
-        return fv;
+        if (ahorroAnual > 0) {
+          // Con ahorro: Valor futuro con aportes
+          const fv = patrimonioActual * Math.pow(1 + retornoDecimal, year) + 
+                     ahorroAnual * ((Math.pow(1 + retornoDecimal, year) - 1) / retornoDecimal);
+          return fv;
+        } else {
+          // Sin ahorro: Solo crecimiento del patrimonio actual
+          return patrimonioActual * Math.pow(1 + retornoDecimal, year);
+        }
       });
       
       const ctxLine = document.getElementById('lineProyeccion');
@@ -2209,7 +2205,13 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
             maintainAspectRatio: true,
             plugins: {
               legend: { display: false },
-              title: { display: true, text: `Proyección de Patrimonio (${formatCurrency(ahorroAnual, currency)}/año, ${retornoAnual}% retorno)`, font: { size: 16, weight: 'bold' } },
+              title: { 
+                display: true, 
+                text: ahorroAnual > 0 
+                  ? `Proyección de Patrimonio (${formatCurrency(ahorroAnual, currency)}/año, ${retornoAnual}% retorno)` 
+                  : `Proyección de Patrimonio (sin ahorro adicional, ${retornoAnual}% retorno)`,
+                font: { size: 16, weight: 'bold' } 
+              },
               tooltip: {
                 callbacks: {
                   label: function(context) {
@@ -2356,7 +2358,7 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
 }
 
 // ============= RATIOS FINANCIEROS =============
-function RatiosFinancieros({ totales, userProfile, currency, ingresoBruto, ahorro, seguros, impuestos, gastosEsenciales, reservaEmergencia, pagoMensualDeudas, modoCalculo }) {
+function RatiosFinancieros({ totales, userProfile, currency, ingresoBruto, ahorro, deudas, seguros, impuestos, gastosEsenciales, reservaEmergencia, pagoMensualDeudas, modoCalculo }) {
   const [showReservaModal, setShowReservaModal] = useState(false);
   const [showBenchmarkModal, setShowBenchmarkModal] = useState(false);
   
@@ -2365,11 +2367,12 @@ function RatiosFinancieros({ totales, userProfile, currency, ingresoBruto, ahorr
   const ingresoBrutoAnual = ingresoBruto * mult;
   const ingresoNetoAnual = ingresoBrutoAnual - (impuestos * mult) - (seguros * mult);
   const ahorroAnual = ahorro * mult;
+  const pagoMensualDeuda = modoCalculo === 'anual' ? deudas / 12 : deudas;
   
   // Ratios
   const mesesReserva = gastosEsenciales > 0 ? reservaEmergencia / gastosEsenciales : 0;
   const tasaAhorro = ingresoBrutoAnual > 0 ? ahorroAnual / ingresoBrutoAnual : 0;
-  const dtiNeto = (ingresoNetoAnual / 12) > 0 ? pagoMensualDeudas / (ingresoNetoAnual / 12) : 0;
+  const dtiNeto = (ingresoNetoAnual / 12) > 0 ? pagoMensualDeuda / (ingresoNetoAnual / 12) : 0;
   const deudaActivos = totales.activosTotales > 0 ? totales.pasivosTotales / totales.activosTotales : 0;
   const patrimonioActivos = totales.activosTotales > 0 ? totales.patrimonioNeto / totales.activosTotales : 0;
   const riquezaNeta = ingresoBrutoAnual > 0 ? totales.patrimonioNeto / ingresoBrutoAnual : 0;
