@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Mapa de Etapas – Gráfico + Pirámide</title>
+<title>Mapa de Etapas Financieras - Diagnóstico Interactivo</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
 
 <style>
   :root{
@@ -16,8 +16,88 @@
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:"Nunito",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-  .wrap{max-width:1120px;margin:26px auto;padding:0 16px}
+  .wrap{max-width:1320px;margin:26px auto;padding:0 16px}
 
+  /* ====== ONBOARDING MODAL ====== */
+  .modal{
+    position:fixed;inset:0;background:rgba(15,23,42,.85);backdrop-filter:blur(8px);
+    display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;
+    opacity:0;pointer-events:none;transition:opacity .3s ease;
+  }
+  .modal.show{opacity:1;pointer-events:all}
+  
+  .modalBox{
+    background:var(--card);border-radius:24px;
+    max-width:580px;width:100%;padding:32px;
+    box-shadow:0 24px 60px rgba(15,23,42,.2);
+    transform:scale(.95);transition:transform .3s ease;
+  }
+  .modal.show .modalBox{transform:scale(1)}
+
+  .modalHeader{text-align:center;margin-bottom:28px}
+  .modalHeader h2{font-size:28px;margin:0 0 8px;background:linear-gradient(90deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .modalHeader p{color:var(--muted);font-size:14px;margin:0}
+
+  .question{margin-bottom:24px;display:none}
+  .question.active{display:block;animation:slideIn .3s ease}
+  @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+  .qLabel{font-weight:900;font-size:16px;margin-bottom:12px;display:block;color:#1e293b}
+  .qInput{
+    width:100%;padding:14px 16px;border:2px solid var(--line);border-radius:14px;
+    font-family:inherit;font-size:15px;font-weight:600;transition:.2s ease;
+  }
+  .qInput:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(57,86,232,.1)}
+
+  .options{display:flex;gap:10px;flex-wrap:wrap}
+  .optBtn{
+    flex:1;min-width:120px;padding:14px 20px;border:2px solid var(--line);
+    border-radius:14px;background:#fff;cursor:pointer;
+    font-weight:800;font-size:14px;transition:.2s ease;text-align:center;
+  }
+  .optBtn:hover{border-color:var(--primary);background:#f0f4ff}
+  .optBtn.selected{background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;border-color:transparent}
+
+  .modalFooter{display:flex;gap:12px;margin-top:28px}
+  .btn{
+    flex:1;padding:14px 24px;border:none;border-radius:14px;
+    font-family:inherit;font-weight:900;font-size:15px;cursor:pointer;transition:.2s ease;
+  }
+  .btnPrimary{background:linear-gradient(90deg,var(--primary),var(--secondary));color:#fff;box-shadow:0 8px 20px rgba(57,86,232,.25)}
+  .btnPrimary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(57,86,232,.35)}
+  .btnPrimary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .btnSecondary{background:#f1f5f9;color:#334155}
+  .btnSecondary:hover{background:#e2e8f0}
+
+  .progress{
+    height:6px;background:#e5e7eb;border-radius:999px;margin-bottom:24px;overflow:hidden;
+  }
+  .progressBar{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));transition:width .3s ease}
+
+  /* ====== RESULTS SCREEN ====== */
+  .results{display:none;text-align:center}
+  .results.show{display:block;animation:fadeIn .5s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+  .bigBadge{
+    display:inline-flex;align-items:center;gap:12px;
+    padding:16px 28px;border-radius:999px;
+    background:linear-gradient(90deg,var(--primary),var(--secondary));
+    color:#fff;font-weight:900;font-size:20px;margin-bottom:16px;
+    box-shadow:0 12px 32px rgba(57,86,232,.3);
+  }
+  .bigIcon{font-size:32px}
+
+  .resultScore{
+    font-size:72px;font-weight:900;
+    background:linear-gradient(90deg,var(--primary),var(--secondary));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;margin:12px 0;line-height:1;
+  }
+
+  .resultText{font-size:18px;color:var(--muted);margin-bottom:32px}
+
+  /* ====== MAIN LAYOUT ====== */
   .top{
     display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;
     margin-bottom:14px;
@@ -40,12 +120,15 @@
     color:#fff;border-color:transparent;
   }
 
-  /* ====== LAYOUT ====== */
   .grid{
     display:grid;
-    grid-template-columns: 340px 1fr;
+    grid-template-columns: 340px 1fr 340px;
     gap:14px;
     align-items:start;
+  }
+  @media (max-width: 1180px){
+    .grid{grid-template-columns: 340px 1fr}
+    .actionPanel{display:none}
   }
   @media (max-width: 980px){
     .grid{grid-template-columns:1fr}
@@ -57,7 +140,7 @@
     padding:16px;
   }
 
-  /* ====== PYRAMID ====== */
+  /* ====== PYRAMID WITH PROGRESS ====== */
   .pyrWrap{
     position:sticky; top:14px;
   }
@@ -100,7 +183,10 @@
     transition: transform .16s ease, box-shadow .16s ease, filter .16s ease, opacity .16s ease;
     opacity:.55;
     filter:saturate(.7);
+    cursor:pointer;
   }
+  .pstep:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(15,23,42,.12)}
+  
   .pstep::before{
     content:"";
     position:absolute;inset:0;
@@ -109,7 +195,14 @@
     transition:.16s ease;
   }
 
-  /* widths (top smaller, base larger) */
+  /* Progress bar inside each step */
+  .pProgressBg{
+    position:absolute;left:0;top:0;bottom:0;
+    background:linear-gradient(90deg, rgba(16,185,129,.15), rgba(16,185,129,.25));
+    width:0%;
+    transition:width .4s ease;
+  }
+
   .pstep.s5{width:54%}
   .pstep.s4{width:66%}
   .pstep.s3{width:78%}
@@ -140,7 +233,19 @@
     flex:0 0 auto;
   }
 
-  /* active + done */
+  /* Progress percentage */
+  .pPercent{
+    position:absolute;top:4px;right:6px;
+    font-size:10px;font-weight:900;
+    background:rgba(255,255,255,.9);
+    padding:2px 6px;border-radius:6px;
+    color:var(--ok);
+    opacity:0;
+    transition:opacity .2s ease;
+  }
+  .pstep.done .pPercent,
+  .pstep.active .pPercent{opacity:1}
+
   .pstep.done{
     opacity:.85;
     filter:saturate(1);
@@ -158,13 +263,6 @@
     border-color:transparent;
     color:#fff;
   }
-
-  /* stage colors (optional tone per level) */
-  .pstep.s1{background:#fff}
-  .pstep.s2{background:#fff}
-  .pstep.s3{background:#fff}
-  .pstep.s4{background:#fff}
-  .pstep.s5{background:#fff}
 
   .pLegend{
     display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
@@ -245,15 +343,174 @@
   .sev.bad{background:var(--bad)}
   .meta b{display:block}
   .meta span{display:block;color:#334155;font-size:13px;margin-top:2px;line-height:1.35}
+
+  /* ====== ACTION PANEL ====== */
+  .actionPanel{
+    position:sticky;top:14px;
+  }
+  
+  .apHeader{
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:#fff;padding:16px;border-radius:var(--radius) var(--radius) 0 0;
+    margin:-16px -16px 16px;
+  }
+  .apHeader h3{margin:0;font-size:18px;display:flex;align-items:center;gap:8px}
+  .apHeader p{margin:6px 0 0;font-size:12px;opacity:.9}
+
+  .nextGoal{
+    background:#f0f9ff;border:2px solid #bae6fd;
+    border-radius:14px;padding:14px;margin-bottom:14px;
+  }
+  .goalTitle{font-weight:900;font-size:14px;margin:0 0 10px;color:#0c4a6e}
+  
+  .progressTrack{
+    background:#e0f2fe;border-radius:999px;height:10px;overflow:hidden;margin-bottom:8px;
+  }
+  .progressFill{
+    background:linear-gradient(90deg,#0ea5e9,#06b6d4);
+    height:100%;border-radius:999px;transition:width .4s ease;
+  }
+  
+  .goalStats{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#0369a1}
+
+  .steps{margin-top:16px}
+  .steps h4{font-size:13px;font-weight:900;margin:0 0 10px;color:#1e293b}
+  .steps ul{margin:0;padding:0;list-style:none}
+  .steps li{
+    padding:10px;background:#fff;border:1px solid var(--line);
+    border-radius:12px;margin-bottom:8px;font-size:13px;
+    display:flex;align-items:flex-start;gap:8px;
+  }
+  .steps li::before{
+    content:"→";font-weight:900;color:var(--primary);flex:0 0 auto;
+  }
+
+  .achievements{
+    background:#fef3c7;border:2px solid #fde047;
+    border-radius:14px;padding:14px;margin-top:14px;
+  }
+  .achievements h4{margin:0 0 10px;font-size:13px;font-weight:900;color:#854d0e;display:flex;align-items:center;gap:6px}
+  .achievements ul{margin:0;padding:0;list-style:none}
+  .achievements li{
+    font-size:12px;padding:6px 0;color:#713f12;font-weight:700;
+    display:flex;align-items:center;gap:8px;
+  }
+  .achievements li::before{content:"✓";color:var(--ok);font-weight:900}
+
+  .retakeBtn{
+    width:100%;margin-top:14px;padding:12px;
+    background:#f1f5f9;border:1px solid var(--line);
+    border-radius:12px;font-weight:900;cursor:pointer;
+    transition:.2s ease;
+  }
+  .retakeBtn:hover{background:#e2e8f0}
 </style>
 </head>
 
 <body>
+  <!-- ====== ONBOARDING MODAL ====== -->
+  <div class="modal show" id="modal">
+    <div class="modalBox">
+      <div class="modalHeader">
+        <h2>🎯 Descubre tu etapa financiera</h2>
+        <p>Responde 7 preguntas para saber dónde estás y qué hacer para avanzar</p>
+      </div>
+
+      <div class="progress">
+        <div class="progressBar" id="progressBar" style="width:0%"></div>
+      </div>
+
+      <!-- Question 1 -->
+      <div class="question active" data-q="1">
+        <label class="qLabel">1. ¿Cuántos meses de gastos esenciales tienes ahorrados?</label>
+        <input type="number" class="qInput" id="q1" placeholder="Ej: 3" min="0" max="60" step="0.5">
+      </div>
+
+      <!-- Question 2 -->
+      <div class="question" data-q="2">
+        <label class="qLabel">2. ¿Qué porcentaje de tu ingreso mensual va a pagar deudas?</label>
+        <input type="number" class="qInput" id="q2" placeholder="Ej: 35" min="0" max="100" step="1">
+        <div style="font-size:12px;color:var(--muted);margin-top:6px">
+          Incluye tarjetas, préstamos, hipoteca, etc.
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="question" data-q="3">
+        <label class="qLabel">3. ¿Usas crédito (tarjetas/préstamos) para cubrir gastos básicos?</label>
+        <div class="options">
+          <button class="optBtn" data-value="si">Sí, frecuentemente</button>
+          <button class="optBtn" data-value="aveces">A veces</button>
+          <button class="optBtn" data-value="no">No, nunca</button>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="question" data-q="4">
+        <label class="qLabel">4. ¿Qué porcentaje de tu ingreso ahorras/inviertes mensualmente?</label>
+        <input type="number" class="qInput" id="q4" placeholder="Ej: 15" min="0" max="100" step="1">
+      </div>
+
+      <!-- Question 5 -->
+      <div class="question" data-q="5">
+        <label class="qLabel">5. ¿Tu ingreso pasivo (inversiones, rentas) vs tu gasto anual?</label>
+        <div class="options">
+          <button class="optBtn" data-value="0">Sin ingresos pasivos</button>
+          <button class="optBtn" data-value="25">Cubre ~25%</button>
+          <button class="optBtn" data-value="50">Cubre ~50%</button>
+          <button class="optBtn" data-value="75">Cubre ~75%</button>
+          <button class="optBtn" data-value="100">Cubre 100%+</button>
+        </div>
+      </div>
+
+      <!-- Question 6 -->
+      <div class="question" data-q="6">
+        <label class="qLabel">6. ¿Llevas control de tus finanzas (presupuesto, tracking)?</label>
+        <div class="options">
+          <button class="optBtn" data-value="0">No llevo control</button>
+          <button class="optBtn" data-value="30">Algo esporádico</button>
+          <button class="optBtn" data-value="60">Mensualmente</button>
+          <button class="optBtn" data-value="90">Semanalmente</button>
+        </div>
+      </div>
+
+      <!-- Question 7 -->
+      <div class="question" data-q="7">
+        <label class="qLabel">7. ¿Cuál es tu relación Pasivos/Activos aproximada?</label>
+        <div class="options">
+          <button class="optBtn" data-value="70">+70% (alta deuda)</button>
+          <button class="optBtn" data-value="50">40-70%</button>
+          <button class="optBtn" data-value="30">20-40%</button>
+          <button class="optBtn" data-value="10">-20% (mínima)</button>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px">
+          Si no lo sabes, usa tu mejor estimación
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="results" id="results">
+        <div class="bigBadge">
+          <span class="bigIcon" id="resultIcon">🆘</span>
+          <span id="resultStage">ETAPA 1</span>
+        </div>
+        <div class="resultScore" id="resultPercent">47%</div>
+        <p class="resultText" id="resultText">Completado en esta etapa</p>
+      </div>
+
+      <div class="modalFooter">
+        <button class="btn btnSecondary" id="btnBack" style="display:none">← Atrás</button>
+        <button class="btn btnPrimary" id="btnNext">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== MAIN APP ====== -->
   <div class="wrap">
     <div class="top">
       <div>
         <h1>Mapa de Etapas Financieras</h1>
-        <p class="sub">Gráfico informativo por etapa. La pirámide a la izquierda se ilumina según la etapa seleccionada.</p>
+        <p class="sub">Tu ruta personalizada hacia la libertad financiera</p>
       </div>
 
       <div class="stagePicker" role="group" aria-label="Selector de etapa">
@@ -271,29 +528,37 @@
         <div class="pyrHead">
           <div class="pill"><span class="dot" id="stageDot"></span><span id="stagePill">ETAPA 1 · SUPERVIVENCIA</span></div>
         </div>
-        <p class="pyrSub">Avanzas de base (Supervivencia) hacia la cima (Libertad).</p>
+        <p class="pyrSub">Tu progreso de base (Supervivencia) hacia la cima (Libertad).</p>
 
         <div class="pyramid" aria-label="Pirámide de etapas">
           <!-- Top -->
           <div class="pstep s5" data-step="5" title="Etapa 5">
+            <div class="pProgressBg" data-progress="5"></div>
+            <div class="pPercent" data-percent="5">0%</div>
             <div class="pinner">
               <div class="ptitle"><b>🟦 Libertad</b><span>Etapa 5</span></div>
               <div class="pnum">5</div>
             </div>
           </div>
           <div class="pstep s4" data-step="4" title="Etapa 4">
+            <div class="pProgressBg" data-progress="4"></div>
+            <div class="pPercent" data-percent="4">0%</div>
             <div class="pinner">
               <div class="ptitle"><b>🟩 Independencia</b><span>Etapa 4</span></div>
               <div class="pnum">4</div>
             </div>
           </div>
           <div class="pstep s3" data-step="3" title="Etapa 3">
+            <div class="pProgressBg" data-progress="3"></div>
+            <div class="pPercent" data-percent="3">0%</div>
             <div class="pinner">
               <div class="ptitle"><b>💰 Acumulación</b><span>Etapa 3</span></div>
               <div class="pnum">3</div>
             </div>
           </div>
           <div class="pstep s2" data-step="2" title="Etapa 2">
+            <div class="pProgressBg" data-progress="2"></div>
+            <div class="pPercent" data-percent="2">0%</div>
             <div class="pinner">
               <div class="ptitle"><b>🛡️ Seguridad</b><span>Etapa 2</span></div>
               <div class="pnum">2</div>
@@ -301,6 +566,8 @@
           </div>
           <!-- Base -->
           <div class="pstep s1" data-step="1" title="Etapa 1">
+            <div class="pProgressBg" data-progress="1"></div>
+            <div class="pPercent" data-percent="1">0%</div>
             <div class="pinner">
               <div class="ptitle"><b>🆘 Supervivencia</b><span>Etapa 1</span></div>
               <div class="pnum">1</div>
@@ -315,7 +582,7 @@
         </div>
       </div>
 
-      <!-- RIGHT: DETAILS -->
+      <!-- CENTER: DETAILS -->
       <div class="card">
         <div class="headerCard">
           <div>
@@ -331,7 +598,7 @@
 
         <div style="margin-top:12px">
           <div class="blockTitle">Mentalidad</div>
-          <div class="bigQuote" id="mindset">“Primero estabilizo el flujo y dejo de hundirme.”</div>
+          <div class="bigQuote" id="mindset">"Primero estabilizo el flujo y dejo de hundirme."</div>
         </div>
 
         <div style="margin-top:12px">
@@ -349,6 +616,44 @@
           <div id="metas"></div>
         </div>
       </div>
+
+      <!-- RIGHT: ACTION PANEL -->
+      <div class="card actionPanel">
+        <div class="apHeader">
+          <h3>🎯 Tu Próxima Meta</h3>
+          <p>Para avanzar a la siguiente etapa</p>
+        </div>
+
+        <div class="nextGoal">
+          <div class="goalTitle" id="nextGoalTitle">Construir reserva de emergencia</div>
+          <div class="progressTrack">
+            <div class="progressFill" id="nextGoalProgress" style="width:35%"></div>
+          </div>
+          <div class="goalStats">
+            <span id="nextGoalCurrent">3.5 meses</span>
+            <span id="nextGoalTarget">Meta: 6 meses</span>
+          </div>
+        </div>
+
+        <div class="steps">
+          <h4>📋 Plan de Acción</h4>
+          <ul id="actionSteps">
+            <li>Ahorra $450/mes durante 6 meses</li>
+            <li>O reduce gastos en $200/mes</li>
+            <li>Mantén control presupuestario</li>
+          </ul>
+        </div>
+
+        <div class="achievements">
+          <h4>🏆 Logros Desbloqueados</h4>
+          <ul id="achievementsList">
+            <li>Primera reserva ($500)</li>
+            <li>3 meses sin deuda nueva</li>
+          </ul>
+        </div>
+
+        <button class="retakeBtn" onclick="retakeQuiz()">🔄 Recalcular mi etapa</button>
+      </div>
     </div>
   </div>
 
@@ -357,9 +662,10 @@
     1: {
       pill: "ETAPA 1 · SUPERVIVENCIA",
       title: "🆘 Supervivencia",
+      icon: "🆘",
       mini: "Cuando lo urgente es estabilizar y dejar de usar deuda para vivir.",
       purpose: "Recuperar control y cubrir necesidades básicas sin usar deuda.",
-      mindset: "“Primero estabilizo el flujo y dejo de hundirme.”",
+      mindset: ""Primero estabilizo el flujo y dejo de hundirme."",
       goals: [
         {t:"Asegurar ingreso estable", d:"Garantizar flujo mínimo para cubrir lo esencial sin depender de crédito."},
         {t:"Cubrir esenciales sin crédito", d:"Eliminar el uso de tarjetas/préstamos para gastos básicos."},
@@ -380,9 +686,10 @@
     2: {
       pill: "ETAPA 2 · SEGURIDAD",
       title: "🛡️ Seguridad",
+      icon: "🛡️",
       mini: "Construyes estabilidad y protección ante imprevistos.",
       purpose: "Construir estabilidad financiera y protección ante eventos inesperados.",
-      mindset: "“Protejo mi base: reservas, deudas bajo control y hábitos consistentes.”",
+      mindset: ""Protejo mi base: reservas, deudas bajo control y hábitos consistentes."",
       goals: [
         {t:"Elevar reserva", d:"Construir 6–12 meses de gastos esenciales."},
         {t:"Bajar DTI", d:"Reducir servicio de deuda a un nivel saludable."},
@@ -405,9 +712,10 @@
     3: {
       pill: "ETAPA 3 · ACUMULACIÓN",
       title: "💰 Acumulación",
+      icon: "💰",
       mini: "El foco es crecer patrimonio de manera consistente.",
       purpose: "Hacer crecer patrimonio y construir activos productivos.",
-      mindset: "“Ahorro alto, invierto con intención y construyo activos.”",
+      mindset: ""Ahorro alto, invierto con intención y construyo activos."",
       goals: [
         {t:"Ahorro constante", d:"Mantener ahorro/inversión mensual con disciplina."},
         {t:"Construir patrimonio", d:"Avanzar hacia 7–14× de patrimonio vs ingreso anual neto."},
@@ -429,9 +737,10 @@
     4: {
       pill: "ETAPA 4 · INDEPENDENCIA",
       title: "🟩 Independencia",
+      icon: "🟩",
       mini: "Tus ingresos pasivos empiezan a sostener tu estilo de vida.",
       purpose: "Sostener estilo de vida sin depender del ingreso activo.",
-      mindset: "“Mi dinero me paga la vida.”",
+      mindset: ""Mi dinero me paga la vida."",
       goals: [
         {t:"Ingresos pasivos suficientes", d:"Alcanzar pasivo/gasto ≥ 1.0× o alto patrimonio relativo."},
         {t:"Retiros sostenibles", d:"Mantener retiro anual dentro de límites razonables."},
@@ -453,9 +762,10 @@
     5: {
       pill: "ETAPA 5 · LIBERTAD",
       title: "🟦 Libertad",
+      icon: "🟦",
       mini: "Riqueza, legado y decisiones guiadas por propósito.",
       purpose: "Mantener riqueza, proteger legado y vivir con libertad de tiempo.",
-      mindset: "“Multiplico, protejo y transfiero mi legado.”",
+      mindset: ""Multiplico, protejo y transfiero mi legado."",
       goals: [
         {t:"Pasivo excede gasto", d:"Mantener pasivo/gasto ≥ 1.2×."},
         {t:"Protección y estructura", d:"Planificación patrimonial, seguros, impuestos, diversificación."},
@@ -476,14 +786,308 @@
     }
   };
 
+  // Quiz logic
+  let currentQ = 1;
+  const totalQ = 7;
+  let answers = {};
+  let userStage = 1;
+  let userPercent = 0;
+  let stageProgress = {1:0, 2:0, 3:0, 4:0, 5:0};
+
+  const modal = document.getElementById('modal');
+  const progressBar = document.getElementById('progressBar');
+  const btnNext = document.getElementById('btnNext');
+  const btnBack = document.getElementById('btnBack');
+  const results = document.getElementById('results');
+  
+  function updateProgress(){
+    const percent = ((currentQ-1) / totalQ) * 100;
+    progressBar.style.width = percent + '%';
+  }
+
+  function showQuestion(n){
+    document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+    const q = document.querySelector(`.question[data-q="${n}"]`);
+    if(q) q.classList.add('active');
+    
+    btnBack.style.display = n > 1 ? 'block' : 'none';
+    btnNext.textContent = n === totalQ ? 'Ver Resultado →' : 'Siguiente →';
+    
+    updateProgress();
+  }
+
+  btnNext.addEventListener('click', ()=>{
+    if(currentQ <= totalQ){
+      // Validate & save answer
+      const q = document.querySelector(`.question[data-q="${currentQ}"]`);
+      const input = q.querySelector('input');
+      const selected = q.querySelector('.optBtn.selected');
+      
+      if(input){
+        if(!input.value || input.value === ''){
+          input.style.borderColor = 'var(--bad)';
+          setTimeout(()=> input.style.borderColor = '', 1500);
+          return;
+        }
+        answers[`q${currentQ}`] = parseFloat(input.value);
+      } else if(selected){
+        answers[`q${currentQ}`] = selected.dataset.value;
+      } else {
+        return; // No selection
+      }
+      
+      if(currentQ === totalQ){
+        calculateStage();
+        showResults();
+      } else {
+        currentQ++;
+        showQuestion(currentQ);
+      }
+    }
+  });
+
+  btnBack.addEventListener('click', ()=>{
+    if(currentQ > 1){
+      currentQ--;
+      showQuestion(currentQ);
+    }
+  });
+
+  // Option buttons
+  document.querySelectorAll('.optBtn').forEach(btn => {
+    btn.addEventListener('click', ()=>{
+      btn.parentElement.querySelectorAll('.optBtn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+
+  function calculateStage(){
+    const reserve = answers.q1 || 0;
+    const dti = answers.q2 || 0;
+    const useCredit = answers.q3 || 'no';
+    const savingRate = answers.q4 || 0;
+    const passiveRatio = parseInt(answers.q5) || 0;
+    const control = parseInt(answers.q6) || 0;
+    const debtRatio = parseInt(answers.q7) || 50;
+
+    // Scoring logic (simplified)
+    let score = 0;
+    
+    // Stage 1 criteria
+    if(reserve >= 1 && dti <= 50 && useCredit === 'no') score = Math.max(score, 1);
+    
+    // Stage 2
+    if(reserve >= 3 && dti <= 40 && debtRatio <= 50 && control >= 30) score = Math.max(score, 2);
+    
+    // Stage 3
+    if(reserve >= 6 && dti <= 36 && savingRate >= 15 && debtRatio <= 40) score = Math.max(score, 3);
+    
+    // Stage 4
+    if(savingRate >= 20 && passiveRatio >= 50 && debtRatio <= 30) score = Math.max(score, 4);
+    
+    // Stage 5
+    if(passiveRatio >= 100 && debtRatio <= 10) score = Math.max(score, 5);
+
+    userStage = Math.max(1, score);
+
+    // Calculate completion percentage for current stage
+    if(userStage === 1){
+      let p = 0;
+      if(reserve >= 0.5) p += 25;
+      if(reserve >= 1) p += 25;
+      if(dti <= 50) p += 25;
+      if(useCredit === 'no') p += 25;
+      userPercent = Math.min(100, p);
+      stageProgress[1] = userPercent;
+    } else if(userStage === 2){
+      stageProgress[1] = 100;
+      let p = 0;
+      if(reserve >= 3) p += 20;
+      if(reserve >= 6) p += 30;
+      if(dti <= 36) p += 25;
+      if(control >= 40) p += 25;
+      userPercent = Math.min(100, p);
+      stageProgress[2] = userPercent;
+    } else if(userStage === 3){
+      stageProgress[1] = 100;
+      stageProgress[2] = 100;
+      let p = 0;
+      if(savingRate >= 15) p += 30;
+      if(savingRate >= 30) p += 20;
+      if(reserve >= 12) p += 25;
+      if(dti <= 30) p += 25;
+      userPercent = Math.min(100, p);
+      stageProgress[3] = userPercent;
+    } else if(userStage === 4){
+      stageProgress[1] = 100;
+      stageProgress[2] = 100;
+      stageProgress[3] = 100;
+      let p = 0;
+      if(passiveRatio >= 50) p += 40;
+      if(passiveRatio >= 100) p += 30;
+      if(debtRatio <= 30) p += 30;
+      userPercent = Math.min(100, p);
+      stageProgress[4] = userPercent;
+    } else {
+      stageProgress[1] = 100;
+      stageProgress[2] = 100;
+      stageProgress[3] = 100;
+      stageProgress[4] = 100;
+      stageProgress[5] = 100;
+      userPercent = 100;
+    }
+  }
+
+  function showResults(){
+    document.querySelectorAll('.question').forEach(q => q.style.display = 'none');
+    results.classList.add('show');
+    
+    const s = STAGES[userStage];
+    document.getElementById('resultIcon').textContent = s.icon;
+    document.getElementById('resultStage').textContent = s.pill;
+    document.getElementById('resultPercent').textContent = Math.round(userPercent) + '%';
+    document.getElementById('resultText').textContent = 'Completado en esta etapa';
+    
+    btnNext.textContent = 'Ver mi plan →';
+    btnNext.onclick = ()=>{
+      modal.classList.remove('show');
+      renderApp();
+    };
+    btnBack.style.display = 'none';
+    progressBar.style.width = '100%';
+  }
+
+  function renderApp(){
+    // Update pyramid with progress
+    for(let i = 1; i <= 5; i++){
+      const el = document.querySelector(`.pstep[data-step="${i}"]`);
+      const prog = stageProgress[i] || 0;
+      el.querySelector('[data-progress]').style.width = prog + '%';
+      el.querySelector('[data-percent]').textContent = Math.round(prog) + '%';
+      
+      el.classList.remove('active', 'done');
+      if(i < userStage) el.classList.add('done');
+      if(i === userStage) el.classList.add('active');
+    }
+    
+    // Update stage selector
+    document.querySelectorAll('.stageBtn').forEach(btn => {
+      btn.classList.toggle('active', +btn.dataset.stage === userStage);
+    });
+    
+    render(userStage);
+    updateActionPanel();
+  }
+
+  function updateActionPanel(){
+    // Set next goal based on stage
+    const goals = {
+      1: {
+        title: 'Construir reserva de emergencia',
+        current: (answers.q1 || 0) + ' meses',
+        target: 'Meta: 3 meses',
+        progress: Math.min(100, ((answers.q1 || 0) / 3) * 100),
+        steps: [
+          'Ahorra $300-500/mes consistentemente',
+          'Reduce gastos no esenciales en 15%',
+          'Evita nuevas deudas de consumo'
+        ],
+        achievements: [
+          'Ingreso cubre gastos básicos',
+          'Primer mes de reserva alcanzado'
+        ]
+      },
+      2: {
+        title: 'Llegar a 6-12 meses de reserva',
+        current: (answers.q1 || 0) + ' meses',
+        target: 'Meta: 9 meses',
+        progress: Math.min(100, ((answers.q1 || 0) / 9) * 100),
+        steps: [
+          'Mantén tasa de ahorro ≥20%',
+          'Reduce DTI a menos del 30%',
+          'Establece presupuesto mensual'
+        ],
+        achievements: [
+          'Reserva de emergencia sólida',
+          'Control financiero establecido',
+          'Deuda bajo control'
+        ]
+      },
+      3: {
+        title: 'Construir patrimonio 10-14× ingreso',
+        current: 'Progreso actual',
+        target: 'Meta: 12× ingreso',
+        progress: userPercent,
+        steps: [
+          'Invierte ≥30% de ingresos',
+          'Diversifica activos productivos',
+          'Optimiza eficiencia fiscal'
+        ],
+        achievements: [
+          'Tasa de ahorro ≥20%',
+          'Portafolio diversificado',
+          'Patrimonio creciendo'
+        ]
+      },
+      4: {
+        title: 'Lograr independencia financiera',
+        current: 'Ingresos pasivos vs gastos',
+        target: 'Meta: 100% cobertura',
+        progress: parseInt(answers.q5) || 0,
+        steps: [
+          'Incrementa flujos pasivos',
+          'Mantén SWR ≤3.5%',
+          'Reduce apalancamiento a <20%'
+        ],
+        achievements: [
+          'Pasivos cubren 50%+ gastos',
+          'Trabajo por elección',
+          'Alta resiliencia financiera'
+        ]
+      },
+      5: {
+        title: 'Proteger y transferir legado',
+        current: 'Etapa completada',
+        target: 'Optimización continua',
+        progress: 100,
+        steps: [
+          'Planificación patrimonial',
+          'Optimización fiscal avanzada',
+          'Filantropía estratégica'
+        ],
+        achievements: [
+          'Libertad financiera total',
+          'Legado estructurado',
+          'Impacto generacional'
+        ]
+      }
+    };
+
+    const g = goals[userStage] || goals[1];
+    document.getElementById('nextGoalTitle').textContent = g.title;
+    document.getElementById('nextGoalCurrent').textContent = g.current;
+    document.getElementById('nextGoalTarget').textContent = g.target;
+    document.getElementById('nextGoalProgress').style.width = g.progress + '%';
+    
+    document.getElementById('actionSteps').innerHTML = g.steps.map(s => `<li>${s}</li>`).join('');
+    document.getElementById('achievementsList').innerHTML = g.achievements.map(a => `<li>${a}</li>`).join('');
+  }
+
+  function retakeQuiz(){
+    currentQ = 1;
+    answers = {};
+    modal.classList.add('show');
+    results.classList.remove('show');
+    document.querySelectorAll('.question').forEach(q => q.style.display = 'block');
+    showQuestion(1);
+    btnNext.textContent = 'Siguiente →';
+    btnNext.onclick = null;
+  }
+
+  // Stage rendering (same as before)
   const stageBtns = document.querySelectorAll('.stageBtn');
 
   function paintPyramid(stage){
-    // Regla:
-    // - "active" = etapa actual
-    // - "done" = etapas anteriores (1..stage-1)
-    // Nota: en la pirámide visual está de arriba (5) a abajo (1),
-    // pero la lógica es numérica por data-step.
     document.querySelectorAll('.pstep').forEach(el=>{
       const n = +el.getAttribute('data-step');
       el.classList.remove('active','done');
@@ -491,7 +1095,6 @@
       if(n === stage) el.classList.add('active');
     });
 
-    // dot color simple (opcional)
     const dot = document.getElementById('stageDot');
     dot.style.background = stage===1 ? "#ef4444" :
                            stage===2 ? "#f59e0b" :
@@ -502,18 +1105,12 @@
   function render(stage){
     const s = STAGES[stage];
 
-    // Left pill
     document.getElementById('stagePill').textContent = s.pill;
-
-    // Right header
     document.getElementById('stageTitle').textContent = s.title;
     document.getElementById('stageMini').textContent = s.mini;
-
-    // Purpose / mindset
     document.getElementById('purpose').textContent = s.purpose;
     document.getElementById('mindset').textContent = s.mindset;
 
-    // Goals
     const goals = document.getElementById('goals');
     goals.innerHTML = s.goals.map((g, i)=>`
       <li>
@@ -525,7 +1122,6 @@
       </li>
     `).join('');
 
-    // KPIs
     const kpis = document.getElementById('kpis');
     kpis.innerHTML = s.kpis.map(k=>`
       <div class="kpi">
@@ -536,7 +1132,6 @@
       </div>
     `).join('');
 
-    // Metas
     const metas = document.getElementById('metas');
     metas.innerHTML = s.metas.map(m=>`
       <div class="meta">
@@ -548,11 +1143,9 @@
       </div>
     `).join('');
 
-    // Pyramid highlight
     paintPyramid(stage);
   }
 
-  // Buttons
   stageBtns.forEach(btn=>{
     btn.addEventListener('click', ()=>{
       stageBtns.forEach(b=>b.classList.remove('active'));
@@ -561,7 +1154,6 @@
     });
   });
 
-  // Click pyramid to select stage (optional nice UX)
   document.querySelectorAll('.pstep').forEach(el=>{
     el.addEventListener('click', ()=>{
       const stage = +el.getAttribute('data-step');
@@ -570,7 +1162,7 @@
     });
   });
 
-  render(1);
+  showQuestion(1);
 </script>
 </body>
 </html>
