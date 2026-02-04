@@ -341,27 +341,32 @@ const { useState, useEffect, useMemo } = React;
 const formatCurrency = (value, currencyCode = 'USD') => {
   if (value === null || value === undefined || value === '') {
     const symbols = {
-      'USD': '$', 'EUR': '€', 'GBP': '£', 'MXN': '$', 
-      'COP': '$', 'ARS': '$', 'CLP': '$', 'PEN': 'S/', 
-      'BRL': 'R$', 'CAD': 'C$'
+      'USD': '$', 'EUR': '€', 'GBP': '£', 'CAD': 'C$',
+      'MXN': '$', 'GTQ': 'Q', 'HNL': 'L', 'NIO': 'C$', 'CRC': '₡', 'PAB': 'B/.',
+      'COP': '$', 'VES': 'Bs.', 'BOB': 'Bs.', 'PEN': 'S/', 'BRL': 'R$',
+      'PYG': '₲', 'CLP': '$', 'ARS': '$', 'UYU': '$U',
+      'DOP': 'RD$', 'CUP': '₱', 'HTG': 'G'
     };
     return `${symbols[currencyCode] || '$'}0`;
   }
   const num = typeof value === 'string' ? parseFloat(value.replace(/,/g, '')) : value;
   if (isNaN(num)) {
     const symbols = {
-      'USD': '$', 'EUR': '€', 'GBP': '£', 'MXN': '$', 
-      'COP': '$', 'ARS': '$', 'CLP': '$', 'PEN': 'S/', 
-      'BRL': 'R$', 'CAD': 'C$'
+      'USD': '$', 'EUR': '€', 'GBP': '£', 'CAD': 'C$',
+      'MXN': '$', 'GTQ': 'Q', 'HNL': 'L', 'NIO': 'C$', 'CRC': '₡', 'PAB': 'B/.',
+      'COP': '$', 'VES': 'Bs.', 'BOB': 'Bs.', 'PEN': 'S/', 'BRL': 'R$',
+      'PYG': '₲', 'CLP': '$', 'ARS': '$', 'UYU': '$U',
+      'DOP': 'RD$', 'CUP': '₱', 'HTG': 'G'
     };
     return `${symbols[currencyCode] || '$'}0`;
   }
   
   const locales = {
-    'USD': 'en-US', 'EUR': 'de-DE', 'GBP': 'en-GB',
-    'MXN': 'es-MX', 'COP': 'es-CO', 'ARS': 'es-AR',
-    'CLP': 'es-CL', 'PEN': 'es-PE', 'BRL': 'pt-BR',
-    'CAD': 'en-CA'
+    'USD': 'en-US', 'EUR': 'de-DE', 'GBP': 'en-GB', 'CAD': 'en-CA',
+    'MXN': 'es-MX', 'GTQ': 'es-GT', 'HNL': 'es-HN', 'NIO': 'es-NI', 'CRC': 'es-CR', 'PAB': 'es-PA',
+    'COP': 'es-CO', 'VES': 'es-VE', 'BOB': 'es-BO', 'PEN': 'es-PE', 'BRL': 'pt-BR',
+    'PYG': 'es-PY', 'CLP': 'es-CL', 'ARS': 'es-AR', 'UYU': 'es-UY',
+    'DOP': 'es-DO', 'CUP': 'es-CU', 'HTG': 'fr-HT'
   };
   
   return new Intl.NumberFormat(locales[currencyCode] || 'en-US', {
@@ -868,13 +873,25 @@ function App() {
                 <option value="USD" style={{background: '#2845d9', color: 'white'}}>🇺🇸 USD - Dólar</option>
                 <option value="EUR" style={{background: '#2845d9', color: 'white'}}>🇪🇺 EUR - Euro</option>
                 <option value="GBP" style={{background: '#2845d9', color: 'white'}}>🇬🇧 GBP - Libra</option>
+                <option value="CAD" style={{background: '#2845d9', color: 'white'}}>🇨🇦 CAD - Dólar Canadiense</option>
                 <option value="MXN" style={{background: '#2845d9', color: 'white'}}>🇲🇽 MXN - Peso Mexicano</option>
+                <option value="GTQ" style={{background: '#2845d9', color: 'white'}}>🇬🇹 GTQ - Quetzal Guatemalteco</option>
+                <option value="HNL" style={{background: '#2845d9', color: 'white'}}>🇭🇳 HNL - Lempira Hondureño</option>
+                <option value="NIO" style={{background: '#2845d9', color: 'white'}}>🇳🇮 NIO - Córdoba Nicaragüense</option>
+                <option value="CRC" style={{background: '#2845d9', color: 'white'}}>🇨🇷 CRC - Colón Costarricense</option>
+                <option value="PAB" style={{background: '#2845d9', color: 'white'}}>🇵🇦 PAB - Balboa Panameño</option>
                 <option value="COP" style={{background: '#2845d9', color: 'white'}}>🇨🇴 COP - Peso Colombiano</option>
-                <option value="ARS" style={{background: '#2845d9', color: 'white'}}>🇦🇷 ARS - Peso Argentino</option>
-                <option value="CLP" style={{background: '#2845d9', color: 'white'}}>🇨🇱 CLP - Peso Chileno</option>
+                <option value="VES" style={{background: '#2845d9', color: 'white'}}>🇻🇪 VES - Bolívar Venezolano</option>
+                <option value="BOB" style={{background: '#2845d9', color: 'white'}}>🇧🇴 BOB - Boliviano</option>
                 <option value="PEN" style={{background: '#2845d9', color: 'white'}}>🇵🇪 PEN - Sol Peruano</option>
                 <option value="BRL" style={{background: '#2845d9', color: 'white'}}>🇧🇷 BRL - Real Brasileño</option>
-                <option value="CAD" style={{background: '#2845d9', color: 'white'}}>🇨🇦 CAD - Dólar Canadiense</option>
+                <option value="PYG" style={{background: '#2845d9', color: 'white'}}>🇵🇾 PYG - Guaraní Paraguayo</option>
+                <option value="CLP" style={{background: '#2845d9', color: 'white'}}>🇨🇱 CLP - Peso Chileno</option>
+                <option value="ARS" style={{background: '#2845d9', color: 'white'}}>🇦🇷 ARS - Peso Argentino</option>
+                <option value="UYU" style={{background: '#2845d9', color: 'white'}}>🇺🇾 UYU - Peso Uruguayo</option>
+                <option value="DOP" style={{background: '#2845d9', color: 'white'}}>🇩🇴 DOP - Peso Dominicano</option>
+                <option value="CUP" style={{background: '#2845d9', color: 'white'}}>🇨🇺 CUP - Peso Cubano</option>
+                <option value="HTG" style={{background: '#2845d9', color: 'white'}}>🇭🇹 HTG - Gourde Haitiano</option>
               </select>
             </div>
             
@@ -1254,7 +1271,8 @@ function App() {
                   </div>
                   <a 
                     href="https://51fe6aff-6c63-452e-ae29-61aa710bd777.usrfiles.com/ugd/51fe6a_dab0ffbb1c2e4187bcf10787e8a86a9b.pdf" 
-                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
                     style={{
                       padding: '10px 20px',
                       background: 'var(--emerald)',
@@ -1297,7 +1315,8 @@ function App() {
                   </div>
                   <a 
                     href="https://51fe6aff-6c63-452e-ae29-61aa710bd777.usrfiles.com/ugd/51fe6a_b0e0da8a0823447692c16e04b8eee03a.pdf" 
-                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
                     style={{
                       padding: '10px 20px',
                       background: 'var(--emerald)',
@@ -1340,7 +1359,8 @@ function App() {
                   </div>
                   <a 
                     href="https://51fe6aff-6c63-452e-ae29-61aa710bd777.usrfiles.com/ugd/51fe6a_da33d073988e43c8badae5c178c58e56.pdf" 
-                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
                     style={{
                       padding: '10px 20px',
                       background: 'var(--emerald)',
@@ -1774,9 +1794,9 @@ function VistaGeneral({ totales, userProfile, currency, setActiveTab }) {
                 <span style={{color: '#666', fontSize: '0.9rem'}}>Pasivos</span>
                 <span style={{fontWeight: '700', color: '#ef4444'}}>{formatCurrency(totales.pasivosTotales, currency)}</span>
               </div>
-              <div style={{display: 'flex', justifyContent: 'space-between', padding: '0.75rem', background: '#f0fdf4', borderRadius: '8px', border: '3px solid #10b981', cursor: 'pointer'}} onClick={() => setActiveTab('datos')}>
+              <div style={{display: 'flex', justifyContent: 'space-between', padding: '0.75rem', background: totales.patrimonioNeto >= 0 ? '#f0fdf4' : '#fef2f2', borderRadius: '8px', border: `3px solid ${totales.patrimonioNeto >= 0 ? '#10b981' : '#ef4444'}`, cursor: 'pointer'}} onClick={() => setActiveTab('datos')}>
                 <span style={{color: '#666', fontWeight: '600', fontSize: '0.9rem'}}>Patrimonio Neto</span>
-                <span style={{fontWeight: '700', color: '#10b981', fontSize: '1.25rem'}}>{formatCurrency(totales.patrimonioNeto, currency)}</span>
+                <span style={{fontWeight: '700', color: totales.patrimonioNeto >= 0 ? '#10b981' : '#ef4444', fontSize: '1.25rem'}}>{formatCurrency(totales.patrimonioNeto, currency)}</span>
               </div>
             </div>
           </div>
@@ -2002,19 +2022,22 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
     if (totales.activosTotales > 0) {
       const ctxActivos = document.getElementById('pieActivos');
       if (ctxActivos) {
+        // Filtrar solo categorías con valores > 0
+        const categorias = [
+          { label: 'Efectivo', value: totales.totalEfectivo, color: '#10b981' },
+          { label: 'Inversiones', value: totales.totalInversiones, color: '#3b82f6' },
+          { label: 'Retiro', value: totales.totalRetiro, color: '#8b5cf6' },
+          { label: 'Bienes Raíces', value: totales.totalBienesRaices, color: '#f59e0b' },
+          { label: 'Bienes Personales', value: totales.totalBienesPersonales, color: '#ec4899' }
+        ].filter(cat => cat.value > 0);
+        
         new Chart(ctxActivos, {
           type: 'pie',
           data: {
-            labels: ['Efectivo', 'Inversiones', 'Retiro', 'Bienes Raíces', 'Bienes Personales'],
+            labels: categorias.map(c => c.label),
             datasets: [{
-              data: [
-                totales.totalEfectivo,
-                totales.totalInversiones,
-                totales.totalRetiro,
-                totales.totalBienesRaices,
-                totales.totalBienesPersonales
-              ],
-              backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#ec4899'],
+              data: categorias.map(c => c.value),
+              backgroundColor: categorias.map(c => c.color),
               borderWidth: 2,
               borderColor: '#fff'
             }]
@@ -2046,13 +2069,21 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
     if (totalGastos > 0) {
       const ctxGastos = document.getElementById('pieGastos');
       if (ctxGastos) {
+        // Filtrar solo categorías con valores > 0
+        const categorias = [
+          { label: 'Gastos Diarios', value: totalGastosDiarios, color: '#ef4444' },
+          { label: 'Pagos de Deuda', value: totalDeudas, color: '#f59e0b' },
+          { label: 'Impuestos', value: totalImpuestos, color: '#eab308' },
+          { label: 'Seguros', value: totalSeguros, color: '#06b6d4' }
+        ].filter(cat => cat.value > 0);
+        
         new Chart(ctxGastos, {
           type: 'pie',
           data: {
-            labels: ['Gastos Diarios', 'Pagos de Deuda', 'Impuestos', 'Seguros'],
+            labels: categorias.map(c => c.label),
             datasets: [{
-              data: [totalGastosDiarios, totalDeudas, totalImpuestos, totalSeguros],
-              backgroundColor: ['#ef4444', '#f59e0b', '#eab308', '#06b6d4'],
+              data: categorias.map(c => c.value),
+              backgroundColor: categorias.map(c => c.color),
               borderWidth: 2,
               borderColor: '#fff'
             }]
@@ -2127,13 +2158,24 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
     if (totales.pasivosTotales > 0) {
       const ctxPasivos = document.getElementById('donutAssetAllocation');
       if (ctxPasivos) {
+        // Filtrar solo categorías con valores > 0
+        const categorias = [
+          { label: 'Tarjetas', value: tarjetas, color: '#ef4444' },
+          { label: 'Línea Personal', value: lineaPersonal, color: '#f59e0b' },
+          { label: 'Línea Propiedad', value: lineaPropiedad, color: '#eab308' },
+          { label: 'Hipoteca', value: hipoteca, color: '#f97316' },
+          { label: 'Préstamo Auto', value: prestamoAuto, color: '#ec4899' },
+          { label: 'Préstamos Educativos', value: prestamosEducativos, color: '#8b5cf6' },
+          { label: 'Otros', value: otrosPrestamos, color: '#6366f1' }
+        ].filter(cat => cat.value > 0);
+        
         new Chart(ctxPasivos, {
           type: 'pie',
           data: {
-            labels: ['Tarjetas', 'Línea Personal', 'Línea Propiedad', 'Hipoteca', 'Préstamo Auto', 'Préstamos Educativos', 'Otros'],
+            labels: categorias.map(c => c.label),
             datasets: [{
-              data: [tarjetas, lineaPersonal, lineaPropiedad, hipoteca, prestamoAuto, prestamosEducativos, otrosPrestamos],
-              backgroundColor: ['#ef4444', '#f59e0b', '#eab308', '#f97316', '#ec4899', '#8b5cf6', '#6366f1'],
+              data: categorias.map(c => c.value),
+              backgroundColor: categorias.map(c => c.color),
               borderWidth: 2,
               borderColor: '#fff'
             }]
@@ -2162,7 +2204,7 @@ function GraficosTab({ totales, currency, ingresoBruto, ahorro, deudas, gastosDi
     }
 
     // 5. LINE CHART - Proyección de Patrimonio
-    if (totales.patrimonioNeto > 0) {
+    if (totales.patrimonioNeto !== 0) {
       const patrimonioActual = totales.patrimonioNeto;
       const ahorroAnual = totalAhorro;
       const retornoDecimal = retornoAnual / 100;
